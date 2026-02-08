@@ -1,0 +1,12 @@
+{
+  "name": "ffconsole",
+  "version": "1.0.0",
+  "description": "Fighting Fantasy Adventure Sheet",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

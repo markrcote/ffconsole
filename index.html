@@ -10,7 +10,7 @@
     <main class="adventure-sheet">
         <header class="sheet-header">
             <h1>Adventure Sheet</h1>
-            <p class="subtitle">Fighting Fantasy</p>
+            <p class="book-title" id="book-title">Fighting Fantasy</p>
         </header>
 
         <section class="stats-section">
@@ -58,9 +58,20 @@
         </section>
 
         <section class="actions-section">
-            <button class="new-game-btn" id="new-game">New Adventure</button>
+            <button class="action-btn" id="switch-book">Switch Book</button>
+            <button class="action-btn primary" id="new-game">New Adventure</button>
         </section>
     </main>
+
+    <!-- Book Selection Modal -->
+    <div class="modal-overlay" id="book-modal">
+        <div class="modal">
+            <h2 class="modal-title">Select Book</h2>
+            <input type="text" class="book-search" id="book-search" placeholder="Type number or title..." autocomplete="off">
+            <ul class="book-list" id="book-list"></ul>
+            <button class="modal-cancel" id="modal-cancel">Cancel</button>
+        </div>
+    </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
