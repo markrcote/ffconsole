@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Adventure Sheet - Fighting Fantasy</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <main class="adventure-sheet">
+        <header class="sheet-header">
+            <h1>Adventure Sheet</h1>
+            <p class="subtitle">Fighting Fantasy</p>
+        </header>
+
+        <section class="stats-section">
+            <!-- Skill -->
+            <div class="stat-row">
+                <span class="stat-label">Skill</span>
+                <div class="stat-controls">
+                    <button class="stat-btn" id="skill-decrease" aria-label="Decrease Skill">−</button>
+                    <div class="stat-values">
+                        <span class="stat-current" id="skill-current">0</span>
+                        <span class="stat-separator">/</span>
+                        <span class="stat-initial" id="skill-initial">0</span>
+                    </div>
+                    <button class="stat-btn" id="skill-increase" aria-label="Increase Skill">+</button>
+                </div>
+            </div>
+
+            <!-- Stamina -->
+            <div class="stat-row">
+                <span class="stat-label">Stamina</span>
+                <div class="stat-controls">
+                    <button class="stat-btn" id="stamina-decrease" aria-label="Decrease Stamina">−</button>
+                    <div class="stat-values">
+                        <span class="stat-current" id="stamina-current">0</span>
+                        <span class="stat-separator">/</span>
+                        <span class="stat-initial" id="stamina-initial">0</span>
+                    </div>
+                    <button class="stat-btn" id="stamina-increase" aria-label="Increase Stamina">+</button>
+                </div>
+            </div>
+
+            <!-- Luck -->
+            <div class="stat-row">
+                <span class="stat-label">Luck</span>
+                <div class="stat-controls">
+                    <button class="stat-btn" id="luck-decrease" aria-label="Decrease Luck">−</button>
+                    <div class="stat-values">
+                        <span class="stat-current" id="luck-current">0</span>
+                        <span class="stat-separator">/</span>
+                        <span class="stat-initial" id="luck-initial">0</span>
+                    </div>
+                    <button class="stat-btn" id="luck-increase" aria-label="Increase Luck">+</button>
+                </div>
+            </div>
+        </section>
+
+        <section class="actions-section">
+            <button class="new-game-btn" id="new-game">New Adventure</button>
+        </section>
+    </main>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>
