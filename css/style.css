@@ -134,6 +134,40 @@ body {
     cursor: not-allowed;
 }
 
+/* Locked state: at initial value, requires hold to increase */
+.stat-btn.locked {
+    border-style: dashed;
+    opacity: 0.6;
+}
+
+.stat-btn.locked:hover {
+    background: var(--paper-bg);
+    color: var(--ink-color);
+}
+
+/* Holding animation: visual feedback during long-press */
+.stat-btn.holding {
+    animation: holdPulse 0.5s ease-in-out;
+    background: var(--ink-light);
+    color: var(--paper-bg);
+}
+
+@keyframes holdPulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+}
+
+/* Flash on successful hold */
+.stat-btn.held {
+    animation: holdSuccess 0.2s ease-out;
+}
+
+@keyframes holdSuccess {
+    0% { background: var(--accent-red); }
+    100% { background: var(--paper-bg); }
+}
+
 /* Stat Values */
 .stat-values {
     display: flex;
@@ -161,6 +195,11 @@ body {
     font-size: 1.4rem;
     color: var(--ink-light);
     line-height: 1;
+}
+
+/* Bonus state: current value exceeds initial */
+.stat-values.bonus .stat-current {
+    color: var(--accent-red);
 }
 
 /* Actions Section */
