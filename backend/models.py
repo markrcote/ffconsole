@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
-from sqlalchemy import Column, Integer, Text
+from sqlalchemy import Column, ForeignKey, Integer, Text
+from sqlalchemy.orm import relationship
 from .database import Base
 
 
@@ -21,3 +22,17 @@ class Session(Base):
     stamina_current = Column(Integer, nullable=False)
     luck_initial = Column(Integer, nullable=False)
     luck_current = Column(Integer, nullable=False)
+
+    logs = relationship("ActionLog", back_populates="session", cascade="all, delete-orphan")
+
+
+class ActionLog(Base):
+    __tablename__ = "action_logs"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    session_id = Column(Integer, ForeignKey("sessions.id", ondelete="CASCADE"), nullable=False)
+    action_type = Column(Text, nullable=False)
+    details = Column(Text, nullable=False)  # JSON blob
+    created_at = Column(Text, nullable=False, default=_now)
+
+    session = relationship("Session", back_populates="logs")
