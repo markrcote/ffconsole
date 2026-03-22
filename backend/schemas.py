@@ -63,3 +63,37 @@ class LegacyGameEntry(BaseModel):
 class LegacyStateBlob(BaseModel):
     games: dict[str, LegacyGameEntry] = {}
     currentBook: int | None = None
+
+
+class ActionRequest(BaseModel):
+    action_type: str
+    details: dict[str, Any]
+
+
+class ActionLogResponse(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    session_id: int
+    action_type: str
+    details: dict[str, Any]
+    created_at: str
+
+    @model_validator(mode="before")
+    @classmethod
+    def parse_details(cls, data: Any) -> Any:
+        if hasattr(data, "__tablename__"):
+            import json
+            return {
+                "id": data.id,
+                "session_id": data.session_id,
+                "action_type": data.action_type,
+                "details": json.loads(data.details),
+                "created_at": data.created_at,
+            }
+        return data
+
+
+class ActionResult(BaseModel):
+    session: SessionResponse
+    log: ActionLogResponse
