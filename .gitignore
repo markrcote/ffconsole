@@ -1,0 +1,3 @@
+backend/ff.db
+__pycache__/
+*.pyc
