@@ -57,6 +57,46 @@
             </div>
         </section>
 
+        <section class="mechanics-section tests-section">
+            <h2 class="mechanics-title">Tests</h2>
+            <div class="test-buttons">
+                <button class="mechanic-btn" id="test-skill">Test Skill</button>
+                <button class="mechanic-btn" id="test-stamina">Test Stamina</button>
+                <button class="mechanic-btn" id="test-luck">Test Luck</button>
+            </div>
+            <p class="mechanic-result" id="tests-result" aria-live="polite"></p>
+        </section>
+
+        <section class="mechanics-section combat-section">
+            <h2 class="mechanics-title">Combat</h2>
+
+            <div class="combat-setup" id="combat-setup">
+                <div class="combat-input-row">
+                    <label class="combat-label" for="enemy-name">Enemy</label>
+                    <input type="text" class="combat-input" id="enemy-name" placeholder="Name">
+                </div>
+                <div class="combat-input-row">
+                    <label class="combat-label" for="enemy-skill">Skill</label>
+                    <input type="number" class="combat-input combat-input--stat" id="enemy-skill" min="1" max="20" value="8">
+                </div>
+                <div class="combat-input-row">
+                    <label class="combat-label" for="enemy-stamina">Stamina</label>
+                    <input type="number" class="combat-input combat-input--stat" id="enemy-stamina" min="1" max="30" value="8">
+                </div>
+                <button class="mechanic-btn mechanic-btn--primary" id="start-combat">Start Combat</button>
+            </div>
+
+            <div class="combat-active" id="combat-active" hidden>
+                <p class="combat-status" id="combat-status"></p>
+                <p class="combat-enemy-stamina" id="combat-enemy-stamina"></p>
+                <p class="mechanic-result" id="combat-result" aria-live="polite"></p>
+                <div class="combat-actions">
+                    <button class="mechanic-btn mechanic-btn--primary" id="roll-round">Roll Round</button>
+                    <button class="mechanic-btn" id="flee-combat">Flee</button>
+                </div>
+            </div>
+        </section>
+
         <section class="actions-section">
             <button class="action-btn" id="switch-book">Switch Book</button>
             <button class="action-btn primary" id="new-game">New Adventure</button>
