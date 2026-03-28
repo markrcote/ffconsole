@@ -6,7 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from .database import init_db
-from .routers import sessions, compat, actions
+from .routers import sessions, actions
 
 STATIC_DIR = Path(__file__).parent.parent  # repo root
 
@@ -27,7 +27,6 @@ app.add_middleware(
 )
 
 app.include_router(sessions.router, prefix="/api", tags=["sessions"])
-app.include_router(compat.router, prefix="/api", tags=["compat"])
 app.include_router(actions.router, prefix="/api", tags=["actions"])
 
 # StaticFiles mount must come last — it's a catch-all that would shadow API routes if registered first

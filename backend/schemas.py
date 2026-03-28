@@ -1,3 +1,4 @@
+import json
 from pydantic import BaseModel, Field, ConfigDict, model_validator
 from typing import Any
 
@@ -17,6 +18,7 @@ class SessionResponse(BaseModel):
     skill: StatBlock
     stamina: StatBlock
     luck: StatBlock
+    mechanics: dict = Field(default_factory=dict)
 
     @model_validator(mode="before")
     @classmethod
@@ -31,6 +33,7 @@ class SessionResponse(BaseModel):
                 "skill": {"initial": data.skill_initial, "current": data.skill_current},
                 "stamina": {"initial": data.stamina_initial, "current": data.stamina_current},
                 "luck": {"initial": data.luck_initial, "current": data.luck_current},
+                "mechanics": json.loads(data.mechanics_json or '{}'),
             }
         return data
 
@@ -40,29 +43,14 @@ class SessionCreate(BaseModel):
     skill: StatBlock
     stamina: StatBlock
     luck: StatBlock
+    mechanics: dict = Field(default_factory=dict)
 
 
 class SessionUpdate(BaseModel):
     skill: StatBlock | None = None
     stamina: StatBlock | None = None
     luck: StatBlock | None = None
-
-
-# Compat shim — mirrors the exact shape that storage.js sends and expects
-class LegacyStatBlock(BaseModel):
-    initial: int
-    current: int
-
-
-class LegacyGameEntry(BaseModel):
-    skill: LegacyStatBlock
-    stamina: LegacyStatBlock
-    luck: LegacyStatBlock
-
-
-class LegacyStateBlob(BaseModel):
-    games: dict[str, LegacyGameEntry] = {}
-    currentBook: int | None = None
+    mechanics: dict | None = Field(default=None)
 
 
 class ActionRequest(BaseModel):

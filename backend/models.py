@@ -22,6 +22,8 @@ class Session(Base):
     stamina_current = Column(Integer, nullable=False)
     luck_initial = Column(Integer, nullable=False)
     luck_current = Column(Integer, nullable=False)
+    mechanics_json = Column(Text, nullable=True, default='{}')
+    name = Column(Text, nullable=True)
 
     logs = relationship("ActionLog", back_populates="session", cascade="all, delete-orphan")
 
