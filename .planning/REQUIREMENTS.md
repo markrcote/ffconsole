@@ -106,19 +106,41 @@ Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01–03 | — | Pending |
-| CHAR-01–05 | — | Pending |
-| BATTLE-01–08 | — | Pending |
-| LUCK-01–03 | — | Pending |
-| DICE-01–02 | — | Pending |
-| AFEAR-01–03 | — | Pending |
-| CHAOS-01–05 | — | Pending |
+| INFRA-01 | Phase 1 | Pending |
+| INFRA-02 | Phase 1 | Pending |
+| INFRA-03 | Phase 1 | Pending |
+| CHAR-01 | Phase 2 | Pending |
+| CHAR-02 | Phase 2 | Pending |
+| CHAR-03 | Phase 2 | Pending |
+| CHAR-04 | Phase 2 | Pending |
+| CHAR-05 | Phase 2 | Pending |
+| LUCK-01 | Phase 2 | Pending |
+| LUCK-02 | Phase 2 | Pending |
+| LUCK-03 | Phase 2 | Pending |
+| DICE-01 | Phase 2 | Pending |
+| DICE-02 | Phase 2 | Pending |
+| BATTLE-01 | Phase 3 | Pending |
+| BATTLE-02 | Phase 3 | Pending |
+| BATTLE-03 | Phase 3 | Pending |
+| BATTLE-04 | Phase 3 | Pending |
+| BATTLE-05 | Phase 3 | Pending |
+| BATTLE-06 | Phase 3 | Pending |
+| BATTLE-07 | Phase 3 | Pending |
+| BATTLE-08 | Phase 3 | Pending |
+| AFEAR-01 | Phase 4 | Pending |
+| AFEAR-02 | Phase 4 | Pending |
+| AFEAR-03 | Phase 4 | Pending |
+| CHAOS-01 | Phase 4 | Pending |
+| CHAOS-02 | Phase 4 | Pending |
+| CHAOS-03 | Phase 4 | Pending |
+| CHAOS-04 | Phase 4 | Pending |
+| CHAOS-05 | Phase 4 | Pending |
 
 **Coverage:**
 - v1 requirements: 29 total
-- Mapped to phases: 0 (pending roadmap)
-- Unmapped: 29 ⚠️
+- Mapped to phases: 29 ✓
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-28*
-*Last updated: 2026-03-28 after initialization*
+*Last updated: 2026-03-28 after roadmap creation*
