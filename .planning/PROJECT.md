@@ -48,7 +48,7 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 - **Tech stack**: Vanilla JS only (no frontend framework) — existing codebase constraint
 - **No build step**: Files served as-is — keep all JS as native ES modules
 - **Mobile-first**: UI must work well on phone screens for use alongside physical books
-- **Single-player**: All state is per-book-session for one user
+- **Single-player, server-backed**: All state persists to the backend; player can switch devices and resume any session
 
 ## Key Decisions
 
