@@ -1,3 +1,19 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: milestone
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-03-28T22:05:44.008Z"
+last_activity: 2026-03-28
+progress:
+  total_phases: 4
+  completed_phases: 0
+  total_plans: 3
+  completed_plans: 1
+  percent: 0
+---
+
 # Project State
 
 ## Project Reference
@@ -5,20 +21,21 @@
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 1 — Foundation
+**Current focus:** Phase 01 — foundation
 
 ## Current Position
 
-Phase: 1 of 4 (Foundation)
-Plan: 0 of 3 in current phase
+Phase: 01 (foundation) — EXECUTING
+Plan: 2 of 3
 Status: Ready to execute
-Last activity: 2026-03-28 — Phase 1 planned (3 plans, 2 waves)
+Last activity: 2026-03-28
 
 Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 0
 - Average duration: —
 - Total execution time: —
@@ -30,10 +47,12 @@ Progress: [░░░░░░░░░░] 0%
 | - | - | - | - |
 
 **Recent Trend:**
+
 - Last 5 plans: —
 - Trend: —
 
 *Updated after each plan completion*
+| Phase 01-foundation P01 | 6 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -45,6 +64,9 @@ Recent decisions affecting current work:
 - Roadmap: Battle as panel on adventure sheet (not separate screen) — pending confirmation
 - Roadmap: Built-in book configs only for v1 (Freeway Fighter deferred to v2)
 - Roadmap: Both live Stamina tracker + persistent round log for combat
+- [Phase 01-foundation]: mechanics stored as TEXT JSON blob per session — open-ended dict, no cross-session querying needed
+- [Phase 01-foundation]: name column added during first DB recreate to avoid second recreate in Phase 2
+- [Phase 01-foundation]: drop_all in init_db() for Phase 1 development; to be removed after Phase 1 completes
 
 ### Pending Todos
 
@@ -58,6 +80,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-28
-Stopped at: Phase 1 planned and verified — ready to execute
+Last session: 2026-03-28T22:05:44.005Z
+Stopped at: Completed 01-01-PLAN.md
 Resume file: None

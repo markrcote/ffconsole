@@ -39,7 +39,7 @@
 
 ### Infrastructure
 
-- [ ] **INFRA-01**: Backend Session model stores book-specific mechanic state in a `mechanics_json` field so extra stats are not lost on save/load
+- [x] **INFRA-01**: Backend Session model stores book-specific mechanic state in a `mechanics_json` field so extra stats are not lost on save/load
 - [ ] **INFRA-02**: Config system (`js/config/mechanics/`) with a shared schema and `getBookConfig(bookNumber)` loader using dynamic import
 - [ ] **INFRA-03**: `app.js` is refactored into focused modules (`ui/stats.js`, `ui/charCreate.js`, `ui/battle.js`, `ui/diceRoller.js`) with no circular dependencies
 
@@ -106,7 +106,7 @@ Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| INFRA-01 | Phase 1 | Pending |
+| INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Pending |
 | INFRA-03 | Phase 1 | Pending |
 | CHAR-01 | Phase 2 | Pending |
