@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 1 of 4 (Foundation)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-03-28 — Roadmap created
+Plan: 0 of 3 in current phase
+Status: Ready to execute
+Last activity: 2026-03-28 — Phase 1 planned (3 plans, 2 waves)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -54,9 +54,10 @@ None yet.
 
 - Phase 5 (Battle): Confirm `/api/sessions/{book}/actions` POST/GET payload shape before implementing round log persistence — flagged in research SUMMARY.md
 - Phase 1: `fleeFreeAttack` config key not fully specified in research; resolve during config schema design
+- Phase 1: After execution, remove `drop_all` from `database.py` (noted by plan checker — not part of any plan task, needs manual cleanup)
 
 ## Session Continuity
 
 Last session: 2026-03-28
-Stopped at: Roadmap created, STATE.md initialized — ready to plan Phase 1
+Stopped at: Phase 1 planned and verified — ready to execute
 Resume file: None
