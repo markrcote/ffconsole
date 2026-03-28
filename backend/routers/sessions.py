@@ -1,3 +1,4 @@
+import json
 from datetime import datetime, timezone
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session as DBSession
@@ -34,6 +35,7 @@ def create_session(body: SessionCreate, db: DBSession = Depends(get_db)):
         stamina_current=body.stamina.current,
         luck_initial=body.luck.initial,
         luck_current=body.luck.current,
+        mechanics_json=json.dumps(body.mechanics or {}),
     )
     db.add(session)
     db.commit()
@@ -59,6 +61,7 @@ def upsert_session(book_number: int, body: SessionCreate, db: DBSession = Depend
         session.stamina_current = body.stamina.current
         session.luck_initial = body.luck.initial
         session.luck_current = body.luck.current
+        session.mechanics_json = json.dumps(body.mechanics or {})
         session.updated_at = _now()
     else:
         session = Session(
@@ -69,6 +72,7 @@ def upsert_session(book_number: int, body: SessionCreate, db: DBSession = Depend
             stamina_current=body.stamina.current,
             luck_initial=body.luck.initial,
             luck_current=body.luck.current,
+            mechanics_json=json.dumps(body.mechanics or {}),
         )
         db.add(session)
     db.commit()
@@ -90,6 +94,8 @@ def patch_session(book_number: int, body: SessionUpdate, db: DBSession = Depends
     if body.luck is not None:
         session.luck_initial = body.luck.initial
         session.luck_current = body.luck.current
+    if body.mechanics is not None:
+        session.mechanics_json = json.dumps(body.mechanics)
     session.updated_at = _now()
     db.commit()
     db.refresh(session)
