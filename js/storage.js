@@ -1,28 +1,39 @@
 /**
- * Storage handling for Fighting Fantasy game state
- * Uses server API with localStorage as fallback/cache
+ * Storage handling for Fighting Fantasy game state.
+ * Uses /api/sessions with localStorage as fallback/cache.
  */
 
 const STORAGE_KEY = 'ffconsole_gamestate';
 
 /**
- * Save game state to server and localStorage
- * @param {Object} state - The game state to save
+ * Save the current book's session to server and full state to localStorage.
+ * Only PUTs the currentBook session (not all games) per D-06.
+ * @param {Object} state - { games: { [bookNumber]: { skill, stamina, luck, mechanics } }, currentBook: number }
  */
 async function save(state) {
-    // Always save to localStorage as cache
+    // Always save full state to localStorage as cache
     try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch (e) {
         console.error('Failed to save to localStorage:', e);
     }
 
-    // Try to save to server
+    if (!state.currentBook || !state.games) return;
+
+    const game = state.games[state.currentBook];
+    if (!game) return;
+
     try {
-        const response = await fetch('/api/state', {
+        const response = await fetch(`/api/sessions/${state.currentBook}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(state)
+            body: JSON.stringify({
+                book_number: state.currentBook,
+                skill: game.skill,
+                stamina: game.stamina,
+                luck: game.luck,
+                mechanics: game.mechanics ?? {},
+            }),
         });
         if (!response.ok) {
             throw new Error(`Server returned ${response.status}`);
@@ -33,17 +44,30 @@ async function save(state) {
 }
 
 /**
- * Load game state from server, falling back to localStorage
- * @returns {Promise<Object|null>} The saved game state, or null if none exists
+ * Load game state. Fetches all sessions from server, derives currentBook
+ * from most recently updated session. Falls back to localStorage.
+ * @returns {Promise<Object|null>} { games, currentBook } or null
  */
 async function load() {
-    // Try to load from server first
     try {
-        const response = await fetch('/api/state');
+        const response = await fetch('/api/sessions');
         if (response.ok) {
-            const data = await response.json();
-            if (data && Object.keys(data).length > 0) {
-                // Update localStorage cache
+            const sessions = await response.json();
+            if (sessions.length > 0) {
+                const games = {};
+                sessions.forEach(s => {
+                    games[s.book_number] = {
+                        skill: s.skill,
+                        stamina: s.stamina,
+                        luck: s.luck,
+                        mechanics: s.mechanics ?? {},
+                    };
+                });
+                // currentBook = most recently updated session
+                const current = sessions.reduce((a, b) =>
+                    a.updated_at > b.updated_at ? a : b
+                );
+                const data = { games, currentBook: current.book_number };
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
                 return data;
             }
@@ -52,7 +76,7 @@ async function load() {
         console.error('Failed to load from server:', e);
     }
 
-    // Fall back to localStorage
+    // localStorage fallback
     try {
         const data = localStorage.getItem(STORAGE_KEY);
         return data ? JSON.parse(data) : null;
@@ -63,7 +87,7 @@ async function load() {
 }
 
 /**
- * Clear saved game state
+ * Clear saved game state from localStorage.
  */
 async function clear() {
     try {
