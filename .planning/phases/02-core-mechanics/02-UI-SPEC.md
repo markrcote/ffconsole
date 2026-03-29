@@ -44,7 +44,7 @@ Multiples of 4 throughout. Values derived from existing usage in `css/style.css`
 Exceptions:
 - Touch targets: minimum 48px height on all mechanic buttons (`.mechanic-btn min-height: 48px` — already enforced)
 - Stat buttons: 40×40px — existing pattern, do not change for Phase 2
-- Modal overlay: 20px body padding on mobile, 25px internal modal padding
+- Modal overlay: 20px body padding on mobile, 24px internal modal padding
 
 ---
 
