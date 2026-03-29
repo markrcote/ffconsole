@@ -44,8 +44,15 @@ Plans:
   2. Book-specific mechanics section activates automatically when a supported book is selected during character creation
   3. User can tap "Test Your Luck", see "Lucky" or "Unlucky" with the 2d6 values shown, and observe current Luck drop by exactly 1
   4. User can roll 1d6 or 2d6 from a standalone widget and see each die value individually
-**Plans**: TBD
+**Plans**: 0/5 planned
 **UI hint**: yes
+
+Plans:
+- [ ] 02-01-PLAN.md — Backend: expose `name` in session schemas and router (CHAR-03)
+- [ ] 02-02-PLAN.md — CSS: die-face, luck result, char-create modal styles (CHAR-01, LUCK-02, DICE-01, DICE-02)
+- [ ] 02-03-PLAN.md — `js/ui/charCreate.js` full character creation flow (CHAR-01–05)
+- [ ] 02-04-PLAN.md — `js/ui/diceRoller.js` standalone dice roller widget (DICE-01, DICE-02)
+- [ ] 02-05-PLAN.md — Wiring: `index.html` additions + `app.js` integration (all requirements)
 
 ### Phase 3: Battle System
 **Goal**: Users can conduct a full Fighting Fantasy combat — entering an enemy, resolving rounds, and reviewing the log — entirely within the adventure sheet
