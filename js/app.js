@@ -6,6 +6,7 @@ import { rollInitialStats } from './dice.js';
 import { save, load } from './storage.js';
 import { BOOKS, getBook, searchBooks } from './books.js';
 import { testSkill, testStamina, testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
+import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 
 // All games state (keyed by book number)
 let games = {};
@@ -19,10 +20,6 @@ let state = {
     stamina: { initial: 0, current: 0 },
     luck: { initial: 0, current: 0 }
 };
-
-// Long-press tracking for bonus increases
-const HOLD_DURATION = 500;
-let holdTimers = {};
 
 // Modal state
 let isSelectingForNewGame = false;
@@ -131,7 +128,8 @@ async function selectBook(bookNumber) {
         state = {
             skill: { initial: stats.skill, current: stats.skill },
             stamina: { initial: stats.stamina, current: stats.stamina },
-            luck: { initial: stats.luck, current: stats.luck }
+            luck: { initial: stats.luck, current: stats.luck },
+            mechanics: {}
         };
         games[bookNumber] = state;
         currentBook = bookNumber;
@@ -148,7 +146,8 @@ async function selectBook(bookNumber) {
             state = {
                 skill: { initial: stats.skill, current: stats.skill },
                 stamina: { initial: stats.stamina, current: stats.stamina },
-                luck: { initial: stats.luck, current: stats.luck }
+                luck: { initial: stats.luck, current: stats.luck },
+                mechanics: {}
             };
             games[bookNumber] = state;
             currentBook = bookNumber;
@@ -181,7 +180,7 @@ async function modifyStat(name, delta, allowBonus = false) {
     stat.current = newValue;
     games[currentBook] = state;
     await save({ games, currentBook });
-    renderStat(name);
+    renderStat(name, state);
 }
 
 /**
@@ -189,9 +188,7 @@ async function modifyStat(name, delta, allowBonus = false) {
  */
 function render() {
     renderBookTitle();
-    renderStat('skill');
-    renderStat('stamina');
-    renderStat('luck');
+    renderStats(state);
 }
 
 /**
@@ -206,72 +203,6 @@ function renderBookTitle() {
         titleEl.textContent = book ? `#${book.number}: ${book.title}` : 'Fighting Fantasy';
     } else {
         titleEl.textContent = 'Select a Book';
-    }
-}
-
-/**
- * Render a single stat to the DOM
- * @param {string} name - The stat name
- */
-function renderStat(name) {
-    const stat = state[name];
-    if (!stat) return;
-
-    const currentEl = document.getElementById(`${name}-current`);
-    const initialEl = document.getElementById(`${name}-initial`);
-    const decreaseBtn = document.getElementById(`${name}-decrease`);
-    const increaseBtn = document.getElementById(`${name}-increase`);
-    const valuesEl = document.querySelector(`#${name}-current`)?.parentElement;
-
-    if (currentEl) currentEl.textContent = stat.current;
-    if (initialEl) initialEl.textContent = stat.initial;
-
-    if (decreaseBtn) decreaseBtn.disabled = stat.current <= 0;
-
-    if (increaseBtn) {
-        increaseBtn.disabled = false;
-        increaseBtn.classList.toggle('locked', stat.current >= stat.initial);
-    }
-
-    if (valuesEl) {
-        valuesEl.classList.toggle('bonus', stat.current > stat.initial);
-    }
-}
-
-/**
- * Start hold timer for bonus increase
- * @param {string} name - The stat name
- * @param {HTMLElement} btn - The button element
- */
-function startHold(name, btn) {
-    cancelHold(name);
-
-    const stat = state[name];
-    if (!stat || stat.current < stat.initial) {
-        return;
-    }
-
-    btn.classList.add('holding');
-    holdTimers[name] = setTimeout(() => {
-        modifyStat(name, 1, true);
-        btn.classList.remove('holding');
-        btn.classList.add('held');
-        holdTimers[name] = null;
-    }, HOLD_DURATION);
-}
-
-/**
- * Cancel hold timer
- * @param {string} name - The stat name
- */
-function cancelHold(name) {
-    if (holdTimers[name]) {
-        clearTimeout(holdTimers[name]);
-        holdTimers[name] = null;
-    }
-    const btn = document.getElementById(`${name}-increase`);
-    if (btn) {
-        btn.classList.remove('holding', 'held');
     }
 }
 
@@ -319,44 +250,8 @@ function renderCombat() {
  * Bind event listeners
  */
 function bindEvents() {
-    // Stat adjustment buttons
-    ['skill', 'stamina', 'luck'].forEach(name => {
-        const decreaseBtn = document.getElementById(`${name}-decrease`);
-        const increaseBtn = document.getElementById(`${name}-increase`);
-
-        if (decreaseBtn) {
-            decreaseBtn.addEventListener('click', () => modifyStat(name, -1));
-        }
-
-        if (increaseBtn) {
-            increaseBtn.addEventListener('click', () => {
-                const stat = state[name];
-                if (stat && stat.current < stat.initial) {
-                    modifyStat(name, 1);
-                }
-            });
-
-            // Long-press for bonus increases
-            increaseBtn.addEventListener('mousedown', (e) => {
-                if (e.button === 0) startHold(name, increaseBtn);
-            });
-            increaseBtn.addEventListener('mouseup', () => cancelHold(name));
-            increaseBtn.addEventListener('mouseleave', () => cancelHold(name));
-
-            increaseBtn.addEventListener('touchstart', (e) => {
-                e.preventDefault();
-                startHold(name, increaseBtn);
-            });
-            increaseBtn.addEventListener('touchend', () => {
-                const stat = state[name];
-                if (holdTimers[name] && stat && stat.current < stat.initial) {
-                    modifyStat(name, 1);
-                }
-                cancelHold(name);
-            });
-            increaseBtn.addEventListener('touchcancel', () => cancelHold(name));
-        }
-    });
+    // Stat adjustment buttons (delegated to ui/stats.js)
+    bindStatEvents(state, { onModify: modifyStat });
 
     // New Adventure button
     const newGameBtn = document.getElementById('new-game');
@@ -454,7 +349,7 @@ function bindEvents() {
             // Offline fallback: apply luck deduction locally
             state.luck.current = r.luckAfter;
             games[currentBook] = state;
-            renderStat('luck');
+            renderStat('luck', state);
             save({ games, currentBook });
         }
     });
