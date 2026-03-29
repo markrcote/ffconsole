@@ -15,8 +15,7 @@ A web app for tracking character stats (Skill, Stamina, Luck) during [Fighting F
 
 ```bash
 pip install -r requirements.txt
-cd backend
-uvicorn main:app --host 0.0.0.0 --port 3000 --reload
+uvicorn backend.main:app --host 0.0.0.0 --port 3000 --reload
 ```
 
 Open http://localhost:3000
@@ -42,13 +41,6 @@ Base URL: `http://localhost:3000/api`
 | `PATCH` | `/sessions/{book_number}` | Update stats partially |
 | `DELETE` | `/sessions/{book_number}` | Delete a session |
 
-### Compat (used by the frontend)
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| `GET` | `/state` | Get all sessions as a legacy blob |
-| `PUT` | `/state` | Save all sessions from a legacy blob |
-
 Interactive docs: http://localhost:3000/api/docs (when server is running — note: blocked by the StaticFiles catch-all; use `/docs` directly via uvicorn on a different port if needed)
 
 ## Architecture
@@ -68,7 +60,6 @@ backend/
   schemas.py        — Pydantic request/response models
   routers/
     sessions.py     — /api/sessions CRUD
-    compat.py       — /api/state shim (matches storage.js contract)
 ```
 
 State is stored in `backend/ff.db` (SQLite, gitignored). One row per book number.
