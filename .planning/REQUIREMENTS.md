@@ -28,9 +28,9 @@
 
 ### Test Your Luck
 
-- [ ] **LUCK-01**: User can Test their Luck at any time via a dedicated button
+- [x] **LUCK-01**: User can Test their Luck at any time via a dedicated button
 - [x] **LUCK-02**: Result is displayed clearly as "Lucky" or "Unlucky" with the 2d6 roll shown
-- [ ] **LUCK-03**: Current Luck value decreases by 1 and updates visibly after every test, regardless of outcome
+- [x] **LUCK-03**: Current Luck value decreases by 1 and updates visibly after every test, regardless of outcome
 
 ### Dice Roller
 
@@ -114,9 +114,9 @@ Updated during roadmap creation.
 | CHAR-03 | Phase 2 | Complete |
 | CHAR-04 | Phase 2 | Complete |
 | CHAR-05 | Phase 2 | Complete |
-| LUCK-01 | Phase 2 | Pending |
+| LUCK-01 | Phase 2 | Complete |
 | LUCK-02 | Phase 2 | Complete |
-| LUCK-03 | Phase 2 | Pending |
+| LUCK-03 | Phase 2 | Complete |
 | DICE-01 | Phase 2 | Complete |
 | DICE-02 | Phase 2 | Complete |
 | BATTLE-01 | Phase 3 | Pending |

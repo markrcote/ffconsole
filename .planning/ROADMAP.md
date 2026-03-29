@@ -13,7 +13,7 @@ Four phases take FF Console from its current partial state (stats sheet, persist
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Foundation** - Backend schema extension, config system, and app.js module split
-- [ ] **Phase 2: Core Mechanics** - Character creation flow, Test Your Luck, and standalone dice roller
+- [x] **Phase 2: Core Mechanics** - Character creation flow, Test Your Luck, and standalone dice roller (completed 2026-03-29)
 - [ ] **Phase 3: Battle System** - Full round-by-round combat panel with log persistence
 - [ ] **Phase 4: Book Configs** - Book-specific mechanic configs for Appointment with F.E.A.R. and Chasms of Malice
 
@@ -52,7 +52,7 @@ Plans:
 - [x] 02-02-PLAN.md — CSS: die-face, luck result, char-create modal styles (CHAR-01, LUCK-02, DICE-01, DICE-02)
 - [x] 02-03-PLAN.md — `js/ui/charCreate.js` full character creation flow (CHAR-01–05)
 - [x] 02-04-PLAN.md — `js/ui/diceRoller.js` standalone dice roller widget (DICE-01, DICE-02)
-- [ ] 02-05-PLAN.md — Wiring: `index.html` additions + `app.js` integration (all requirements)
+- [x] 02-05-PLAN.md — Wiring: `index.html` additions + `app.js` integration (all requirements)
 
 ### Phase 3: Battle System
 **Goal**: Users can conduct a full Fighting Fantasy combat — entering an enemy, resolving rounds, and reviewing the log — entirely within the adventure sheet
@@ -87,6 +87,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/3 | In Progress|  |
-| 2. Core Mechanics | 3/5 | In Progress|  |
+| 2. Core Mechanics | 5/5 | Complete   | 2026-03-29 |
 | 3. Battle System | 0/? | Not started | - |
 | 4. Book Configs | 0/? | Not started | - |
