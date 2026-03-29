@@ -19,6 +19,7 @@ class SessionResponse(BaseModel):
     stamina: StatBlock
     luck: StatBlock
     mechanics: dict = Field(default_factory=dict)
+    name: str | None = None
 
     @model_validator(mode="before")
     @classmethod
@@ -34,12 +35,14 @@ class SessionResponse(BaseModel):
                 "stamina": {"initial": data.stamina_initial, "current": data.stamina_current},
                 "luck": {"initial": data.luck_initial, "current": data.luck_current},
                 "mechanics": json.loads(data.mechanics_json or '{}'),
+                "name": data.name,
             }
         return data
 
 
 class SessionCreate(BaseModel):
     book_number: int = Field(..., ge=1)
+    name: str | None = None
     skill: StatBlock
     stamina: StatBlock
     luck: StatBlock
@@ -51,6 +54,7 @@ class SessionUpdate(BaseModel):
     stamina: StatBlock | None = None
     luck: StatBlock | None = None
     mechanics: dict | None = Field(default=None)
+    name: str | None = None
 
 
 class ActionRequest(BaseModel):
