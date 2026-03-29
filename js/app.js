@@ -7,6 +7,9 @@ import { save, load } from './storage.js';
 import { BOOKS, getBook, searchBooks } from './books.js';
 import { testSkill, testStamina, testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
+import { showCharCreate } from './ui/charCreate.js';
+import { renderDiceRoller } from './ui/diceRoller.js';
+import { roll } from './dice.js';
 
 // All games state (keyed by book number)
 let games = {};
@@ -47,10 +50,21 @@ async function init() {
     render();
     bindEvents();
 
-    // If no current book, show selection
+    // If no current book, show character creation
     if (!currentBook) {
-        showBookModal(false);
+        showCharCreate({
+            games,
+            currentBook,
+            save,
+            onComplete: async (bookNumber, stats, name) => {
+                await _applyNewCharacter(bookNumber, stats, name);
+            },
+        });
     }
+
+    // Initialise dice roller widget (D-12)
+    const diceSection = document.getElementById('dice-section');
+    if (diceSection) renderDiceRoller(diceSection);
 }
 
 /**
@@ -188,6 +202,7 @@ async function modifyStat(name, delta, allowBonus = false) {
  */
 function render() {
     renderBookTitle();
+    renderCharName();
     renderStats(state);
 }
 
@@ -207,6 +222,23 @@ function renderBookTitle() {
 }
 
 /**
+ * Render the character name below the book title.
+ * Hidden entirely when no name (D-13, D-14).
+ */
+function renderCharName() {
+    const nameEl = document.getElementById('char-name');
+    if (!nameEl) return;
+    const name = state && state.name;
+    if (name) {
+        nameEl.textContent = name;
+        nameEl.classList.add('visible');
+    } else {
+        nameEl.textContent = '';
+        nameEl.classList.remove('visible');
+    }
+}
+
+/**
  * Sync local state from a server SessionResponse and re-render.
  * Only current values are patched — initial values stay as-is.
  * @param {Object} session - SessionResponse from the backend
@@ -219,6 +251,28 @@ function syncStateFromServer(session) {
     games[currentBook] = state;
     render();
     save({ games, currentBook });
+}
+
+/**
+ * Apply a newly created character from the char creation flow.
+ * Called from both the "New Adventure" handler and the init() first-load path.
+ * Saves to backend via storage.js save().
+ * @param {number} bookNumber
+ * @param {Object} stats - { skill, stamina, luck } each { initial, current }
+ * @param {string|null} name - Character name or null
+ */
+async function _applyNewCharacter(bookNumber, stats, name) {
+    state = {
+        skill:    { initial: stats.skill.initial,   current: stats.skill.current },
+        stamina:  { initial: stats.stamina.initial, current: stats.stamina.current },
+        luck:     { initial: stats.luck.initial,    current: stats.luck.current },
+        mechanics: {},
+        name: name || null,
+    };
+    games[bookNumber] = state;
+    currentBook = bookNumber;
+    await save({ games, currentBook });
+    render();
 }
 
 /**
@@ -251,12 +305,21 @@ function renderCombat() {
  */
 function bindEvents() {
     // Stat adjustment buttons (delegated to ui/stats.js)
-    bindStatEvents(state, { onModify: modifyStat });
+    bindStatEvents(() => state, { onModify: modifyStat });
 
     // New Adventure button
     const newGameBtn = document.getElementById('new-game');
     if (newGameBtn) {
-        newGameBtn.addEventListener('click', () => showBookModal(true));
+        newGameBtn.addEventListener('click', () => {
+            showCharCreate({
+                games,
+                currentBook,
+                save,
+                onComplete: async (bookNumber, stats, name) => {
+                    await _applyNewCharacter(bookNumber, stats, name);
+                },
+            });
+        });
     }
 
     // Switch Book button
@@ -338,11 +401,34 @@ function bindEvents() {
 
     document.getElementById('test-luck')?.addEventListener('click', async () => {
         if (!currentBook) return;
+
+        const luckBtn = document.getElementById('test-luck');
+        if (luckBtn) luckBtn.disabled = true;
+
+        // Roll two cosmetic dice locally for display (D-08, Research Risk 1 mitigation)
+        // testLuck() also rolls internally — both are random, game correctness unaffected.
+        const d1 = roll(6);
+        const d2 = roll(6);
+
         const r = await testLuck(currentBook, state.luck.current);
-        if (testsResult) {
-            testsResult.textContent =
-                `Rolled ${r.roll} vs Luck ${r.target} — ${r.success ? 'Lucky!' : 'Unlucky!'} (Luck now ${r.luckAfter})`;
+
+        const luckResultEl = document.getElementById('luck-result');
+        if (luckResultEl) {
+            const isLucky = r.success;
+            luckResultEl.innerHTML = `
+                <div class="luck-result__dice">
+                    <span class="die-face">${d1}</span>
+                    <span class="luck-result__plus">+</span>
+                    <span class="die-face">${d2}</span>
+                    <span class="luck-result__total">= ${d1 + d2}</span>
+                </div>
+                <p class="luck-result__label ${isLucky ? 'luck-result__label--lucky' : 'luck-result__label--unlucky'}">
+                    ${isLucky ? 'Lucky!' : 'Unlucky.'}
+                </p>
+                <p class="luck-result__footnote">Luck is now ${r.luckAfter}</p>
+            `;
         }
+
         if (r.session) {
             syncStateFromServer(r.session);
         } else {
@@ -352,6 +438,11 @@ function bindEvents() {
             renderStat('luck', state);
             save({ games, currentBook });
         }
+
+        // Re-enable button after 800ms (prevents accidental re-tap per UI-SPEC)
+        setTimeout(() => {
+            if (luckBtn) luckBtn.disabled = false;
+        }, 800);
     });
 
     // ── Combat ───────────────────────────────────────────────────────────────
