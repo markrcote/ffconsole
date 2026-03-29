@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-03-29T19:08:24.152Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-03-29T19:08:35.156Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 4
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01-foundation P02 | 8 | 2 tasks | 4 files |
 | Phase 01-foundation P03 | 15 | 2 tasks | 6 files |
 | Phase 02-core-mechanics P02 | 1 | 1 tasks | 1 files |
+| Phase 02-core-mechanics P01 | 2 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,7 @@ Recent decisions affecting current work:
 - [Phase 01-foundation]: ui/*.js modules receive state and callbacks as arguments — no imports of app.js to prevent circular dependencies (D-17)
 - [Phase 01-foundation]: storage.js only PUTs currentBook session on save; currentBook derived from updated_at ordering of GET /api/sessions
 - [Phase 02-core-mechanics]: .die-face defined in CSS plan (02-02) rather than per-feature plan — ensures visual consistency across char create and dice roller
+- [Phase 02-core-mechanics]: name added as last field in each schema class to minimize diff
 
 ### Pending Todos
 
@@ -87,6 +89,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-29T19:08:12.401Z
-Stopped at: Completed 02-02-PLAN.md
+Last session: 2026-03-29T19:08:35.152Z
+Stopped at: Completed 02-01-PLAN.md
 Resume file: None
