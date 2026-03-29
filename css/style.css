@@ -20,6 +20,15 @@
     padding: 0;
 }
 
+/* Mobile touch fix: eliminate 300ms tap delay on all interactive elements (D-18) */
+button,
+.stat-btn,
+.mechanic-btn,
+.action-btn,
+.modal-cancel {
+    touch-action: manipulation;
+}
+
 body {
     font-family: 'MedievalSharp', cursive;
     background: linear-gradient(135deg, #d4c090 0%, #c4b080 100%);

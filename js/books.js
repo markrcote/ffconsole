@@ -3,6 +3,8 @@
  * Original series (1982-1995) - 59 books
  */
 
+import { CONFIG_REGISTRY } from './config/mechanics/registry.js';
+
 const BOOKS = [
     { number: 1, title: "The Warlock of Firetop Mountain" },
     { number: 2, title: "The Citadel of Chaos" },
@@ -106,4 +108,20 @@ function searchBooks(query) {
     return BOOKS.filter(b => b.title.toLowerCase().includes(q));
 }
 
-export { BOOKS, getBook, searchBooks };
+/**
+ * Get the mechanics config for a book.
+ * Uses dynamic import from registry; falls back to default config.
+ * @param {number} bookNumber - The book number
+ * @returns {Promise<Object>} The config object
+ */
+async function getBookConfig(bookNumber) {
+    const loader = CONFIG_REGISTRY[bookNumber];
+    if (!loader) {
+        const { config } = await import('./config/mechanics/default.js');
+        return { ...config, bookNumber: bookNumber || null };
+    }
+    const { config } = await loader();
+    return config;
+}
+
+export { BOOKS, getBook, searchBooks, getBookConfig };
