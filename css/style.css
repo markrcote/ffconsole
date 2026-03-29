@@ -602,3 +602,198 @@ body {
         flex-direction: column;
     }
 }
+
+/* ── Phase 2: Character Creation ─────────────────────────────────────────── */
+
+/* Character name display in sheet header (hidden when empty) */
+.char-name {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+    text-align: center;
+    margin-top: 4px;
+    display: none;
+}
+
+.char-name.visible {
+    display: block;
+}
+
+/* One stat row in the char create roll area: die faces + bonus + total */
+.char-create-dice-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.char-create-dice-label {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-light);
+    min-width: 72px;
+}
+
+.char-create-dice-bonus {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+}
+
+.char-create-dice-total {
+    font-family: 'Caveat', cursive;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ink-color);
+    margin-left: 4px;
+}
+
+/* Inline error message in char create modal */
+.char-create-error {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.875rem;
+    color: var(--accent-red);
+    margin: 8px 0 0 0;
+    min-height: 1.4em;
+}
+
+/* Destructive-overwrite warning text above confirm button */
+.char-create-warning {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--accent-red);
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+/* Book mechanics activation note (CHAR-05) */
+.char-create-book-note {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+    margin-top: 8px;
+}
+
+/* Modal section label (e.g. "Choose Your Adventure") */
+.char-create-section-label {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--ink-light);
+    margin: 16px 0 8px 0;
+}
+
+/* ── Phase 2: Die Face ─────────────────────────────────────────────────────── */
+
+/* Shared die face bubble — used in char create AND dice roller */
+.die-face {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 2px solid var(--ink-color);
+    border-radius: 8px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--ink-color);
+    background: var(--paper-bg);
+    line-height: 1;
+    user-select: none;
+}
+
+/* Rolling state: subtle opacity reduction during animation cycle */
+.die-face.rolling {
+    opacity: 0.6;
+    border-style: dashed;
+}
+
+/* ── Phase 2: Test Your Luck Result ───────────────────────────────────────── */
+
+/* Container for luck result (die faces + result label + footnote) */
+.luck-result {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-color);
+    margin: 10px 0 0 0;
+    min-height: 1.4em;
+    line-height: 1.4;
+}
+
+/* Die faces row for luck test */
+.luck-result__dice {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+
+.luck-result__plus {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+}
+
+.luck-result__total {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+}
+
+/* Result label line: "Lucky!" or "Unlucky." */
+.luck-result__label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.luck-result__label--lucky {
+    color: var(--accent-red);
+}
+
+.luck-result__label--unlucky {
+    color: var(--ink-color);
+    font-weight: 400;
+}
+
+/* Post-result footnote: "Luck is now N" */
+.luck-result__footnote {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.875rem;
+    color: var(--ink-light);
+    margin-top: 4px;
+}
+
+/* ── Phase 2: Dice Roller Widget ──────────────────────────────────────────── */
+
+/* Buttons row: "Roll d6" and "Roll 2d6" side by side */
+.dice-roller-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* Result area below roller buttons */
+.dice-roller-result {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    min-height: 40px;
+}
+
+/* Individual die value — same visual as .die-face, already defined above */
+
+/* Sum display: "= 7" */
+.dice-total {
+    font-family: 'Caveat', cursive;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--ink-light);
+}
