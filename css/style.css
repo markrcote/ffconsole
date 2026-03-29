@@ -366,6 +366,12 @@ body {
     background: rgba(139, 37, 0, 0.2);
 }
 
+.book-item.selected {
+    background: rgba(139, 37, 0, 0.2);
+    border-left: 3px solid var(--accent);
+    font-weight: bold;
+}
+
 .book-number {
     font-family: 'MedievalSharp', cursive;
     font-weight: bold;
