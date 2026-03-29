@@ -62,10 +62,12 @@ def upsert_session(book_number: int, body: SessionCreate, db: DBSession = Depend
         session.luck_initial = body.luck.initial
         session.luck_current = body.luck.current
         session.mechanics_json = json.dumps(body.mechanics or {})
+        session.name = body.name
         session.updated_at = _now()
     else:
         session = Session(
             book_number=book_number,
+            name=body.name,
             skill_initial=body.skill.initial,
             skill_current=body.skill.current,
             stamina_initial=body.stamina.initial,
@@ -96,6 +98,8 @@ def patch_session(book_number: int, body: SessionUpdate, db: DBSession = Depends
         session.luck_current = body.luck.current
     if body.mechanics is not None:
         session.mechanics_json = json.dumps(body.mechanics)
+    if body.name is not None:
+        session.name = body.name
     session.updated_at = _now()
     db.commit()
     db.refresh(session)
