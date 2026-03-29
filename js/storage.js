@@ -33,6 +33,7 @@ async function save(state) {
                 stamina: game.stamina,
                 luck: game.luck,
                 mechanics: game.mechanics ?? {},
+                name: game.name ?? null,
             }),
         });
         if (!response.ok) {
@@ -61,6 +62,7 @@ async function load() {
                         stamina: s.stamina,
                         luck: s.luck,
                         mechanics: s.mechanics ?? {},
+                        name: s.name ?? null,
                     };
                 });
                 // currentBook = most recently updated session
