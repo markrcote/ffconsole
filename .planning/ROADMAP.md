@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 Plans:
 - [x] 01-01-PLAN.md — Backend schema extension + compat layer deletion (INFRA-01)
 - [x] 01-02-PLAN.md — Config system + CSS mobile touch fix (INFRA-02)
-- [ ] 01-03-PLAN.md — Storage migration + app.js module split + UI stubs (INFRA-01 frontend, INFRA-03)
+- [x] 01-03-PLAN.md — Storage migration + app.js module split + UI stubs (INFRA-01 frontend, INFRA-03)
 
 ### Phase 2: Core Mechanics
 **Goal**: Users can start a new character with proper FF stat generation, test their luck with a clear result, and roll dice at any time
