@@ -5,7 +5,7 @@
 import { rollInitialStats } from './dice.js';
 import { save, load } from './storage.js';
 import { BOOKS, getBook, searchBooks } from './books.js';
-import { testSkill, testStamina, testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
+import { testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 import { showCharCreate } from './ui/charCreate.js';
 import { renderDiceRoller } from './ui/diceRoller.js';
@@ -376,28 +376,6 @@ function bindEvents() {
     });
 
     // ── Tests ────────────────────────────────────────────────────────────────
-
-    const testsResult = document.getElementById('tests-result');
-
-    document.getElementById('test-skill')?.addEventListener('click', async () => {
-        if (!currentBook) return;
-        const r = await testSkill(currentBook, state.skill.current);
-        if (testsResult) {
-            testsResult.textContent =
-                `Rolled ${r.roll} vs Skill ${r.target} — ${r.success ? 'Success!' : 'Failure!'}`;
-        }
-        if (r.session) syncStateFromServer(r.session);
-    });
-
-    document.getElementById('test-stamina')?.addEventListener('click', async () => {
-        if (!currentBook) return;
-        const r = await testStamina(currentBook, state.stamina.current);
-        if (testsResult) {
-            testsResult.textContent =
-                `Rolled ${r.roll} vs Stamina ${r.target} — ${r.success ? 'Success!' : 'Failure!'}`;
-        }
-        if (r.session) syncStateFromServer(r.session);
-    });
 
     document.getElementById('test-luck')?.addEventListener('click', async () => {
         if (!currentBook) return;
