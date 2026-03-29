@@ -9,11 +9,11 @@
 
 ### Character Creation
 
-- [ ] **CHAR-01**: User can initiate character creation and see dice rolled with individual die values visible (not just the total)
-- [ ] **CHAR-02**: User can select which Fighting Fantasy book they are playing before stats are finalised
-- [ ] **CHAR-03**: User can enter an optional character name
-- [ ] **CHAR-04**: Stats are generated per FF rules: Skill = 1d6+6, Stamina = 2d6+12, Luck = 1d6+6
-- [ ] **CHAR-05**: Character creation activates book-specific mechanics section for supported books
+- [x] **CHAR-01**: User can initiate character creation and see dice rolled with individual die values visible (not just the total)
+- [x] **CHAR-02**: User can select which Fighting Fantasy book they are playing before stats are finalised
+- [x] **CHAR-03**: User can enter an optional character name
+- [x] **CHAR-04**: Stats are generated per FF rules: Skill = 1d6+6, Stamina = 2d6+12, Luck = 1d6+6
+- [x] **CHAR-05**: Character creation activates book-specific mechanics section for supported books
 
 ### Battle System
 
@@ -29,13 +29,13 @@
 ### Test Your Luck
 
 - [ ] **LUCK-01**: User can Test their Luck at any time via a dedicated button
-- [ ] **LUCK-02**: Result is displayed clearly as "Lucky" or "Unlucky" with the 2d6 roll shown
+- [x] **LUCK-02**: Result is displayed clearly as "Lucky" or "Unlucky" with the 2d6 roll shown
 - [ ] **LUCK-03**: Current Luck value decreases by 1 and updates visibly after every test, regardless of outcome
 
 ### Dice Roller
 
-- [ ] **DICE-01**: User can roll 1d6 or 2d6 at any time from a standalone widget
-- [ ] **DICE-02**: Individual die values are shown (not just the total for 2d6)
+- [x] **DICE-01**: User can roll 1d6 or 2d6 at any time from a standalone widget
+- [x] **DICE-02**: Individual die values are shown (not just the total for 2d6)
 
 ### Infrastructure
 
@@ -109,16 +109,16 @@ Updated during roadmap creation.
 | INFRA-01 | Phase 1 | Complete |
 | INFRA-02 | Phase 1 | Complete |
 | INFRA-03 | Phase 1 | Complete |
-| CHAR-01 | Phase 2 | Pending |
-| CHAR-02 | Phase 2 | Pending |
-| CHAR-03 | Phase 2 | Pending |
-| CHAR-04 | Phase 2 | Pending |
-| CHAR-05 | Phase 2 | Pending |
+| CHAR-01 | Phase 2 | Complete |
+| CHAR-02 | Phase 2 | Complete |
+| CHAR-03 | Phase 2 | Complete |
+| CHAR-04 | Phase 2 | Complete |
+| CHAR-05 | Phase 2 | Complete |
 | LUCK-01 | Phase 2 | Pending |
-| LUCK-02 | Phase 2 | Pending |
+| LUCK-02 | Phase 2 | Complete |
 | LUCK-03 | Phase 2 | Pending |
-| DICE-01 | Phase 2 | Pending |
-| DICE-02 | Phase 2 | Pending |
+| DICE-01 | Phase 2 | Complete |
+| DICE-02 | Phase 2 | Complete |
 | BATTLE-01 | Phase 3 | Pending |
 | BATTLE-02 | Phase 3 | Pending |
 | BATTLE-03 | Phase 3 | Pending |

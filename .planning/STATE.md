@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-core-mechanics-04-PLAN.md
-last_updated: "2026-03-29T19:11:15.466Z"
+stopped_at: Completed 02-03-PLAN.md
+last_updated: "2026-03-29T19:12:37.728Z"
 last_activity: 2026-03-29
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 8
-  completed_plans: 6
+  completed_plans: 7
   percent: 0
 ---
 
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-03-28)
 ## Current Position
 
 Phase: 02 (core-mechanics) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-03-29
 
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-core-mechanics P02 | 1 | 1 tasks | 1 files |
 | Phase 02-core-mechanics P01 | 2 | 2 tasks | 2 files |
 | Phase 02-core-mechanics P04 | 1min | 1 tasks | 1 files |
+| Phase 02-core-mechanics P03 | 2 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 02-core-mechanics]: name added as last field in each schema class to minimize diff
 - [Phase 02-core-mechanics]: diceRoller import uses ../dice.js (not ./dice.js) — widget lives at js/ui/, dice.js at js/
 - [Phase 02-core-mechanics]: 2d6 display: two .die-face spans + one .dice-total span (D-11 contract)
+- [Phase 02-core-mechanics]: Import paths in charCreate.js use ../ prefix (../dice.js, ../books.js) — file lives at js/ui/ not js/
+- [Phase 02-core-mechanics]: showCharCreate receives state as destructured params {games, currentBook, save, onComplete} — no app.js import
 
 ### Pending Todos
 
@@ -92,6 +95,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-29T19:11:15.462Z
-Stopped at: Completed 02-core-mechanics-04-PLAN.md
+Last session: 2026-03-29T19:12:37.724Z
+Stopped at: Completed 02-03-PLAN.md
 Resume file: None
