@@ -1,34 +1,43 @@
 {
   "version": "1.0",
-  "timestamp": "2026-03-28T21:45:50.439Z",
-  "phase": "1",
-  "phase_name": "Foundation",
+  "timestamp": "2026-03-29T02:35:33.426Z",
+  "phase": "01",
+  "phase_name": "foundation",
   "phase_dir": ".planning/phases/01-foundation",
   "plan": null,
   "task": null,
   "total_tasks": null,
   "status": "paused",
   "completed_tasks": [
-    {"id": 1, "name": "Project initialization (PROJECT.md, config.json)", "status": "done", "commit": "719e9e1"},
-    {"id": 2, "name": "Domain research (STACK, FEATURES, ARCHITECTURE, PITFALLS, SUMMARY)", "status": "done", "commit": "b827f1d"},
-    {"id": 3, "name": "Requirements definition (REQUIREMENTS.md — 29 v1 requirements)", "status": "done", "commit": "c93206c"},
-    {"id": 4, "name": "Roadmap creation (ROADMAP.md — 4 phases)", "status": "done", "commit": "a32469f"},
-    {"id": 5, "name": "Phase 1 discussion and CONTEXT.md", "status": "done", "commit": "716b12c"}
+    {"id": "01-01", "name": "Backend mechanics_json extension + compat layer deletion", "status": "done", "commit": "8c7402a"},
+    {"id": "01-02", "name": "Config system (getBookConfig) + CSS touch-action mobile fix", "status": "done", "commit": "0ad5217"},
+    {"id": "01-03", "name": "storage.js migration to /api/sessions + app.js module split + UI stubs", "status": "done", "commit": "437e19d"}
   ],
   "remaining_tasks": [
-    {"id": 6, "name": "Plan Phase 1 — run /gsd:plan-phase 1", "status": "not_started"},
-    {"id": 7, "name": "Execute Phase 1 — run /gsd:execute-phase 1", "status": "not_started"}
+    {"id": "UAT-01", "name": "Browser console check: no ES module 404 errors on page load", "status": "pending_human"},
+    {"id": "UAT-02", "name": "Mobile tap test: touch-action fix prevents double-fire on stat buttons", "status": "pending_human"}
   ],
   "blockers": [],
-  "human_actions_pending": [],
-  "decisions": [
-    {"decision": "Recreate ff.db (drop existing saves)", "rationale": "No migration complexity needed; existing saves not worth preserving", "phase": "1"},
-    {"decision": "Delete compat.py and /api/state shim entirely", "rationale": "Migrate storage.js to /api/sessions/{book} — clean break, no dead code", "phase": "1"},
-    {"decision": "Standard module split depth for app.js", "rationale": "Extract ui/stats.js + create empty ui/ shells — clean boundaries without rewriting working code", "phase": "1"},
-    {"decision": "Freeway Fighter (Book 13) deferred to v2", "rationale": "Most complex book config; scope reduced during requirements", "phase": "all"},
-    {"decision": "Battle logs must persist to backend", "rationale": "User wants logs available when switching devices", "phase": "3"}
+  "human_actions_pending": [
+    {
+      "action": "Open http://localhost:3000 in browser, check console for 404s on js/ui/*.js or js/config/*.js imports",
+      "context": "Phase 1 module split created new import paths; need to confirm browser loads them cleanly",
+      "blocking": false
+    },
+    {
+      "action": "Test stat +/- buttons on mobile or Chrome DevTools mobile emulation — verify no double-tap or 300ms delay",
+      "context": "touch-action: manipulation CSS fix applied in 01-02",
+      "blocking": false
+    }
   ],
-  "uncommitted_files": [".planning/PROJECT.md"],
-  "next_action": "Run /gsd:plan-phase 1 in a fresh context window to create the Phase 1 execution plan",
-  "context_notes": "Project fully initialized. All planning artifacts exist. Phase 1 CONTEXT.md has all decisions locked. PROJECT.md has a minor uncommitted edit (single-player language update). Ready to plan and execute Phase 1."
+  "decisions": [
+    {"decision": "Deleted /api/state compat router entirely", "rationale": "storage.js now calls /api/sessions directly; compat layer was dead code after migration", "phase": "01"},
+    {"decision": "Cherry-picked 01-02 worktree commits onto main after verifier caught them as orphaned", "rationale": "Parallel executor committed to an isolated worktree branch that was never merged back", "phase": "01"},
+    {"decision": "ui/stats.js receives state+callbacks as arguments — no import of app.js", "rationale": "Prevents circular dependency per D-17; app.js is the orchestrator", "phase": "01"},
+    {"decision": "Recreate ff.db (drop existing saves)", "rationale": "No migration complexity needed; existing saves not worth preserving", "phase": "01"},
+    {"decision": "Battle logs must persist to backend", "rationale": "User wants logs available when switching devices", "phase": "03"}
+  ],
+  "uncommitted_files": [".planning/config.json"],
+  "next_action": "Run /gsd:discuss-phase 2 or /gsd:plan-phase 2 to begin Phase 2: Core Mechanics (character creation, luck test, dice roller)",
+  "context_notes": "Phase 1 fully complete and verified (11/11 must-haves). Two human UAT items remain (browser + mobile check) but are non-blocking. Server start command fixed in README — must run from project root with 'uvicorn backend.main:app --host 0.0.0.0 --port 3000 --reload'. Phase 2 has UI hint: yes, so /gsd:ui-phase 2 is recommended before planning."
 }
