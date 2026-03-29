@@ -36,8 +36,8 @@ Multiples of 4 throughout. Values derived from existing usage in `css/style.css`
 | xs | 4px | Icon gaps, inline padding, tight list separators |
 | sm | 8px | Button gap within a group (`.test-buttons gap: 8px`), input row gaps |
 | md | 16px | Default element spacing, modal internal padding gaps |
-| lg | 20px | Section padding (`.adventure-sheet padding: 30px` uses 30px — treat as lg+) |
-| xl | 24px | Section-level margins (`.stats-section margin-bottom: 30px` rounds to this zone) |
+| lg | 20px | Section padding — deliberate exception: the existing codebase uses 30px for `.adventure-sheet padding` and `.stats-section margin-bottom`; 20px is the nearest multiple-of-4 step used in modal body padding (`padding: 20px` on mobile). The 30px values are pre-existing and not changed in Phase 2. |
+| xl | 24px | Section-level margins |
 | 2xl | 48px | Not yet used — available for future full-page-level breaks |
 | 3xl | 64px | Not yet used |
 
@@ -52,14 +52,16 @@ Exceptions:
 
 All type uses the two fonts already declared. No new fonts are introduced.
 
+Exactly 4 sizes are declared. Sizes 20px and 22px that appeared in earlier drafts are consolidated into 24px.
+
 | Role | Size | Weight | Line Height | Font | Notes |
 |------|------|--------|-------------|------|-------|
-| Body / result text | 16px (1rem) | 400 regular | 1.5 | Caveat | Luck/dice result copy, helper text in char create |
-| Label | ~14px (0.85–0.9rem) | 400 regular | 1.4 | MedievalSharp | Section titles, input labels, mechanic-btn text |
-| Value / display | 20–24px (1.4–2.2rem) | 700 bold | 1.0 | Caveat | Stat values, die face numbers, roll result digits |
-| Heading / modal title | 24px (1.5rem) | 400 regular | 1.2 | MedievalSharp | Modal titles, section headings (uppercase + letter-spacing: 2px) |
+| Label / footnote | 14px (0.875rem) | 400 regular | 1.4 | MedievalSharp | Section titles, input labels, mechanic-btn text, post-result footnotes ("Luck is now N"), inline error copy |
+| Body / result text | 16px (1rem) | 400 regular | 1.5 | Caveat | Luck/dice result copy, helper text in char create, book mechanics activation note |
+| Heading / result label | 24px (1.5rem) | 400 regular (MedievalSharp) / 700 bold (Caveat) | 1.2 | MedievalSharp for modal titles and section headings; Caveat bold for "Lucky!" / "Unlucky." result labels and 2d6 total display | Absorbs former 20px and 22px usages. Modal titles and section headings use MedievalSharp 400 with uppercase + letter-spacing: 2px. Result labels ("Lucky!", "Unlucky.", dice totals) use Caveat 700 at this size. |
+| Display / die face | 28px (1.75rem) | 700 bold | 1.0 | Caveat | Stat values, individual die face numerals (`.die-face`), individual `.dice-value` outputs |
 
-The MedievalSharp font has limited weight support; use only 400 for it. Caveat supports 400 and 700 — use 700 only for primary numeric values.
+The MedievalSharp font has limited weight support; use only 400 for it. Caveat supports 400 and 700 — use 700 only for primary numeric values and result labels.
 
 ---
 
@@ -77,6 +79,14 @@ All values drawn directly from existing CSS variables. No new colors introduced 
 | Destructive | `#8b2500` (`--accent-red`) | Shared with accent — used only on "reset / new character" confirmation warning copy |
 
 Accent reserved for: Lucky result label, roll success indicator, input focus ring, new-character primary CTA hover, stat bonus state. Not used on neutral interactive states.
+
+---
+
+## Focal Point
+
+**Primary adventure sheet view (after character creation, during normal play):** The stat block (Skill / Stamina / Luck rows with their +/- controls and current values) is the focal point. It sits at the top of `.adventure-sheet` above all mechanic buttons. The large Caveat 28px numerals for current stat values draw the eye first. The mechanics buttons row ("Test Luck", "Roll", "Combat" etc.) is the secondary focal zone — it sits immediately below the stat block and uses full-width `.mechanic-btn` elements to maintain visual weight.
+
+**Character creation modal:** The dice roll animation area (three `.char-create-dice-row` rows with 28px die faces) is the focal point during roll. The "Begin Adventure" CTA is the focal point after roll settles.
 
 ---
 
@@ -105,7 +115,7 @@ Triggered by: "Test Luck" button in `.mechanics-section`.
 **Interaction:**
 1. Button enters disabled state immediately on tap (prevents double-fire).
 2. Two-die roll displayed inline below the button in `.mechanic-result`: `"[d1] + [d2] = [total]"`.
-3. Result label on the next line: **"Lucky!"** (accent-red, Caveat 22px bold) or **"Unlucky."** (ink-color, Caveat 22px regular).
+3. Result label on the next line: **"Lucky!"** (accent-red, Caveat 24px bold) or **"Unlucky."** (ink-color, Caveat 24px regular).
 4. Luck stat in the stat row animates down by 1 (brief flash via existing `.stat-current` transition pattern).
 5. Button re-enables after 800ms (prevents accidental re-tap).
 
@@ -118,7 +128,7 @@ Rendered by: `renderDiceRoller(container)` in a dedicated section below the mech
 **Layout:**
 - Section title: "Dice" — `.mechanics-title` style.
 - Two buttons side by side: "Roll d6" and "Roll 2d6" — `.mechanic-btn` flex row.
-- Result area below buttons: individual die values shown as `[3]` or `[2] [5]` — Caveat 28px bold, `--ink-color`. Total for 2d6 shown after: `= 7` in Caveat 20px regular, `--ink-light`.
+- Result area below buttons: individual die values shown as `[3]` or `[2] [5]` — Caveat 28px bold, `--ink-color`. Total for 2d6 shown after: `= 7` in Caveat 24px regular, `--ink-light`.
 
 No animation required. Instant display on tap.
 
@@ -134,11 +144,11 @@ New CSS classes needed for Phase 2 (add to `css/style.css`):
 | `.die-face` | Individual die value bubble — Caveat 28px bold, 40×40px, bordered with `--ink-color` |
 | `.die-face.rolling` | Animation state — subtle opacity pulse during roll cycle |
 | `.luck-result` | Result paragraph below Test Luck button — inherits `.mechanic-result` base |
-| `.luck-result--lucky` | Modifier — color: `--accent-red`, font-weight: 700 |
-| `.luck-result--unlucky` | Modifier — color: `--ink-color`, font-weight: 400 |
+| `.luck-result--lucky` | Modifier — color: `--accent-red`, font-weight: 700, font-size: 24px |
+| `.luck-result--unlucky` | Modifier — color: `--ink-color`, font-weight: 400, font-size: 24px |
 | `.dice-roller-result` | Die value display area below roller buttons |
 | `.dice-value` | Individual die value — Caveat 28px bold, `--ink-color` |
-| `.dice-total` | Sum display — Caveat 20px regular, `--ink-light` |
+| `.dice-total` | Sum display — Caveat 24px regular, `--ink-light` |
 
 All other styling (buttons, inputs, modal, section layout) reuses existing classes without modification.
 
@@ -151,11 +161,11 @@ All other styling (buttons, inputs, modal, section layout) reuses existing class
 | Primary CTA — character creation | "Begin Adventure" |
 | Secondary CTA — book selection step | "Choose Your Adventure" (section label, not a button) |
 | Cancel — char create (session exists) | "Keep current character" |
-| Empty state — no session on load | "Roll your character to begin" (shown where stats would be; Caveat 18px, `--ink-light`) |
+| Empty state — no session on load | "Roll your character to begin" (shown where stats would be; Caveat 16px, `--ink-light`) |
 | Luck result — success | "Lucky!" |
 | Luck result — failure | "Unlucky." |
 | Luck result — detail line | "[d1] + [d2] = [total]" (always shown with result) |
-| Luck post-result footnote | "Luck is now [N]" (Caveat 14px, `--ink-light`, appears below result) |
+| Luck post-result footnote | "Luck is now [N]" (MedievalSharp 14px, `--ink-light`, appears below result) |
 | Dice roller — 1d6 button | "Roll d6" |
 | Dice roller — 2d6 button | "Roll 2d6" |
 | New character destructive warning | "This will replace your current adventure. Are you sure?" — shown as inline text in Caveat 16px accent-red above the Confirm button when a live session exists |
@@ -172,7 +182,7 @@ All other styling (buttons, inputs, modal, section layout) reuses existing class
 | Scenario | Behaviour |
 |----------|-----------|
 | Luck at 0 | "Test Luck" button is disabled; tooltip/title attribute: "Luck exhausted" |
-| No book selected at confirm | "Choose a book to continue" inline error in Caveat 14px accent-red below book list |
+| No book selected at confirm | "Choose a book to continue" inline error in MedievalSharp 14px accent-red below book list |
 | Backend unavailable during char create | Creation proceeds using localStorage fallback; no error shown to user (existing storage.js behaviour) |
 | Die roll result = exact Luck value | Still shows "Lucky!" — roll must be *above* current Luck to fail |
 | Character name left blank | Defaults to "Adventurer" silently — no validation error |
