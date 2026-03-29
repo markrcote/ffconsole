@@ -51,7 +51,7 @@ Plans:
 - [x] 02-01-PLAN.md — Backend: expose `name` in session schemas and router (CHAR-03)
 - [x] 02-02-PLAN.md — CSS: die-face, luck result, char-create modal styles (CHAR-01, LUCK-02, DICE-01, DICE-02)
 - [ ] 02-03-PLAN.md — `js/ui/charCreate.js` full character creation flow (CHAR-01–05)
-- [ ] 02-04-PLAN.md — `js/ui/diceRoller.js` standalone dice roller widget (DICE-01, DICE-02)
+- [x] 02-04-PLAN.md — `js/ui/diceRoller.js` standalone dice roller widget (DICE-01, DICE-02)
 - [ ] 02-05-PLAN.md — Wiring: `index.html` additions + `app.js` integration (all requirements)
 
 ### Phase 3: Battle System
@@ -87,6 +87,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/3 | In Progress|  |
-| 2. Core Mechanics | 0/? | Not started | - |
+| 2. Core Mechanics | 3/5 | In Progress|  |
 | 3. Battle System | 0/? | Not started | - |
 | 4. Book Configs | 0/? | Not started | - |
