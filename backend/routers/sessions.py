@@ -29,6 +29,7 @@ def create_session(body: SessionCreate, db: DBSession = Depends(get_db)):
         )
     session = Session(
         book_number=body.book_number,
+        name=body.name,
         skill_initial=body.skill.initial,
         skill_current=body.skill.current,
         stamina_initial=body.stamina.initial,
