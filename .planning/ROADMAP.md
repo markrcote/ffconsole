@@ -65,7 +65,7 @@ Plans:
   4. Combat ends automatically at 0 Stamina with a post-battle summary (outcome, rounds fought, damage dealt/received)
   5. User can flee combat (player loses 2 Stamina) and the fight ends
   6. Reloading the page or switching devices restores the full round-by-round log for the current session
-**Plans**: 5 plans
+**Plans**: 5 plans (planned 2026-03-30)
 **UI hint**: yes
 
 Plans:
