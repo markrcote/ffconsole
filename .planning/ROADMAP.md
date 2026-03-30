@@ -65,8 +65,15 @@ Plans:
   4. Combat ends automatically at 0 Stamina with a post-battle summary (outcome, rounds fought, damage dealt/received)
   5. User can flee combat (player loses 2 Stamina) and the fight ends
   6. Reloading the page or switching devices restores the full round-by-round log for the current session
-**Plans**: TBD
+**Plans**: 5 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 03-01-PLAN.md — Backend: fix flee Stamina penalty in actions.py (BATTLE-05)
+- [ ] 03-02-PLAN.md — CSS: Stamina bars, round cards, summary, history styles (BATTLE-03, BATTLE-04, BATTLE-06, BATTLE-08)
+- [ ] 03-03-PLAN.md — HTML: battle UI scaffolding in index.html (BATTLE-03, BATTLE-04, BATTLE-06, BATTLE-07, BATTLE-08)
+- [ ] 03-04-PLAN.md — `js/ui/battle.js` full battle UI module (BATTLE-01 through BATTLE-08)
+- [ ] 03-05-PLAN.md — Wiring: app.js integration + old combat code removal (all requirements)
 
 ### Phase 4: Book Configs
 **Goal**: Players using Book 17 or Book 30 see the correct extra stats, resources, and trackers automatically applied to their adventure sheet
@@ -88,5 +95,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/3 | In Progress|  |
 | 2. Core Mechanics | 5/5 | Complete   | 2026-03-29 |
-| 3. Battle System | 0/? | Not started | - |
+| 3. Battle System | 0/5 | Planned | - |
 | 4. Book Configs | 0/? | Not started | - |
