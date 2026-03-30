@@ -94,6 +94,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/3 | In Progress|  |
-| 2. Core Mechanics | 5/5 | Complete   | 2026-03-29 |
+| 2. Core Mechanics | 6/6 | Complete   | 2026-03-30 |
 | 3. Battle System | 0/5 | Planned | - |
 | 4. Book Configs | 0/? | Not started | - |
