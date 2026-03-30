@@ -73,6 +73,9 @@ async function load() {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
                 return data;
             }
+            // Backend reachable but no sessions — authoritative empty state.
+            // Do NOT fall through to localStorage (could be stale).
+            return null;
         }
     } catch (e) {
         console.error('Failed to load from server:', e);

@@ -119,9 +119,11 @@ export function bindStatEvents(state, callbacks) {
             });
             increaseBtn.addEventListener('touchend', () => {
                 const stat = state[name];
-                if (holdTimers[name] && stat && stat.current < stat.initial) {
+                if (stat && stat.current < stat.initial) {
+                    // Normal tap below initial — fire increase directly
                     callbacks.onModify(name, 1);
                 }
+                // At/above initial: hold timer fires the increase; quick tap just cancels
                 cancelHold(name);
             });
             increaseBtn.addEventListener('touchcancel', () => cancelHold(name));
