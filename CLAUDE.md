@@ -80,25 +80,19 @@ A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ia
 - No third-party JS libraries — vanilla JS only
 - Browser `fetch` API for HTTP calls
 - `localStorage` for client-side state cache
-- `express==^4.18.2` - Minimal static file server with flat-file state persistence (`server.js`)
-- This is superseded by the FastAPI backend but still present in `package.json`
 ## Build Tools
 - None. No bundler, transpiler, or build step.
-- Frontend is served as-is (static files) via FastAPI's `StaticFiles` mount or the Node.js express server.
+- Frontend is served as-is (static files) via FastAPI's `StaticFiles` mount.
 - `index.html` loads `js/app.js` directly as a native ES module.
 ## Runtime Environment
 - Python 3.13 (confirmed in venv at `venv/lib/python3.13/`)
 - Uvicorn ASGI server on port 3000
 - Modern evergreen browsers supporting ES modules natively
 - No polyfills or transpilation
-- Node.js v24.14.0 (detected in environment)
-- Used only if running `server.js` directly — not the recommended path
 ## Package Management
 - `pip` with `requirements.txt` (pinned versions)
 - Virtualenv at `venv/` (committed `.gitignore` excludes only `backend/ff.db` and `__pycache__`)
 - Lockfile: none (flat `requirements.txt` with exact versions)
-- `npm` with `package.json` and `package-lock.json` (lockfile version 3)
-- Only dependency: `express ^4.18.2`
 ## Key Source Files
 | File | Purpose |
 |------|---------|
@@ -114,7 +108,6 @@ A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ia
 | `js/storage.js` | Persistence layer (server + localStorage fallback) |
 | `js/mechanics.js` | Skill/stamina/luck tests, combat rounds |
 | `js/books.js` | Fighting Fantasy book catalog and search |
-| `server.js` | Legacy Node.js/Express static server (superseded) |
 <!-- GSD:stack-end -->
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->

@@ -22,14 +22,10 @@
 - Browser `fetch` API for HTTP calls
 - `localStorage` for client-side state cache
 
-**Legacy/Alternate Backend (Node.js):**
-- `express==^4.18.2` - Minimal static file server with flat-file state persistence (`server.js`)
-- This is superseded by the FastAPI backend but still present in `package.json`
-
 ## Build Tools
 
 - None. No bundler, transpiler, or build step.
-- Frontend is served as-is (static files) via FastAPI's `StaticFiles` mount or the Node.js express server.
+- Frontend is served as-is (static files) via FastAPI's `StaticFiles` mount.
 - `index.html` loads `js/app.js` directly as a native ES module.
 
 ## Runtime Environment
@@ -42,20 +38,12 @@
 - Modern evergreen browsers supporting ES modules natively
 - No polyfills or transpilation
 
-**Node.js (legacy server):**
-- Node.js v24.14.0 (detected in environment)
-- Used only if running `server.js` directly — not the recommended path
-
 ## Package Management
 
 **Python:**
 - `pip` with `requirements.txt` (pinned versions)
 - Virtualenv at `venv/` (committed `.gitignore` excludes only `backend/ff.db` and `__pycache__`)
 - Lockfile: none (flat `requirements.txt` with exact versions)
-
-**Node.js:**
-- `npm` with `package.json` and `package-lock.json` (lockfile version 3)
-- Only dependency: `express ^4.18.2`
 
 ## Key Source Files
 
@@ -73,7 +61,6 @@
 | `js/storage.js` | Persistence layer (server + localStorage fallback) |
 | `js/mechanics.js` | Skill/stamina/luck tests, combat rounds |
 | `js/books.js` | Fighting Fantasy book catalog and search |
-| `server.js` | Legacy Node.js/Express static server (superseded) |
 
 ---
 
