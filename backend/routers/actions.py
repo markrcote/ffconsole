@@ -51,6 +51,11 @@ def post_action(book_number: int, body: ActionRequest, db: DBSession = Depends(g
         if result == "enemy_hit":
             session.stamina_current = max(0, session.stamina_current - 2)
             session.updated_at = _now()
+    elif body.action_type == "combat_end":
+        winner = body.details.get("winner")
+        if winner == "fled":
+            session.stamina_current = max(0, session.stamina_current - 2)
+            session.updated_at = _now()
 
     log = ActionLog(
         session_id=session.id,
