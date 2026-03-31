@@ -17,8 +17,8 @@
 
 ### Battle System
 
-- [ ] **BATTLE-01**: User can start a battle by entering an enemy's name, Skill, and Stamina
-- [ ] **BATTLE-02**: User can resolve a combat round with a single roll button that rolls for both player and enemy, calculates Attack Strengths, and determines the winner
+- [x] **BATTLE-01**: User can start a battle by entering an enemy's name, Skill, and Stamina
+- [x] **BATTLE-02**: User can resolve a combat round with a single roll button that rolls for both player and enemy, calculates Attack Strengths, and determines the winner
 - [x] **BATTLE-03**: Each round result is displayed showing: player roll, enemy roll, both Attack Strengths, who won, Stamina damage applied
 - [x] **BATTLE-04**: Live Stamina bars for both player and enemy update after each round
 - [x] **BATTLE-05**: User can flee combat (player loses 2 Stamina)
@@ -119,8 +119,8 @@ Updated during roadmap creation.
 | LUCK-03 | Phase 2 | Complete |
 | DICE-01 | Phase 2 | Complete |
 | DICE-02 | Phase 2 | Complete |
-| BATTLE-01 | Phase 3 | Pending |
-| BATTLE-02 | Phase 3 | Pending |
+| BATTLE-01 | Phase 3 | Complete |
+| BATTLE-02 | Phase 3 | Complete |
 | BATTLE-03 | Phase 3 | Complete |
 | BATTLE-04 | Phase 3 | Complete |
 | BATTLE-05 | Phase 3 | Complete |
