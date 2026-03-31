@@ -91,13 +91,44 @@
 
             <div class="combat-active" id="combat-active" hidden>
                 <p class="combat-status" id="combat-status"></p>
-                <p class="combat-enemy-stamina" id="combat-enemy-stamina"></p>
+
+                <!-- Stamina bars (BATTLE-04) -->
+                <div class="stamina-bar-group" id="combat-stamina-bars">
+                    <div class="stamina-bar-row">
+                        <span class="stamina-bar-label">You</span>
+                        <div class="stamina-bar" id="player-stamina-bar" role="progressbar" aria-valuemin="0" aria-valuemax="20" aria-valuenow="20">
+                            <div class="stamina-bar__fill stamina-bar__fill--player" id="player-stamina-fill"></div>
+                        </div>
+                        <span class="stamina-bar-value" id="player-stamina-value"></span>
+                    </div>
+                    <div class="stamina-bar-row">
+                        <span class="stamina-bar-label" id="enemy-stamina-label">Enemy</span>
+                        <div class="stamina-bar" id="enemy-stamina-bar" role="progressbar" aria-valuemin="0" aria-valuemax="8" aria-valuenow="8">
+                            <div class="stamina-bar__fill stamina-bar__fill--enemy" id="enemy-stamina-fill"></div>
+                        </div>
+                        <span class="stamina-bar-value" id="enemy-stamina-value"></span>
+                    </div>
+                </div>
+
+                <!-- Round result card (BATTLE-03) -->
+                <div id="combat-round-result"></div>
+
+                <!-- Legacy result for screen readers -->
                 <p class="mechanic-result" id="combat-result" aria-live="polite"></p>
+
                 <div class="combat-actions">
                     <button class="mechanic-btn mechanic-btn--primary" id="roll-round">Roll Round</button>
                     <button class="mechanic-btn" id="flee-combat">Flee</button>
                 </div>
+
+                <!-- Post-battle summary (BATTLE-06), hidden until combat ends -->
+                <div id="combat-summary" hidden></div>
             </div>
+        </section>
+
+        <section class="mechanics-section combat-history-section" id="combat-history-section">
+            <h2 class="mechanics-title">Battle History</h2>
+            <div id="combat-history"></div>
         </section>
 
         <section class="actions-section">
