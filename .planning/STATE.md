@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 03-01-PLAN.md
-last_updated: "2026-03-31T00:28:53.126Z"
+stopped_at: Completed 03-03-PLAN.md
+last_updated: "2026-03-31T00:29:01.596Z"
 last_activity: 2026-03-31
 progress:
   total_phases: 4
@@ -62,6 +62,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-core-mechanics P05 | 2 | 2 tasks | 2 files |
 | Phase 02-core-mechanics P06 | 2min | 1 tasks | 1 files |
 | Phase 03-battle-system P01 | 3min | 1 tasks | 1 files |
+| Phase 03-battle-system P03 | 1min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -89,6 +90,7 @@ Recent decisions affecting current work:
 - [Phase 02-core-mechanics]: showCharCreate replaces showBookModal(true/false) for all new-adventure entry points in app.js
 - [Phase 02-core-mechanics]: storage.js load() returns null immediately on backend OK + empty sessions — localStorage fallback only on network/server error
 - [Phase 03-battle-system]: Reuse combat_end action type (not new combat_flee) — matches existing app.js endCombat POST payload
+- [Phase 03-battle-system]: combat-enemy-stamina text element removed in favour of visual stamina bars in battle UI
 
 ### Pending Todos
 
@@ -102,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-31T00:28:47.725Z
-Stopped at: Completed 03-01-PLAN.md
+Last session: 2026-03-31T00:29:01.593Z
+Stopped at: Completed 03-03-PLAN.md
 Resume file: None
