@@ -10,7 +10,9 @@
     --paper-bg: #f4e4c1;
     --paper-dark: #e8d4a8;
     --paper-shadow: #d4c090;
+    --parchment-stain: #c8b070;
     --accent-red: #8b2500;
+    --accent-green: #5a8a3c;
 }
 
 /* Reset and Base */
@@ -546,6 +548,228 @@ body {
     margin-top: 10px;
 }
 
+/* Stamina bars (BATTLE-04) */
+.stamina-bar-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.stamina-bar-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stamina-bar-label {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-color);
+    min-width: 70px;
+}
+
+.stamina-bar-value {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    color: var(--ink-light);
+    min-width: 40px;
+    text-align: right;
+}
+
+.stamina-bar {
+    flex: 1;
+    height: 14px;
+    background: var(--parchment-stain);
+    border: 1px solid var(--ink-light);
+    border-radius: 7px;
+    overflow: hidden;
+}
+
+.stamina-bar__fill {
+    height: 100%;
+    border-radius: 7px;
+    transition: width 0.3s ease;
+}
+
+.stamina-bar__fill--player {
+    background: var(--accent-green);
+}
+
+.stamina-bar__fill--enemy {
+    background: var(--accent-red);
+}
+
+.stamina-bar__fill--critical {
+    background: var(--accent-red);
+    animation: pulse-bar 1s infinite;
+}
+
+@keyframes pulse-bar {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.6; }
+}
+
+/* Round result card (BATTLE-03) */
+.combat-round-card {
+    background: var(--paper-bg);
+    border: 2px solid var(--ink-light);
+    border-radius: 6px;
+    padding: 10px 12px;
+    margin: 10px 0;
+}
+
+.combat-round-card__header {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+}
+
+.combat-round-card__row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 4px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+}
+
+.combat-round-card__row-label {
+    min-width: 50px;
+    font-size: 0.9rem;
+}
+
+.combat-round-card__as {
+    font-weight: bold;
+    margin-left: auto;
+    font-size: 1.2rem;
+}
+
+.combat-round-card__outcome {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 1rem;
+    margin-top: 8px;
+    padding-top: 6px;
+    border-top: 1px solid var(--parchment-stain);
+}
+
+.combat-round-card__outcome--player-hit {
+    color: var(--accent-green);
+}
+
+.combat-round-card__outcome--enemy-hit {
+    color: var(--accent-red);
+}
+
+.combat-round-card__outcome--tie {
+    color: var(--ink-light);
+}
+
+/* Post-battle summary (BATTLE-06) */
+.combat-summary {
+    background: var(--paper-bg);
+    border: 2px solid var(--ink-color);
+    border-radius: 8px;
+    padding: 14px 16px;
+    margin: 12px 0;
+    text-align: center;
+}
+
+.combat-summary__title {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 8px;
+}
+
+.combat-summary__title--victory {
+    color: var(--accent-green);
+}
+
+.combat-summary__title--defeat {
+    color: var(--accent-red);
+}
+
+.combat-summary__title--fled {
+    color: var(--ink-light);
+}
+
+.combat-summary__stats {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    margin-bottom: 8px;
+}
+
+.combat-summary__stat-label {
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    display: block;
+}
+
+/* Combat history log (BATTLE-08) */
+.combat-log {
+    margin-top: 16px;
+}
+
+.combat-log__title {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--ink-light);
+    margin-bottom: 8px;
+    cursor: pointer;
+}
+
+.combat-log__title::before {
+    content: '\25B6';
+    display: inline-block;
+    margin-right: 6px;
+    font-size: 0.7rem;
+    transition: transform 0.2s;
+}
+
+.combat-log__title.expanded::before {
+    transform: rotate(90deg);
+}
+
+.combat-log__battles {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.combat-log__battle {
+    border: 1px solid var(--parchment-stain);
+    border-radius: 6px;
+    padding: 8px 10px;
+}
+
+.combat-log__battle-header {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.85rem;
+    color: var(--ink-color);
+    margin-bottom: 4px;
+}
+
+.combat-log__entry {
+    font-family: 'Caveat', cursive;
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    padding: 2px 0;
+}
+
 /* Responsive */
 @media (max-width: 500px) {
     body {
@@ -606,6 +830,11 @@ body {
 
     .combat-actions {
         flex-direction: column;
+    }
+
+    .combat-summary__stats {
+        flex-direction: column;
+        gap: 8px;
     }
 }
 
