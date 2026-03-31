@@ -26,7 +26,7 @@ function updateStaminaBars(playerCurrent, playerMax, enemyCurrent, enemyMax) {
 
     if (playerFill) {
         playerFill.style.width = `${playerPct}%`;
-        if (playerPct < 25) {
+        if (playerPct <= 25) {
             playerFill.classList.add('stamina-bar__fill--critical');
         } else {
             playerFill.classList.remove('stamina-bar__fill--critical');
@@ -40,7 +40,7 @@ function updateStaminaBars(playerCurrent, playerMax, enemyCurrent, enemyMax) {
 
     if (enemyFill) {
         enemyFill.style.width = `${enemyPct}%`;
-        if (enemyPct < 25) {
+        if (enemyPct <= 25) {
             enemyFill.classList.add('stamina-bar__fill--critical');
         } else {
             enemyFill.classList.remove('stamina-bar__fill--critical');
