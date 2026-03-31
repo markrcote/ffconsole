@@ -22,10 +22,10 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 ### Active
 
-- [ ] Character creation flow: roll stats (Skill 1d6+6, Stamina 2d6+12, Luck 1d6+6) with visible dice, name entry, book selection
-- [ ] Battle system: panel on adventure sheet, enter enemy name/Skill/Stamina, conduct combat round-by-round with roll buttons, live Stamina tracker for both sides, persistent round-by-round log, post-battle summary
-- [ ] Test Your Luck: roll 2d6 ≤ current Luck = Lucky, Luck -1 either way, clear result display
-- [ ] Dice roller: standalone roll any combination (1d6, 2d6, etc.) with result shown
+- ✓ Character creation flow: roll stats (Skill 1d6+6, Stamina 2d6+12, Luck 1d6+6) with visible dice, name entry, book selection — Validated in Phase 2: Core Mechanics
+- ✓ Test Your Luck: roll 2d6 ≤ current Luck = Lucky, Luck -1 either way, clear result display — Validated in Phase 2: Core Mechanics
+- ✓ Dice roller: standalone roll any combination (1d6, 2d6, etc.) with result shown — Validated in Phase 2: Core Mechanics
+- ✓ Battle system: panel on adventure sheet, enter enemy name/Skill/Stamina, conduct combat round-by-round with roll buttons, live Stamina tracker for both sides, persistent round-by-round log, post-battle summary — Validated in Phase 3: Battle System
 - [ ] Book-specific mechanics: built-in configs for specific FF titles that extend the base sheet with extra stats, resources, and combat types (starting with Appointment with F.E.A.R., Chasms of Malice, Freeway Fighter)
 
 ### Out of Scope
@@ -76,4 +76,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-03-29 — Phase 01 complete: mechanics_json backend schema, config system, and app.js module split*
+*Last updated: 2026-03-31 — Phase 03 complete: full battle system — enemy entry, round resolution, stamina bars, flee penalty, combat history log*
