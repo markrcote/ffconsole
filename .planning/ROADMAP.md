@@ -69,9 +69,9 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — Backend: fix flee Stamina penalty in actions.py (BATTLE-05)
+- [x] 03-01-PLAN.md — Backend: fix flee Stamina penalty in actions.py (BATTLE-05)
 - [ ] 03-02-PLAN.md — CSS: Stamina bars, round cards, summary, history styles (BATTLE-03, BATTLE-04, BATTLE-06, BATTLE-08)
-- [ ] 03-03-PLAN.md — HTML: battle UI scaffolding in index.html (BATTLE-03, BATTLE-04, BATTLE-06, BATTLE-07, BATTLE-08)
+- [x] 03-03-PLAN.md — HTML: battle UI scaffolding in index.html (BATTLE-03, BATTLE-04, BATTLE-06, BATTLE-07, BATTLE-08)
 - [ ] 03-04-PLAN.md — `js/ui/battle.js` full battle UI module (BATTLE-01 through BATTLE-08)
 - [ ] 03-05-PLAN.md — Wiring: app.js integration + old combat code removal (all requirements)
 

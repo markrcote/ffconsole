@@ -21,7 +21,7 @@
 - [ ] **BATTLE-02**: User can resolve a combat round with a single roll button that rolls for both player and enemy, calculates Attack Strengths, and determines the winner
 - [ ] **BATTLE-03**: Each round result is displayed showing: player roll, enemy roll, both Attack Strengths, who won, Stamina damage applied
 - [ ] **BATTLE-04**: Live Stamina bars for both player and enemy update after each round
-- [ ] **BATTLE-05**: User can flee combat (player loses 2 Stamina)
+- [x] **BATTLE-05**: User can flee combat (player loses 2 Stamina)
 - [ ] **BATTLE-06**: Combat ends automatically when either side reaches 0 Stamina, displaying a post-battle summary (outcome, rounds, damage dealt/received)
 - [ ] **BATTLE-07**: Round-by-round log persists to the backend and is visible when returning to a session on any device
 - [ ] **BATTLE-08**: User can review combat history from previous battles in the current session
@@ -123,7 +123,7 @@ Updated during roadmap creation.
 | BATTLE-02 | Phase 3 | Pending |
 | BATTLE-03 | Phase 3 | Pending |
 | BATTLE-04 | Phase 3 | Pending |
-| BATTLE-05 | Phase 3 | Pending |
+| BATTLE-05 | Phase 3 | Complete |
 | BATTLE-06 | Phase 3 | Pending |
 | BATTLE-07 | Phase 3 | Pending |
 | BATTLE-08 | Phase 3 | Pending |

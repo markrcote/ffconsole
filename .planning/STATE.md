@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 02-06-PLAN.md
-last_updated: "2026-03-30T03:26:59.372Z"
-last_activity: 2026-03-30
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-31T00:28:53.126Z"
+last_activity: 2026-03-31
 progress:
   total_phases: 4
   completed_phases: 2
   total_plans: 14
-  completed_plans: 9
+  completed_plans: 11
   percent: 0
 ---
 
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-28)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 02 — core-mechanics
+**Current focus:** Phase 03 — battle-system
 
 ## Current Position
 
-Phase: 03 (battle-system) — PLANNED
-Plan: 1 of 5
+Phase: 03 (battle-system) — EXECUTING
+Plan: 3 of 5
 Status: Ready to execute
-Last activity: 2026-03-30
+Last activity: 2026-03-31
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 02-core-mechanics P03 | 2 | 2 tasks | 1 files |
 | Phase 02-core-mechanics P05 | 2 | 2 tasks | 2 files |
 | Phase 02-core-mechanics P06 | 2min | 1 tasks | 1 files |
+| Phase 03-battle-system P01 | 3min | 1 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - [Phase 02-core-mechanics]: Cosmetic dice for luck display rolled locally; testLuck() uses own internal roll — both random, game correctness unaffected
 - [Phase 02-core-mechanics]: showCharCreate replaces showBookModal(true/false) for all new-adventure entry points in app.js
 - [Phase 02-core-mechanics]: storage.js load() returns null immediately on backend OK + empty sessions — localStorage fallback only on network/server error
+- [Phase 03-battle-system]: Reuse combat_end action type (not new combat_flee) — matches existing app.js endCombat POST payload
 
 ### Pending Todos
 
@@ -100,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-30T03:26:59.368Z
-Stopped at: Completed 02-06-PLAN.md
+Last session: 2026-03-31T00:28:47.725Z
+Stopped at: Completed 03-01-PLAN.md
 Resume file: None
