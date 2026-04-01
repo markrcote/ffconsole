@@ -43,8 +43,8 @@ Source: detected from `css/style.css` existing patterns. No new scale introduced
 | 3xl | 64px | Not used in this phase |
 
 Exceptions:
-- Stat row padding: 15px (matches existing `.stat-row` — do not change)
-- Section `margin-top`: 25px (matches existing `.mechanics-section` — do not change)
+- Stat row padding: inherits from existing `.stat-row` — do not redeclare
+- Section `margin-top`: inherits from existing `.mechanics-section` — do not redeclare
 - Touch target minimum height: 48px (matches existing `.mechanic-btn min-height: 48px`)
 - Superpower option button minimum touch target: 48px tall
 
@@ -56,14 +56,12 @@ Source: detected from `css/style.css`. No new sizes or weights introduced in thi
 
 | Role | Font | Size | Weight | Line Height |
 |------|------|------|--------|-------------|
-| Section title (`.mechanics-title`) | MedievalSharp | 0.85rem (≈13.6px) | 400 | 1.4 |
+| Section title / labels / titles (`.mechanics-title`, checklist group label, step label) | MedievalSharp | 0.85rem (≈13.6px) | 400 | 1.4 |
+| Body text / checklist item text / read-only display value | Caveat | 1.1rem (≈17.6px) | 400 | 1.4 |
 | Stat/resource label | MedievalSharp | 1.3rem (≈20.8px) | 400 | 1 |
-| Checklist group label | MedievalSharp | 0.85rem | 400 | 1.4 |
-| Checklist item text | Caveat | 1.1rem (≈17.6px) | 400 | 1.4 |
-| Superpower option label | MedievalSharp | 0.9rem | 400 | 1.4 |
-| Read-only superpower display value | Caveat | 1.2rem | 400 | 1.4 |
 | Stat current value (`.stat-current`) | Caveat | 2.2rem | 700 | 1 |
 
+Four sizes in use: 0.85rem, 1.1rem, 1.3rem, 2.2rem.
 Two weights in use: 400 (regular) and 700 (bold — used only for `.stat-current` and die values).
 
 ---
@@ -125,7 +123,7 @@ All new components follow established patterns. No new design language.
 - Container: `<div class="checklist-group">`
 - Group label: `<p class="mechanics-title checklist-group__label">` — MedievalSharp 0.85rem, uppercase, letter-spacing 2px, `color: var(--ink-light)`
 - Item list: `<ul class="checklist-items">` — `list-style: none`, `padding: 0`
-- Item row: `<li class="checklist-item">` — `display: flex`, `align-items: center`, `gap: 8px`, `padding: 6px 0`, `border-bottom: 1px dashed var(--paper-shadow)`
+- Item row: `<li class="checklist-item">` — `display: flex`, `align-items: center`, `gap: 8px`, `padding: 8px 0`, `border-bottom: 1px dashed var(--paper-shadow)`
 - Checkbox: native `<input type="checkbox">` — `width: 20px`, `height: 20px`, `accent-color: var(--ink-color)`, `cursor: pointer`, `flex-shrink: 0`
 - Item label: `<label>` — Caveat 1.1rem, `color: var(--ink-color)`, `cursor: pointer`
 - Checked item: label gets `text-decoration: line-through`, `color: var(--ink-light)`
@@ -135,9 +133,9 @@ All new components follow established patterns. No new design language.
 ### 5. Superpower Picker (character creation step — `charCreate.js`)
 
 - Renders as a new step in the existing character creation modal
-- Step label: `.char-create-section-label` — "Choose Your Superpower" — MedievalSharp 0.875rem, uppercase
+- Step label: `.char-create-section-label` — "Choose Your Superpower" — MedievalSharp 0.85rem, uppercase
 - Option list: `<div class="superpower-options">` — `display: flex`, `flex-direction: column`, `gap: 8px`
-- Each option: `<button class="superpower-option mechanic-btn">` — MedievalSharp 0.9rem, full width (`width: 100%`), min-height 48px, standard `.mechanic-btn` styles
+- Each option: `<button class="superpower-option mechanic-btn">` — MedievalSharp 0.85rem, full width (`width: 100%`), min-height 48px, standard `.mechanic-btn` styles
 - Selected option: adds `mechanic-btn--primary` class (ink background, paper text)
 - Confirmation: the existing modal "Confirm" button advances only when a superpower is selected; button is disabled (`opacity: 0.3`, `cursor: not-allowed`) until selection made
 - No deselection needed — once picked, selection is final within the step
@@ -146,7 +144,7 @@ All new components follow established patterns. No new design language.
 
 - Element: `<div class="superpower-display">` inside the book mechanics section
 - Label: `.mechanics-title` — "Superpower" — MedievalSharp 0.85rem
-- Value: `<p class="superpower-display__value">` — Caveat 1.2rem, `color: var(--ink-color)`
+- Value: `<p class="superpower-display__value">` — Caveat 1.1rem, `color: var(--ink-color)`
 - No edit affordance (read-only per D-15)
 
 ### 7. Book Mechanics Section Subtitle
@@ -273,15 +271,15 @@ New classes required in `css/style.css` (all follow existing `.mechanics-section
 | `.checklist-group` | Wrapper for a named checklist group |
 | `.checklist-group__label` | Alias use of `.mechanics-title` — no new CSS needed |
 | `.checklist-items` | `<ul>` reset: `list-style: none; padding: 0; margin: 0` |
-| `.checklist-item` | `<li>` row: `display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px dashed var(--paper-shadow)` |
+| `.checklist-item` | `<li>` row: `display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px dashed var(--paper-shadow)` |
 | `.checklist-item:last-child` | `border-bottom: none` |
 | `.checklist-item input[type="checkbox"]` | `width: 20px; height: 20px; accent-color: var(--ink-color); cursor: pointer; flex-shrink: 0` |
 | `.checklist-item label` | `font-family: 'Caveat', cursive; font-size: 1.1rem; color: var(--ink-color); cursor: pointer; line-height: 1.4` |
 | `.checklist-item.checked label` | `text-decoration: line-through; color: var(--ink-light)` |
 | `.superpower-options` | `display: flex; flex-direction: column; gap: 8px` |
-| `.superpower-option` | Extend `.mechanic-btn` — add `width: 100%; text-align: left; padding-left: 14px` |
+| `.superpower-option` | Extend `.mechanic-btn` — add `width: 100%; text-align: left; padding-left: 16px` |
 | `.superpower-display` | `margin-top: 8px` |
-| `.superpower-display__value` | `font-family: 'Caveat', cursive; font-size: 1.2rem; color: var(--ink-color); margin: 4px 0 0 0` |
+| `.superpower-display__value` | `font-family: 'Caveat', cursive; font-size: 1.1rem; color: var(--ink-color); margin: 4px 0 0 0` |
 
 Responsive note: on `max-width: 500px`, checklist items already use full width — no additional responsive CSS needed.
 
