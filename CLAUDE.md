@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-A Fighting Fantasy Adventure Sheet web app - a static HTML/CSS/JS application for tracking character stats (Skill, Stamina, Luck) during Fighting Fantasy gamebook adventures.
+A Fighting Fantasy Adventure Sheet web app for tracking character stats (Skill, Stamina, Luck), running combat, rolling dice, and managing book sessions during Fighting Fantasy gamebook adventures. FastAPI backend with SQLite persistence; vanilla JS frontend.
 
 ## Development
 
@@ -30,22 +30,34 @@ python3 -m http.server 8000
 **JavaScript modules (`js/`):**
 - `app.js` - Main application: state management, DOM rendering, event binding. Manages the game state object containing skill/stamina/luck with initial and current values.
 - `dice.js` - Dice rolling utilities. `rollInitialStats()` generates starting stats per FF rules (skill: 1d6+6, stamina: 2d6+12, luck: 1d6+6).
-- `storage.js` - Persistence: POSTs to `/api/state` when backend is available, falls back to localStorage (`ffconsole_gamestate`).
+- `storage.js` - Persistence: PUTs to `/api/sessions/{book}` when backend is available, falls back to localStorage (`ffconsole_gamestate`).
+- `mechanics.js` - Skill/stamina/luck tests and combat round logic.
+- `books.js` - Fighting Fantasy book catalog and search.
+
+**UI submodules (`js/ui/`):**
+- `ui/stats.js` - Stat row rendering (`renderStats`, `renderStat`) and +/- button event binding (`bindStatEvents`). Extracted from `app.js`; receives state and callbacks as arguments (no circular imports).
+- `ui/battle.js` - Battle system panel UI: stamina bars, combat log, round-by-round rendering.
+- `ui/charCreate.js` - Character creation flow: book search, dice rolling animation, stat confirmation.
+- `ui/diceRoller.js` - Standalone dice roller widget (no state, no callbacks; imports only `roll()` from `dice.js`).
+
+**Config modules (`js/config/mechanics/`):**
+- `config/mechanics/registry.js` - Dynamic import registry for book-specific mechanic configs (lazy thunks keyed by book number; populated in Phase 4).
+- `config/mechanics/default.js` - Base config shape used for all books without a specific config (`extraStats`, `resources`, `combatVariant`, `combatModifiers`).
 
 **Backend (`backend/`):**
 - `main.py` - FastAPI app with CORS middleware; mounts static files at `/` (catch-all, registered last)
 - `database.py` - SQLite engine (`ff.db`) and SQLAlchemy session factory
-- `models.py` - SQLAlchemy ORM model; one row per book number with flat stat columns
-- `schemas.py` - Pydantic models: `SessionCreate/Response/Update` (REST API) and `LegacyStateBlob/GameEntry/StatBlock` (compat shim)
+- `models.py` - SQLAlchemy ORM models (`Session`, `ActionLog`); one row per book number with flat stat columns
+- `schemas.py` - Pydantic models: `SessionCreate/Response/Update` (REST API)
 - `routers/sessions.py` - `/api/sessions` CRUD (GET list, POST, GET by book, PUT upsert, PATCH partial, DELETE)
-- `routers/compat.py` - `/api/state` GET/PUT shim that maps the legacy `storage.js` blob format to the ORM
+- `routers/actions.py` - `/api/sessions/{book}/actions` and action logs
 
 **Key behaviors:**
 - Stats cannot go below 0
 - Normal +/- buttons keep current value at or below initial
 - Long-press (500ms) on + button allows "bonus" increases above initial value
 - State auto-saves on every change (to backend if available, else localStorage)
-- `currentBook` in the compat blob is determined by most recently updated session (`updated_at`)
+- Active book is tracked via `currentBook` (book number); sessions are per-book in the DB
 
 <!-- GSD:project-start source:PROJECT.md -->
 ## Project
@@ -99,15 +111,20 @@ A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ia
 | `backend/main.py` | FastAPI app factory, middleware, router registration |
 | `backend/database.py` | SQLite engine setup, session factory |
 | `backend/models.py` | SQLAlchemy ORM models (`Session`, `ActionLog`) |
-| `backend/schemas.py` | Pydantic schemas for API and legacy compat |
+| `backend/schemas.py` | Pydantic schemas for API |
 | `backend/routers/sessions.py` | CRUD for `/api/sessions` |
-| `backend/routers/compat.py` | Legacy `/api/state` GET/PUT shim |
 | `backend/routers/actions.py` | `/api/sessions/{book}/actions` and logs |
 | `js/app.js` | Main frontend application logic |
 | `js/dice.js` | Dice rolling utilities |
-| `js/storage.js` | Persistence layer (server + localStorage fallback) |
+| `js/storage.js` | Persistence layer (`/api/sessions/{book}` + localStorage fallback) |
 | `js/mechanics.js` | Skill/stamina/luck tests, combat rounds |
 | `js/books.js` | Fighting Fantasy book catalog and search |
+| `js/ui/stats.js` | Stat row rendering and +/- button event binding |
+| `js/ui/battle.js` | Battle system panel UI |
+| `js/ui/charCreate.js` | Character creation flow UI |
+| `js/ui/diceRoller.js` | Standalone dice roller widget |
+| `js/config/mechanics/registry.js` | Book-specific mechanic config registry (lazy imports) |
+| `js/config/mechanics/default.js` | Default mechanic config shape |
 <!-- GSD:stack-end -->
 
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
