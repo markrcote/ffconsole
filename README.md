@@ -93,6 +93,15 @@ venv/bin/pip install -r requirements.txt
 sudo systemctl restart ffconsole
 ```
 
+## Testing
+
+```bash
+pip install -r requirements-dev.txt
+pytest
+```
+
+Tests cover the backend API (`tests/test_sessions.py`, `tests/test_actions.py`) using an in-memory SQLite database.
+
 ## API
 
 Base URL: `http://localhost:3000/api`
