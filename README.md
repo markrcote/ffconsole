@@ -26,6 +26,73 @@ Open http://localhost:3000
 python3 -m http.server 8000
 ```
 
+### Production (Debian)
+
+Install system dependencies:
+
+```bash
+sudo apt install python3 python3-venv python3-pip
+```
+
+Clone the repo and set up the virtualenv:
+
+```bash
+git clone <repo-url> /opt/ffconsole
+cd /opt/ffconsole
+python3 -m venv venv
+venv/bin/pip install -r requirements.txt
+```
+
+Create a systemd service at `/etc/systemd/system/ffconsole.service`:
+
+```ini
+[Unit]
+Description=FF Console
+After=network.target
+
+[Service]
+WorkingDirectory=/opt/ffconsole
+ExecStart=/opt/ffconsole/venv/bin/uvicorn backend.main:app --host 127.0.0.1 --port 3000
+Restart=on-failure
+User=www-data
+
+[Install]
+WantedBy=multi-user.target
+```
+
+Enable and start:
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now ffconsole
+```
+
+To expose it publicly, proxy with nginx:
+
+```nginx
+server {
+    listen 80;
+    server_name your.domain;
+
+    location / {
+        proxy_pass http://127.0.0.1:3000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
+}
+```
+
+The database is stored at `/opt/ffconsole/backend/ff.db`. Back it up before upgrades.
+
+To upgrade:
+
+```bash
+cd /opt/ffconsole
+git pull
+venv/bin/pip install -r requirements.txt
+sudo systemctl restart ffconsole
+```
+
 ## API
 
 Base URL: `http://localhost:3000/api`
