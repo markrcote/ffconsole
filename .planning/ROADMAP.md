@@ -84,7 +84,12 @@ Plans:
   2. A player who selects Book 30 during character creation sees Kuddam defeats, Provisions, Fuel, Tabasha restoration, Spells list, and Special abilities on their adventure sheet
   3. Extra mechanic fields persist correctly across page reloads (no silent data loss)
   4. Players on books without a config see an unmodified base adventure sheet
-**Plans**: TBD
+**Plans**: 3 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Config data files (book-17, book-30, default schema, registry) + CSS (AFEAR-01-03, CHAOS-01-05)
+- [ ] 04-02-PLAN.md — bookMechanics.js renderer + charCreate.js superpower picker (AFEAR-01-03, CHAOS-01-05)
+- [ ] 04-03-PLAN.md — Wiring: index.html placeholder + app.js integration + human verification (all requirements)
 
 ## Progress
 
@@ -96,4 +101,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 2/3 | In Progress|  |
 | 2. Core Mechanics | 6/6 | Complete   | 2026-03-30 |
 | 3. Battle System | 5/5 | Complete   | 2026-03-31 |
-| 4. Book Configs | 0/? | Not started | - |
+| 4. Book Configs | 0/3 | Planned    | - |
