@@ -1,49 +1,53 @@
-# Tech Stack
+# STACK
+_Last updated: 2026-04-01_
 
-**Analysis Date:** 2026-03-28
+## Summary
+FF Console is a vanilla JS single-page app served by a FastAPI/Python 3.13 backend with SQLite persistence. There is no build step — all JS is served as native ES modules from disk, and all Python dependencies are pinned in `requirements.txt`.
 
-## Languages
+## Backend
 
-- **Python 3.13** - Backend server, API, ORM models
-- **JavaScript (ES2022+)** - Frontend application, uses ES modules (`type="module"`)
-- **HTML5** - Single-page UI (`index.html`)
-- **CSS3** - Styles (`css/style.css`)
+| Component | Version | Purpose |
+|-----------|---------|---------|
+| Python | 3.13 | Runtime (venv at `venv/lib/python3.13/`) |
+| FastAPI | 0.115.0 | ASGI web framework (`backend/main.py`) |
+| Uvicorn[standard] | 0.30.6 | ASGI server; run with `--reload` in dev |
+| SQLAlchemy | 2.0.35 | ORM + SQLite engine (`backend/database.py`) |
+| Pydantic | 2.9.2 | Request/response schema validation (`backend/schemas.py`) |
+| SQLite | (stdlib) | Single-file DB at `backend/ff.db` (gitignored) |
 
-## Frameworks & Libraries
+Production dependencies: `requirements.txt` (4 packages, all pinned).
+Dev dependencies: `requirements-dev.txt` adds `pytest==8.3.3` and `httpx==0.27.2`.
 
-**Backend (Python):**
-- `fastapi==0.115.0` - ASGI web framework for REST API (`backend/main.py`)
-- `uvicorn[standard]==0.30.6` - ASGI server, runs with `--reload` in dev
-- `sqlalchemy==2.0.35` - ORM and database engine (`backend/database.py`, `backend/models.py`)
-- `pydantic==2.9.2` - Request/response schema validation (`backend/schemas.py`)
+## Frontend
 
-**Frontend (JavaScript):**
-- No third-party JS libraries — vanilla JS only
-- Browser `fetch` API for HTTP calls
-- `localStorage` for client-side state cache
+| Component | Version | Purpose |
+|-----------|---------|---------|
+| JavaScript | ES2022+ | All app logic; native ES modules (`type="module"`) |
+| HTML5 | — | Single-page UI (`index.html`) |
+| CSS3 | — | Styles (`css/style.css`) |
+| Browser fetch API | (native) | HTTP calls to backend |
+| localStorage | (native) | Client-side state cache / offline fallback |
 
-## Build Tools
+No third-party JS libraries. No bundler, transpiler, or build step.
 
-- None. No bundler, transpiler, or build step.
-- Frontend is served as-is (static files) via FastAPI's `StaticFiles` mount.
-- `index.html` loads `js/app.js` directly as a native ES module.
+## Dev Tooling
+
+- **pytest** — backend integration tests (`tests/`)
+- **httpx** — async HTTP client for test fixtures
+- **GitHub Actions** — CI workflow at `.github/workflows/test.yml`
+- No JS test runner, no linter config, no type checker
 
 ## Runtime Environment
 
-**Backend:**
-- Python 3.13 (confirmed in venv at `venv/lib/python3.13/`)
-- Uvicorn ASGI server on port 3000
-
-**Frontend:**
-- Modern evergreen browsers supporting ES modules natively
-- No polyfills or transpilation
+- Python 3.13 in virtualenv (`venv/`)
+- Uvicorn serves on port 3000 by default
+- FastAPI mounts static files at `/` (catch-all, registered last so API routes take priority)
+- Modern evergreen browsers required (native ES module support)
 
 ## Package Management
 
-**Python:**
-- `pip` with `requirements.txt` (pinned versions)
-- Virtualenv at `venv/` (committed `.gitignore` excludes only `backend/ff.db` and `__pycache__`)
-- Lockfile: none (flat `requirements.txt` with exact versions)
+- `pip` with flat `requirements.txt` (pinned exact versions, no lockfile)
+- No npm / package.json — frontend has zero JS dependencies
 
 ## Key Source Files
 
@@ -52,16 +56,22 @@
 | `backend/main.py` | FastAPI app factory, middleware, router registration |
 | `backend/database.py` | SQLite engine setup, session factory |
 | `backend/models.py` | SQLAlchemy ORM models (`Session`, `ActionLog`) |
-| `backend/schemas.py` | Pydantic schemas for API and legacy compat |
+| `backend/schemas.py` | Pydantic schemas for API |
 | `backend/routers/sessions.py` | CRUD for `/api/sessions` |
-| `backend/routers/compat.py` | Legacy `/api/state` GET/PUT shim |
-| `backend/routers/actions.py` | `/api/sessions/{book}/actions` and logs |
+| `backend/routers/actions.py` | `/api/sessions/{book}/actions` and action logs |
 | `js/app.js` | Main frontend application logic |
 | `js/dice.js` | Dice rolling utilities |
 | `js/storage.js` | Persistence layer (server + localStorage fallback) |
 | `js/mechanics.js` | Skill/stamina/luck tests, combat rounds |
 | `js/books.js` | Fighting Fantasy book catalog and search |
+| `js/ui/stats.js` | Stat row rendering and +/- button event binding |
+| `js/ui/battle.js` | Battle system panel UI |
+| `js/ui/charCreate.js` | Character creation flow UI |
+| `js/ui/diceRoller.js` | Standalone dice roller widget |
+| `js/config/mechanics/registry.js` | Book-specific mechanic config registry (lazy imports, stub) |
+| `js/config/mechanics/default.js` | Default mechanic config shape |
 
----
+## Gaps & Unknowns
 
-*Stack analysis: 2026-03-28*
+- No pinned Python version via pyproject.toml; 3.13 inferred from venv path
+- No production process manager documented (gunicorn, systemd, etc.)
