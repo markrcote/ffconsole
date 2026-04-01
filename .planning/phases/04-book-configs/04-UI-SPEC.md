@@ -154,7 +154,7 @@ All new components follow established patterns. No new design language.
 - Element: `<h3 class="book-mechanics-subtitle">` immediately after the `<section>` open tag
 - Book 17: text "F.E.A.R. Mechanics"
 - Book 30: text "Chasms of Malice"
-- Style: MedievalSharp 0.85rem, uppercase, letter-spacing 2px, `color: var(--ink-light)`, `margin-bottom: 14px`
+- Style: MedievalSharp 0.85rem, uppercase, letter-spacing 2px, `color: var(--ink-light)`, `margin-bottom: 16px`
 - Reuses `.mechanics-title` class — no new CSS class needed
 
 ---
