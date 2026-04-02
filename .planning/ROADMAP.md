@@ -26,7 +26,8 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 | 2. Core Mechanics | v1.0 | 6/6 | Complete | 2026-03-30 |
 | 3. Battle System | v1.0 | 5/5 | Complete | 2026-03-31 |
 | 4. Book Configs | v1.0 | 3/3 | Complete | 2026-04-02 |
+| 5. Luck-in-combat testing | v1.1 | 0/? | Planned | — |
 
 ## Backlog
 
-- **Phase 999.1:** Luck-in-combat testing — promote with `/gsd:review-backlog` when ready
+_(empty)_
