@@ -87,7 +87,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 04-01-PLAN.md — Config data files (book-17, book-30, default schema, registry) + CSS (AFEAR-01-03, CHAOS-01-05)
+- [x] 04-01-PLAN.md — Config data files (book-17, book-30, default schema, registry) + CSS (AFEAR-01-03, CHAOS-01-05)
 - [ ] 04-02-PLAN.md — bookMechanics.js renderer + charCreate.js superpower picker (AFEAR-01-03, CHAOS-01-05)
 - [ ] 04-03-PLAN.md — Wiring: index.html placeholder + app.js integration + human verification (all requirements)
 
@@ -101,4 +101,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 2/3 | In Progress|  |
 | 2. Core Mechanics | 6/6 | Complete   | 2026-03-30 |
 | 3. Battle System | 5/5 | Complete   | 2026-03-31 |
-| 4. Book Configs | 0/3 | Planned    | - |
+| 4. Book Configs | 1/3 | In Progress|  |

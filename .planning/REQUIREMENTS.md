@@ -45,17 +45,17 @@
 
 ### Book: Appointment with F.E.A.R. (Book 17)
 
-- [ ] **AFEAR-01**: Hero Points stat is shown and adjustable when playing Book 17
-- [ ] **AFEAR-02**: Superpower can be chosen at character creation for Book 17
-- [ ] **AFEAR-03**: Clue tracker is visible when playing Book 17
+- [x] **AFEAR-01**: Hero Points stat is shown and adjustable when playing Book 17
+- [x] **AFEAR-02**: Superpower can be chosen at character creation for Book 17
+- [x] **AFEAR-03**: Clue tracker is visible when playing Book 17
 
 ### Book: Chasms of Malice (Book 30)
 
-- [ ] **CHAOS-01**: Kuddam defeats counter is shown when playing Book 30
-- [ ] **CHAOS-02**: Provisions and Fuel resource trackers are shown when playing Book 30
-- [ ] **CHAOS-03**: Tabasha the Bazouk restoration tracker is shown when playing Book 30
-- [ ] **CHAOS-04**: Spells list is shown when playing Book 30
-- [ ] **CHAOS-05**: Special abilities tracker is shown when playing Book 30
+- [x] **CHAOS-01**: Kuddam defeats counter is shown when playing Book 30
+- [x] **CHAOS-02**: Provisions and Fuel resource trackers are shown when playing Book 30
+- [x] **CHAOS-03**: Tabasha the Bazouk restoration tracker is shown when playing Book 30
+- [x] **CHAOS-04**: Spells list is shown when playing Book 30
+- [x] **CHAOS-05**: Special abilities tracker is shown when playing Book 30
 
 ---
 
@@ -127,14 +127,14 @@ Updated during roadmap creation.
 | BATTLE-06 | Phase 3 | Complete |
 | BATTLE-07 | Phase 3 | Complete |
 | BATTLE-08 | Phase 3 | Complete |
-| AFEAR-01 | Phase 4 | Pending |
-| AFEAR-02 | Phase 4 | Pending |
-| AFEAR-03 | Phase 4 | Pending |
-| CHAOS-01 | Phase 4 | Pending |
-| CHAOS-02 | Phase 4 | Pending |
-| CHAOS-03 | Phase 4 | Pending |
-| CHAOS-04 | Phase 4 | Pending |
-| CHAOS-05 | Phase 4 | Pending |
+| AFEAR-01 | Phase 4 | Complete |
+| AFEAR-02 | Phase 4 | Complete |
+| AFEAR-03 | Phase 4 | Complete |
+| CHAOS-01 | Phase 4 | Complete |
+| CHAOS-02 | Phase 4 | Complete |
+| CHAOS-03 | Phase 4 | Complete |
+| CHAOS-04 | Phase 4 | Complete |
+| CHAOS-05 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 29 total
