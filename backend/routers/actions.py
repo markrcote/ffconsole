@@ -56,6 +56,19 @@ def post_action(book_number: int, body: ActionRequest, db: DBSession = Depends(g
         if winner == "fled":
             session.stamina_current = max(0, session.stamina_current - 2)
             session.updated_at = _now()
+    elif body.action_type == "combat_luck_test":
+        context = body.details.get("context")
+        damage_before = body.details.get("damage_before", 2)
+        damage_after = body.details.get("damage_after", 2)
+        session.luck_current = max(0, session.luck_current - 1)
+        if context == "wounded":
+            # Enemy hit player: adjust stamina by delta (damage_before - damage_after)
+            # Lucky: damage_before=2, damage_after=1 -> delta=+1 (restore 1 stamina)
+            # Unlucky: damage_before=2, damage_after=3 -> delta=-1 (deduct 1 more)
+            stamina_delta = damage_before - damage_after
+            session.stamina_current = max(0, session.stamina_current + stamina_delta)
+        # "wounding" (player hit enemy): no server stamina change — enemy stamina is client-side
+        session.updated_at = _now()
 
     log = ActionLog(
         session_id=session.id,
