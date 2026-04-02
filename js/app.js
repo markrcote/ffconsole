@@ -244,10 +244,14 @@ async function renderBookMechanicsSection() {
     const bookConfig = await getBookConfig(currentBook);
 
     // Check if config has any mechanics content
-    const hasContent = (bookConfig.extraStats && bookConfig.extraStats.length > 0)
-        || (bookConfig.resources && bookConfig.resources.length > 0)
-        || (bookConfig.checklists && bookConfig.checklists.length > 0)
-        || (bookConfig.superpower && state.mechanics && state.mechanics.superpower);
+    const hasContent = (bookConfig.extraStats?.length > 0)
+        || (bookConfig.resources?.length > 0)
+        || (bookConfig.checklists?.length > 0)
+        || (bookConfig.namedChecklists?.length > 0)
+        || (bookConfig.freeformLists?.length > 0)
+        || (bookConfig.tabasha != null)
+        || (bookConfig.textareas?.length > 0)
+        || (bookConfig.superpower && state.mechanics?.superpower);
 
     if (!hasContent) {
         container.hidden = true;
@@ -260,6 +264,15 @@ async function renderBookMechanicsSection() {
         state.mechanics = updatedMechanics;
         games[currentBook] = state;
         save({ games, currentBook });
+    }, (attribute) => {
+        // Tabasha restore: reset the chosen stat (skill or luck) to its initial value
+        const stat = attribute && attribute.toLowerCase();
+        if (stat && state[stat]) {
+            state[stat].current = state[stat].initial;
+            games[currentBook] = state;
+            save({ games, currentBook });
+            renderStat(stat, state);
+        }
     });
 }
 
@@ -317,14 +330,29 @@ function syncStateFromServer(session) {
  * @param {number} bookNumber
  * @param {Object} stats - { skill, stamina, luck } each { initial, current }
  * @param {string|null} name - Character name or null
- * @param {string|null} superpower - Selected superpower string, or null if not applicable
+ * @param {string|null} pickerChoice - Selected picker value (superpower or tabasha attribute), or null
  */
-async function _applyNewCharacter(bookNumber, stats, name, superpower) {
+async function _applyNewCharacter(bookNumber, stats, name, pickerChoice) {
+    const bookConfig = await getBookConfig(bookNumber);
+    let mechanics = {};
+
+    if (bookConfig.superpower && pickerChoice) {
+        mechanics.superpower = pickerChoice;
+    }
+
+    if (bookConfig.tabasha && pickerChoice) {
+        mechanics.tabasha = {
+            attribute: pickerChoice.toLowerCase(),
+            restoreUsed: false,
+            encounters: Array(bookConfig.tabasha.encounterSlots).fill(''),
+        };
+    }
+
     state = {
         skill:    { initial: stats.skill.initial,   current: stats.skill.current },
         stamina:  { initial: stats.stamina.initial, current: stats.stamina.current },
         luck:     { initial: stats.luck.initial,    current: stats.luck.current },
-        mechanics: superpower ? { superpower } : {},
+        mechanics,
         name: name || null,
     };
     games[bookNumber] = state;

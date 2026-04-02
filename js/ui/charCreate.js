@@ -154,9 +154,9 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
             <input type="text" class="book-search" id="cc-name-input"
                    placeholder="Adventurer" maxlength="80" autocomplete="off">
 
-            <!-- Step 4: Superpower selection (shown only for books with superpower config) -->
+            <!-- Step 4: Picker step (superpower for Book 17, Tabasha attribute for Book 30) -->
             <div id="cc-superpower-step" style="display:none;">
-                <p class="char-create-section-label" style="margin-top:16px;">Choose Your Superpower</p>
+                <p class="char-create-section-label" style="margin-top:16px;" id="cc-picker-label">Choose Your Superpower</p>
                 <div class="superpower-options" id="cc-superpower-options"></div>
             </div>
 
@@ -252,18 +252,30 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
                 confirmBtn.textContent = 'Begin Adventure';
             }
         }
-        // Check for superpower config (async — book may have superpower options)
+        // Check for picker config (superpower for Book 17, tabasha attribute for Book 30)
         getBookConfig(num).then(bookCfg => {
             const superpowerStep = overlay.querySelector('#cc-superpower-step');
             const superpowerOptions = overlay.querySelector('#cc-superpower-options');
+            const pickerLabel = overlay.querySelector('#cc-picker-label');
             if (!superpowerStep || !superpowerOptions) return;
-            if (bookCfg && bookCfg.superpower && bookCfg.superpower.options) {
+
+            const hasSuperpower = bookCfg && bookCfg.superpower && bookCfg.superpower.options;
+            const hasTabasha = bookCfg && bookCfg.tabasha && bookCfg.tabasha.pickerOptions;
+
+            if (hasSuperpower || hasTabasha) {
                 selectedSuperpower = null; // Reset on book change
+                const options = hasSuperpower
+                    ? bookCfg.superpower.options
+                    : bookCfg.tabasha.pickerOptions;
+                const label = hasSuperpower
+                    ? 'Choose Your Superpower'
+                    : bookCfg.tabasha.pickerLabel;
+                if (pickerLabel) pickerLabel.textContent = label;
                 superpowerStep.style.display = '';
-                superpowerOptions.innerHTML = bookCfg.superpower.options.map(opt =>
+                superpowerOptions.innerHTML = options.map(opt =>
                     `<button class="superpower-option mechanic-btn" data-power="${opt}">${opt}</button>`
                 ).join('');
-                // Disable confirm until superpower selected
+                // Disable confirm until selection made
                 if (rolledStats) confirmBtn.disabled = true;
             } else {
                 selectedSuperpower = null;
@@ -273,7 +285,7 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
                 if (rolledStats) confirmBtn.disabled = false;
             }
         }).catch(err => {
-            console.error('[charCreate] Failed to load book config for superpower check:', err);
+            console.error('[charCreate] Failed to load book config for picker check:', err);
         });
     });
 
@@ -346,10 +358,10 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
             return;
         }
 
-        // Validate: superpower must be selected if the book requires it
+        // Validate: picker must be completed if the book requires one
         const superpowerStep = overlay.querySelector('#cc-superpower-step');
         if (superpowerStep && superpowerStep.style.display !== 'none' && !selectedSuperpower) {
-            errorEl.textContent = 'Choose a superpower to continue';
+            errorEl.textContent = 'Make your selection to continue';
             return;
         }
 

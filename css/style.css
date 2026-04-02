@@ -1115,3 +1115,112 @@ body {
     color: var(--ink-color);
     margin: 4px 0 0 0;
 }
+
+/* Freeform list (Book 17 Clues, Book 30 Spells / Special Abilities) */
+.freeform-list { margin-top: 16px; }
+.freeform-list__items { list-style: none; padding: 0; margin: 0; }
+.freeform-list__item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    border-bottom: 1px dashed var(--paper-shadow);
+}
+.freeform-list__item:last-child { border-bottom: none; }
+.freeform-list__item-text {
+    flex: 1;
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+}
+.freeform-list__delete {
+    background: none;
+    border: none;
+    color: var(--accent-red);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 2px 6px;
+    line-height: 1;
+}
+.freeform-list__add {
+    display: flex;
+    gap: 8px;
+    margin-top: 8px;
+}
+.freeform-list__add input {
+    flex: 1;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    padding: 6px 10px;
+    border: 1px solid var(--paper-shadow);
+    background: var(--paper-bg);
+    color: var(--ink-color);
+    border-radius: 4px;
+}
+.freeform-list__add button {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    padding: 6px 12px;
+    background: var(--paper-dark);
+    border: 1px solid var(--paper-shadow);
+    color: var(--ink-color);
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* Tabasha panel (Book 30) */
+.tabasha-panel { margin-top: 16px; }
+.tabasha-panel__attribute {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    margin: 4px 0;
+}
+.tabasha-panel__restore-btn {
+    width: 100%;
+    margin: 8px 0;
+}
+.tabasha-panel__restore-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+.tabasha-panel__encounters { margin-top: 12px; }
+.tabasha-panel__encounter-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 6px;
+}
+.tabasha-panel__encounter-num {
+    font-family: 'MedievalSharp', cursive;
+    font-size: 0.9rem;
+    color: var(--ink-light);
+    min-width: 20px;
+    text-align: right;
+}
+.tabasha-panel__encounter-input {
+    flex: 1;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    padding: 4px 8px;
+    border: 1px solid var(--paper-shadow);
+    background: var(--paper-bg);
+    color: var(--ink-color);
+    border-radius: 4px;
+}
+
+/* Textarea fields (Book 30 Cyphers) */
+.mechanics-textarea { margin-top: 16px; }
+.mechanics-textarea textarea {
+    width: 100%;
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    padding: 8px 10px;
+    border: 1px solid var(--paper-shadow);
+    background: var(--paper-bg);
+    color: var(--ink-color);
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 60px;
+    box-sizing: border-box;
+}

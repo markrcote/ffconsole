@@ -1,8 +1,9 @@
 /**
  * Book mechanics renderer module.
- * Phase 4 implementation.
+ * Phase 4 implementation; extended with freeform lists, named checklists,
+ * tabasha panel, and textarea fields.
  *
- * Entry point: renderBookMechanics(container, bookConfig, mechanicsState, onMechanicsChange)
+ * Entry point: renderBookMechanics(container, bookConfig, mechanicsState, onMechanicsChange, onTabashaRestore)
  *
  * No circular imports: does NOT import app.js.
  * Follows D-17 module pattern: receives all state via function parameters.
@@ -10,38 +11,25 @@
 
 // ── Internal helpers ─────────────────────────────────────────────────────────
 
-/**
- * Get subtitle text for a book.
- * @param {Object} bookConfig
- * @returns {string}
- */
 function getSubtitle(bookConfig) {
     if (bookConfig.bookNumber === 17) return 'F.E.A.R. Mechanics';
     if (bookConfig.bookNumber === 30) return 'Chasms of Malice';
     return 'Book Mechanics';
 }
 
-/**
- * Check if a book config has any mechanic content.
- * @param {Object} bookConfig
- * @returns {boolean}
- */
 function hasMechanicsContent(bookConfig) {
     return (
         (bookConfig.extraStats && bookConfig.extraStats.length > 0) ||
         (bookConfig.resources && bookConfig.resources.length > 0) ||
         (bookConfig.checklists && bookConfig.checklists.length > 0) ||
+        (bookConfig.namedChecklists && bookConfig.namedChecklists.length > 0) ||
+        (bookConfig.freeformLists && bookConfig.freeformLists.length > 0) ||
+        (bookConfig.tabasha != null) ||
+        (bookConfig.textareas && bookConfig.textareas.length > 0) ||
         (bookConfig.superpower != null)
     );
 }
 
-/**
- * Build HTML for a stat/resource row.
- * @param {string} prefix - 'bm-stat' or 'bm-resource'
- * @param {Object} item - stat or resource config
- * @param {number} currentVal - current value
- * @returns {string}
- */
 function buildStatRowHTML(prefix, item, currentVal) {
     const atMin = currentVal <= item.min;
     const atMax = item.max !== null && currentVal >= item.max;
@@ -67,12 +55,6 @@ function buildStatRowHTML(prefix, item, currentVal) {
     `;
 }
 
-/**
- * Build HTML for a checklist group.
- * @param {Object} checklist - checklist config { id, label, items }
- * @param {Object} mechanicsState - current mechanics state
- * @returns {string}
- */
 function buildChecklistHTML(checklist, mechanicsState) {
     const itemsHTML = checklist.items.map(item => {
         const key = `checklist_${checklist.id}_${item.id}`;
@@ -97,20 +79,110 @@ function buildChecklistHTML(checklist, mechanicsState) {
     `;
 }
 
+function buildFreeformListHTML(listConfig, mechanicsState) {
+    const key = `freeformList_${listConfig.id}`;
+    const items = mechanicsState[key] || [];
+    const itemsHTML = items.map((text, idx) => `
+        <li class="freeform-list__item">
+            <span class="freeform-list__item-text">${escapeHtml(text)}</span>
+            <button class="freeform-list__delete"
+                aria-label="Delete ${escapeHtml(text)}"
+                data-freeform-list="${listConfig.id}"
+                data-freeform-index="${idx}">×</button>
+        </li>
+    `).join('');
+
+    return `
+        <div class="freeform-list" data-freeform-id="${listConfig.id}">
+            <p class="mechanics-title">${listConfig.label}</p>
+            <ul class="freeform-list__items" id="bm-freeform-${listConfig.id}">${itemsHTML}</ul>
+            <div class="freeform-list__add">
+                <input type="text"
+                    id="bm-freeform-input-${listConfig.id}"
+                    placeholder="Add ${listConfig.label.replace(/s$/, '').toLowerCase()}..."
+                    maxlength="120"
+                    autocomplete="off">
+                <button class="mechanic-btn"
+                    data-freeform-add="${listConfig.id}">Add</button>
+            </div>
+        </div>
+    `;
+}
+
+function buildTabashaHTML(tabConfig, mechanicsState) {
+    const tabasha = mechanicsState.tabasha;
+    if (!tabasha) return '';
+
+    const attribute = tabasha.attribute
+        ? tabasha.attribute.charAt(0).toUpperCase() + tabasha.attribute.slice(1)
+        : '—';
+    const restoreUsed = !!tabasha.restoreUsed;
+    const encounters = tabasha.encounters || Array(tabConfig.encounterSlots).fill('');
+
+    const encounterRowsHTML = encounters.map((val, idx) => `
+        <div class="tabasha-panel__encounter-row">
+            <span class="tabasha-panel__encounter-num">${idx + 2}</span>
+            <input type="text"
+                class="tabasha-panel__encounter-input"
+                data-tabasha-encounter="${idx}"
+                value="${escapeHtml(val)}"
+                placeholder="Encounter ${idx + 2}"
+                maxlength="80"
+                autocomplete="off">
+        </div>
+    `).join('');
+
+    return `
+        <div class="tabasha-panel" style="margin-top:16px;">
+            <p class="mechanics-title">Tabasha</p>
+            <p class="tabasha-panel__attribute">${attribute}</p>
+            <button class="mechanic-btn tabasha-panel__restore-btn"
+                id="bm-tabasha-restore"
+                ${restoreUsed ? 'disabled' : ''}>
+                ${restoreUsed ? 'Tabasha Invoked' : 'Invoke Tabasha'}
+            </button>
+            <div class="tabasha-panel__encounters">
+                ${encounterRowsHTML}
+            </div>
+        </div>
+    `;
+}
+
+function buildTextareaHTML(textareaConfig, mechanicsState) {
+    const key = `textarea_${textareaConfig.id}`;
+    const value = mechanicsState[key] || '';
+    return `
+        <div class="mechanics-textarea">
+            <p class="mechanics-title">${textareaConfig.label}</p>
+            <textarea
+                id="bm-textarea-${textareaConfig.id}"
+                data-textarea-id="${textareaConfig.id}"
+                rows="4"
+                placeholder="Notes...">${escapeHtml(value)}</textarea>
+        </div>
+    `;
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 // ── Main exported function ───────────────────────────────────────────────────
 
 /**
  * Render book-specific mechanics into a container element.
- * Called on initial render and when book changes.
- * Full DOM rebuild on each call; event listeners re-attached each time.
  *
- * @param {HTMLElement} container - The #book-mechanics-section DOM element
- * @param {Object} bookConfig - Config from getBookConfig() (extraStats, resources, checklists, superpower)
- * @param {Object} mechanicsState - Current persisted mechanics values dict
- * @param {Function} onMechanicsChange - Callback: (updatedMechanicsState) => void
+ * @param {HTMLElement} container
+ * @param {Object} bookConfig
+ * @param {Object} mechanicsState
+ * @param {Function} onMechanicsChange - (updatedMechanicsState) => void
+ * @param {Function} [onTabashaRestore] - (attribute: string) => void — called when Invoke Tabasha is clicked
  */
-export function renderBookMechanics(container, bookConfig, mechanicsState, onMechanicsChange) {
-    // Guard: hide section when no mechanics content
+export function renderBookMechanics(container, bookConfig, mechanicsState, onMechanicsChange, onTabashaRestore) {
     if (!bookConfig || !hasMechanicsContent(bookConfig)) {
         container.hidden = true;
         return;
@@ -136,14 +208,40 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
         }
     }
 
-    // checklists
+    // named checklists (same structure as checklists, different config key)
+    if (bookConfig.namedChecklists && bookConfig.namedChecklists.length > 0) {
+        for (const checklist of bookConfig.namedChecklists) {
+            html += buildChecklistHTML(checklist, mechanicsState);
+        }
+    }
+
+    // fixed checklists (legacy — kept for future use)
     if (bookConfig.checklists && bookConfig.checklists.length > 0) {
         for (const checklist of bookConfig.checklists) {
             html += buildChecklistHTML(checklist, mechanicsState);
         }
     }
 
-    // superpower display (read-only) — only when mechanicsState.superpower is set
+    // tabasha panel
+    if (bookConfig.tabasha) {
+        html += buildTabashaHTML(bookConfig.tabasha, mechanicsState);
+    }
+
+    // freeform lists
+    if (bookConfig.freeformLists && bookConfig.freeformLists.length > 0) {
+        for (const listConfig of bookConfig.freeformLists) {
+            html += buildFreeformListHTML(listConfig, mechanicsState);
+        }
+    }
+
+    // textareas
+    if (bookConfig.textareas && bookConfig.textareas.length > 0) {
+        for (const textareaConfig of bookConfig.textareas) {
+            html += buildTextareaHTML(textareaConfig, mechanicsState);
+        }
+    }
+
+    // superpower display (read-only)
     if (bookConfig.superpower && mechanicsState.superpower) {
         html += `
             <div class="superpower-display" style="margin-top:16px;">
@@ -155,11 +253,8 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
 
     container.innerHTML = html;
 
-    // ── Internal display updater ───────────────────────────────────────────────
-    // Updates just the values and disabled states without full DOM rebuild.
-
+    // ── Internal display updater (extraStats + resources only) ────────────────
     function updateDisplay() {
-        // Update extraStats
         if (bookConfig.extraStats) {
             for (const stat of bookConfig.extraStats) {
                 const key = `stat_${stat.id}`;
@@ -167,7 +262,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
                 const currentEl = container.querySelector(`#bm-stat-${stat.id}-current`);
                 const decBtn = container.querySelector(`#bm-stat-${stat.id}-decrease`);
                 const incBtn = container.querySelector(`#bm-stat-${stat.id}-increase`);
-
                 if (currentEl) currentEl.textContent = val;
                 if (decBtn) {
                     const atMin = val <= stat.min;
@@ -183,8 +277,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
                 }
             }
         }
-
-        // Update resources
         if (bookConfig.resources) {
             for (const resource of bookConfig.resources) {
                 const key = `resource_${resource.id}`;
@@ -192,7 +284,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
                 const currentEl = container.querySelector(`#bm-resource-${resource.id}-current`);
                 const decBtn = container.querySelector(`#bm-resource-${resource.id}-decrease`);
                 const incBtn = container.querySelector(`#bm-resource-${resource.id}-increase`);
-
                 if (currentEl) currentEl.textContent = val;
                 if (decBtn) {
                     const atMin = val <= resource.min;
@@ -210,14 +301,30 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
         }
     }
 
-    // ── Event binding ──────────────────────────────────────────────────────────
+    // ── Freeform list re-render helper ────────────────────────────────────────
+    function refreshFreeformList(listId) {
+        const key = `freeformList_${listId}`;
+        const items = mechanicsState[key] || [];
+        const ul = container.querySelector(`#bm-freeform-${listId}`);
+        if (!ul) return;
+        ul.innerHTML = items.map((text, idx) => `
+            <li class="freeform-list__item">
+                <span class="freeform-list__item-text">${escapeHtml(text)}</span>
+                <button class="freeform-list__delete"
+                    aria-label="Delete ${escapeHtml(text)}"
+                    data-freeform-list="${listId}"
+                    data-freeform-index="${idx}">×</button>
+            </li>
+        `).join('');
+    }
+
+    // ── Event binding ─────────────────────────────────────────────────────────
 
     // extraStats +/- buttons
     if (bookConfig.extraStats) {
         for (const stat of bookConfig.extraStats) {
             const decBtn = container.querySelector(`#bm-stat-${stat.id}-decrease`);
             const incBtn = container.querySelector(`#bm-stat-${stat.id}-increase`);
-
             if (decBtn) {
                 decBtn.addEventListener('click', () => {
                     const key = `stat_${stat.id}`;
@@ -230,7 +337,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
                     }
                 });
             }
-
             if (incBtn) {
                 incBtn.addEventListener('click', () => {
                     const key = `stat_${stat.id}`;
@@ -251,7 +357,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
         for (const resource of bookConfig.resources) {
             const decBtn = container.querySelector(`#bm-resource-${resource.id}-decrease`);
             const incBtn = container.querySelector(`#bm-resource-${resource.id}-increase`);
-
             if (decBtn) {
                 decBtn.addEventListener('click', () => {
                     const key = `resource_${resource.id}`;
@@ -264,7 +369,6 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
                     }
                 });
             }
-
             if (incBtn) {
                 incBtn.addEventListener('click', () => {
                     const key = `resource_${resource.id}`;
@@ -280,23 +384,113 @@ export function renderBookMechanics(container, bookConfig, mechanicsState, onMec
         }
     }
 
-    // checklist checkboxes — event delegation on container
-    if (bookConfig.checklists && bookConfig.checklists.length > 0) {
+    // checklist checkboxes — event delegation (handles both checklists and namedChecklists)
+    const hasAnyChecklist = (bookConfig.checklists && bookConfig.checklists.length > 0)
+        || (bookConfig.namedChecklists && bookConfig.namedChecklists.length > 0);
+    if (hasAnyChecklist) {
         container.addEventListener('change', (e) => {
             const checkbox = e.target;
             if (checkbox.type !== 'checkbox') return;
-
             const checklistId = checkbox.dataset.checklist;
             const itemId = checkbox.dataset.item;
             if (!checklistId || !itemId) return;
-
             const key = `checklist_${checklistId}_${itemId}`;
             mechanicsState[key] = checkbox.checked;
-
-            // Toggle .checked class on the parent <li>
             const li = checkbox.closest('.checklist-item');
             if (li) li.classList.toggle('checked', checkbox.checked);
+            onMechanicsChange(mechanicsState);
+        });
+    }
 
+    // tabasha: restore button + encounter inputs
+    if (bookConfig.tabasha) {
+        const restoreBtn = container.querySelector('#bm-tabasha-restore');
+        if (restoreBtn) {
+            restoreBtn.addEventListener('click', () => {
+                if (!mechanicsState.tabasha) return;
+                mechanicsState.tabasha.restoreUsed = true;
+                restoreBtn.disabled = true;
+                restoreBtn.textContent = 'Tabasha Invoked';
+                onMechanicsChange(mechanicsState);
+                if (onTabashaRestore) {
+                    onTabashaRestore(mechanicsState.tabasha.attribute);
+                }
+            });
+        }
+
+        // Encounter input delegation
+        container.addEventListener('input', (e) => {
+            const input = e.target;
+            const idx = input.dataset.tabashaEncounter;
+            if (idx === undefined) return;
+            if (!mechanicsState.tabasha) return;
+            if (!mechanicsState.tabasha.encounters) {
+                mechanicsState.tabasha.encounters = Array(bookConfig.tabasha.encounterSlots).fill('');
+            }
+            mechanicsState.tabasha.encounters[parseInt(idx, 10)] = input.value;
+            onMechanicsChange(mechanicsState);
+        });
+    }
+
+    // freeform list: add button + delete delegation
+    if (bookConfig.freeformLists && bookConfig.freeformLists.length > 0) {
+        // Add button clicks
+        container.addEventListener('click', (e) => {
+            const addBtn = e.target.closest('[data-freeform-add]');
+            if (addBtn) {
+                const listId = addBtn.dataset.freeformAdd;
+                const input = container.querySelector(`#bm-freeform-input-${listId}`);
+                if (!input) return;
+                const text = input.value.trim();
+                if (!text) return;
+                const key = `freeformList_${listId}`;
+                if (!mechanicsState[key]) mechanicsState[key] = [];
+                mechanicsState[key].push(text);
+                input.value = '';
+                refreshFreeformList(listId);
+                onMechanicsChange(mechanicsState);
+                return;
+            }
+
+            const delBtn = e.target.closest('[data-freeform-list]');
+            if (delBtn && delBtn.dataset.freeformIndex !== undefined) {
+                const listId = delBtn.dataset.freeformList;
+                const idx = parseInt(delBtn.dataset.freeformIndex, 10);
+                const key = `freeformList_${listId}`;
+                if (mechanicsState[key]) {
+                    mechanicsState[key].splice(idx, 1);
+                    refreshFreeformList(listId);
+                    onMechanicsChange(mechanicsState);
+                }
+            }
+        });
+
+        // Allow Enter key in freeform inputs to add
+        container.addEventListener('keydown', (e) => {
+            if (e.key !== 'Enter') return;
+            const input = e.target;
+            const match = input.id && input.id.match(/^bm-freeform-input-(.+)$/);
+            if (!match) return;
+            const listId = match[1];
+            const text = input.value.trim();
+            if (!text) return;
+            const key = `freeformList_${listId}`;
+            if (!mechanicsState[key]) mechanicsState[key] = [];
+            mechanicsState[key].push(text);
+            input.value = '';
+            refreshFreeformList(listId);
+            onMechanicsChange(mechanicsState);
+        });
+    }
+
+    // textarea inputs
+    if (bookConfig.textareas && bookConfig.textareas.length > 0) {
+        container.addEventListener('input', (e) => {
+            const textarea = e.target;
+            const textareaId = textarea.dataset.textareaId;
+            if (!textareaId) return;
+            const key = `textarea_${textareaId}`;
+            mechanicsState[key] = textarea.value;
             onMechanicsChange(mechanicsState);
         });
     }
