@@ -86,10 +86,10 @@ function cancelHold(name) {
 
 /**
  * Bind stat +/- button events.
- * @param {Object} state - { skill, stamina, luck } each with { initial, current }
+ * @param {Object} getState() - { skill, stamina, luck } each with { initial, current }
  * @param {{ onModify: (name: string, delta: number, allowBonus?: boolean) => void }} callbacks
  */
-export function bindStatEvents(state, callbacks) {
+export function bindStatEvents(getState, callbacks) {
     ['skill', 'stamina', 'luck'].forEach(name => {
         const decreaseBtn = document.getElementById(`${name}-decrease`);
         const increaseBtn = document.getElementById(`${name}-increase`);
@@ -100,12 +100,13 @@ export function bindStatEvents(state, callbacks) {
 
         if (increaseBtn) {
             increaseBtn.addEventListener('click', () => {
-                const stat = state[name];
+                const stat = getState()[name];
                 if (stat && stat.current < stat.initial) {
                     callbacks.onModify(name, 1);
                 }
             });
 
+            const state = getState();
             // Long-press for bonus increases
             increaseBtn.addEventListener('mousedown', (e) => {
                 if (e.button === 0) startHold(name, increaseBtn, state, callbacks.onModify);
