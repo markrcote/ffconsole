@@ -1224,3 +1224,27 @@ body {
     min-height: 60px;
     box-sizing: border-box;
 }
+
+/* ── Luck-in-combat (Phase 5) ──────────────────────────────────────────────── */
+
+.combat-round-card__luck {
+    font-family: 'Caveat', cursive;
+    font-size: 1rem;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--parchment-stain);
+}
+
+.combat-round-card__luck--lucky {
+    color: var(--accent-green);
+}
+
+.combat-round-card__luck--unlucky {
+    color: var(--accent-red);
+}
+
+.luck-prompt {
+    margin-top: 8px;
+    display: flex;
+    justify-content: center;
+}

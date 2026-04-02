@@ -5,7 +5,7 @@
 import { rollInitialStats } from './dice.js';
 import { save, load } from './storage.js';
 import { BOOKS, getBook, searchBooks, getBookConfig } from './books.js';
-import { testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
+import { testLuck, testCombatLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 import { showCharCreate } from './ui/charCreate.js';
 import { renderDiceRoller } from './ui/diceRoller.js';
@@ -78,6 +78,8 @@ async function init() {
             onEnd: endCombat,
             onStatSync: syncStateFromServer,
             onCombatEnd: () => { combatState.active = false; },
+            onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
+                testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
         });
     }
 
