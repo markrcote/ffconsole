@@ -10,8 +10,8 @@ export const config = {
     bookNumber: 30,
     extraStats: [],
     resources: [
-        { id: 'provisions', label: 'Provisions', initial: 10, min: 0, max: null, step: 1 },
-        { id: 'fuel', label: 'Fuel', initial: 10, min: 0, max: null, step: 1 },
+        { id: 'provisions', label: 'Provisions', initial: 4, min: 0, max: null, step: 1 },
+        { id: 'fuel', label: 'Fuel', initial: 0, min: 0, max: null, step: 1 },
     ],
     namedChecklists: [
         {
