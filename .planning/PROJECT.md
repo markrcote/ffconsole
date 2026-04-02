@@ -2,46 +2,59 @@
 
 ## What This Is
 
-A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ian Livingstone. It handles the mechanics so you can focus on the adventure: character creation, combat, luck tests, dice rolls, and book-specific mechanics for individual titles.
+A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ian Livingstone. It handles the mechanics so you can focus on the adventure: character creation, combat, luck tests, dice rolls, and book-specific mechanics for individual titles. v1.0 ships full support for Books 17 (Appointment with F.E.A.R.) and 30 (Chasms of Malice).
 
 ## Core Value
 
 Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
 
+## Current State
+
+**Shipped v1.0 MVP** — 2026-04-02
+
+- ~1,200 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,220 LOC CSS
+- 4 phases, 17 plans completed
+- Full feature set: character creation, luck tests, dice roller, battle system, book-specific mechanics
+
+**Tech stack:** Vanilla JS ES modules, FastAPI/SQLite, no build step, mobile-first
+
 ## Requirements
 
 ### Validated
 
-- ✓ Character stats tracking (Skill, Stamina, Luck with initial/current values) — existing
-- ✓ Stat adjustment (+/- buttons, long-press for bonus above initial) — existing
-- ✓ Dice rolling utilities (rollInitialStats per FF rules) — existing
-- ✓ State persistence (FastAPI backend + localStorage fallback) — existing
-- ✓ Action/event logging infrastructure (ActionLog model, /api/sessions/{book}/actions) — existing
-- ✓ Book catalog (books.js with FF book search) — existing
-- ✓ Basic mechanic/combat styles in UI — existing
+- ✓ Character stats tracking (Skill, Stamina, Luck with initial/current values) — v1.0
+- ✓ Stat adjustment (+/- buttons, long-press for bonus above initial) — v1.0
+- ✓ Dice rolling utilities (rollInitialStats per FF rules) — v1.0
+- ✓ State persistence (FastAPI backend + localStorage fallback) — v1.0
+- ✓ Action/event logging infrastructure (ActionLog model, /api/sessions/{book}/actions) — v1.0
+- ✓ Book catalog (books.js with FF book search) — v1.0
+- ✓ Character creation flow: roll stats (Skill 1d6+6, Stamina 2d6+12, Luck 1d6+6) with visible dice, name entry, book selection — v1.0
+- ✓ Test Your Luck: roll 2d6 ≤ current Luck = Lucky, Luck -1 either way, clear result display — v1.0
+- ✓ Dice roller: standalone roll any combination (1d6, 2d6) with result shown — v1.0
+- ✓ Battle system: panel on adventure sheet, enter enemy name/Skill/Stamina, combat round-by-round with roll buttons, live Stamina bars, persistent round log, post-battle summary — v1.0
+- ✓ Book 17 (Appointment with F.E.A.R.): Hero Points stat, Superpower picker at char create, freeform Clues list — v1.0
+- ✓ Book 30 (Chasms of Malice): Kuddam named checklist (7 enemies), Tabasha panel (Skill/Luck picker + one-time restore + 8 encounter slots), freeform Spells/Special Abilities, Cyphers textarea, Provisions/Fuel resources — v1.0
 
 ### Active
 
-- ✓ Character creation flow: roll stats (Skill 1d6+6, Stamina 2d6+12, Luck 1d6+6) with visible dice, name entry, book selection — Validated in Phase 2: Core Mechanics
-- ✓ Test Your Luck: roll 2d6 ≤ current Luck = Lucky, Luck -1 either way, clear result display — Validated in Phase 2: Core Mechanics
-- ✓ Dice roller: standalone roll any combination (1d6, 2d6, etc.) with result shown — Validated in Phase 2: Core Mechanics
-- ✓ Battle system: panel on adventure sheet, enter enemy name/Skill/Stamina, conduct combat round-by-round with roll buttons, live Stamina tracker for both sides, persistent round-by-round log, post-battle summary — Validated in Phase 3: Battle System
-- [ ] Book-specific mechanics: built-in configs for specific FF titles that extend the base sheet with extra stats, resources, and combat types (starting with Appointment with F.E.A.R., Chasms of Malice, Freeway Fighter)
+- [ ] Luck-in-combat testing: test Luck when wounding/wounded; Lucky/Unlucky modifies damage dealt/taken; costs 1 Luck regardless of outcome
+- [ ] Additional book configs (Book 8 Scorpion Swamp, etc.)
 
 ### Out of Scope
 
-- User-defined custom book mechanics — built-in configs only for now; user-configurable extension is a future milestone
+- User-defined custom book mechanics — built-in configs only; user-configurable extension is a future milestone
 - Multiplayer or shared sessions — single-player companion only
-- Rulebook content / story text — purely a mechanics tracker, not a digital edition of the books
-- Non-Fighting Fantasy systems — other gamebook series are out of scope
+- Rulebook content / story text — purely a mechanics tracker, not a digital edition
+- Non-Fighting Fantasy systems — other gamebook series out of scope
+- Freeway Fighter vehicle combat — deferred from v1.0 (requires bespoke combat system)
 
 ## Context
 
-- The existing app already has the stats sheet, persistence layer, and some partial combat/test UI
-- FF combat rules: each round both sides roll 2d6 + Skill = Attack Strength; higher AS wins and deals 2 Stamina damage to loser; ties mean no damage; continue until one side reaches 0 Stamina
-- Test Your Luck: roll 2d6, if ≤ current Luck you are Lucky; Luck decreases by 1 regardless of outcome
-- Book-specific mechanics vary widely: some books add simple numeric stats (Hero Points, Kuddam defeats), some add resource trackers (fuel, provisions, spells), some add entirely different combat systems (vehicle combat, shooting)
-- Stack: vanilla JS ES modules frontend, FastAPI/SQLite backend, no build step
+- FF combat: each round both sides roll 2d6 + Skill = Attack Strength; higher AS deals 2 Stamina damage to loser; ties = no damage; continue until 0 Stamina
+- Test Your Luck: roll 2d6, ≤ current Luck = Lucky; Luck decreases by 1 regardless of outcome
+- Book-specific mechanics extend the base sheet via config files; renderer reads config shape and builds UI dynamically
+- Battle logs persist to the backend (`/api/sessions/{book}/actions`) so history survives device switches
+- All mechanics state stored as open-ended JSON dict in `mechanics_json` column — supports arbitrary future field additions without schema migration
 
 ## Constraints
 
@@ -54,9 +67,22 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Battle as panel on adventure sheet (not separate screen) | User preference — keeps context while fighting | — Pending |
-| Built-in book configs only (not user-configurable) | Simpler for v1; user-configurable is a future milestone | — Pending |
-| Both live tracker + persistent round log for combat | User wants to review what happened after the fight | — Pending |
+| Battle as panel on adventure sheet (not separate screen) | User preference — keeps context while fighting | ✓ Good — works well on mobile |
+| Built-in book configs only (not user-configurable) | Simpler for v1; user-configurable is a future milestone | ✓ Good — configs are clean data files |
+| Both live tracker + persistent round log for combat | User wants to review what happened after the fight | ✓ Good — logs persist via ActionLog backend |
+| mechanics stored as TEXT JSON blob per session | Open-ended dict, no cross-session querying needed | ✓ Good — no schema migrations needed for new fields |
+| name column added to Session model in Phase 1 | Avoids second DB recreate in Phase 2 | ✓ Good — saved a migration |
+| drop_all in init_db() removed after Phase 1 | Development-time convenience, not safe for production | ✓ Removed as planned |
+| Config registry uses lazy thunks | Prevents loading all book configs at startup | ✓ Good — dynamic imports work cleanly |
+| ui/*.js modules receive state + callbacks as arguments | Prevents circular imports (D-17 pattern) | ✓ Good — consistent across all UI modules |
+| storage.js only PUTs currentBook session | Simple; currentBook derived from updated_at ordering | ✓ Good — works for single-player use |
+| Reuse combat_end action type (not new combat_flee) | Fewer action types to maintain | ✓ Good — winner differentiated in battle.js |
+| splitRoll is cosmetic display only | 2d6 total from server is authoritative for game logic | ✓ Good — display and logic decoupled |
+| Book 17 Clues: freeform list not predefined checklist | Clues are discovered and named in-game, not predetermined | ✓ Good — matches actual book mechanics |
+| Book 30 Kuddam: named 7-enemy checklist | Enemies are specific named individuals to track | ✓ Good — matches actual book mechanics |
+| Book 30 Tabasha: Skill/Luck picker + one-time restore | Tabasha restores chosen stat to initial; one invocation | ✓ Good — matches actual book mechanics |
+| charCreate picker generalized for superpower + tabasha | Same UX pattern for any book requiring a char-create choice | ✓ Good — reusable for future books |
+| onTabashaRestore callback on renderBookMechanics | Renderer signals app.js without importing it (D-17) | ✓ Good — maintains module boundary |
 
 ## Evolution
 
@@ -67,13 +93,12 @@ This document evolves at phase transitions and milestone boundaries.
 2. Requirements validated? → Move to Validated with phase reference
 3. New requirements emerged? → Add to Active
 4. Decisions to log? → Add to Key Decisions
-5. "What This Is" still accurate? → Update if drifted
 
 **After each milestone** (via `/gsd:complete-milestone`):
 1. Full review of all sections
 2. Core Value check — still the right priority?
 3. Audit Out of Scope — reasons still valid?
-4. Update Context with current state
+4. Update Context and Current State
 
 ---
-*Last updated: 2026-03-31 — Phase 03 complete: full battle system — enemy entry, round resolution, stamina bars, flee penalty, combat history log*
+*Last updated: 2026-04-02 after v1.0 milestone — full MVP shipped*
