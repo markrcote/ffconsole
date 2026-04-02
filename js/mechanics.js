@@ -48,6 +48,18 @@ export async function testLuck(bookNumber, luckCurrent) {
     return { roll, target: luckCurrent, success, luckAfter, session: result?.session ?? null };
 }
 
+export async function testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore) {
+    const roll = rollMultiple(2);
+    const success = roll <= luckCurrent;
+    const luckAfter = Math.max(0, luckCurrent - 1);
+    const damageAfter = context === 'wounding' ? (success ? 4 : 1) : (success ? 1 : 3);
+    const result = await postAction(bookNumber, 'combat_luck_test', {
+        round, context, roll, success, luck_after: luckAfter,
+        damage_before: damageBefore, damage_after: damageAfter,
+    });
+    return { roll, success, luckAfter, damageAfter, session: result?.session ?? null };
+}
+
 export async function startCombat(bookNumber, enemyName, enemySkill, enemyStamina) {
     const result = await postAction(bookNumber, 'combat_start', {
         enemy_name: enemyName, enemy_skill: enemySkill, enemy_stamina: enemyStamina,
