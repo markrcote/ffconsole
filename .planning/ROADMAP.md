@@ -102,3 +102,14 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 2. Core Mechanics | 6/6 | Complete   | 2026-03-30 |
 | 3. Battle System | 5/5 | Complete   | 2026-03-31 |
 | 4. Book Configs | 2/3 | In Progress|  |
+
+## Backlog
+
+### Phase 999.1: Luck-in-combat testing (BACKLOG)
+
+**Goal:** Add the ability to test Luck during combat — when wounding an enemy (Lucky: +2 extra damage / Unlucky: −1 damage) or when wounded (Lucky: −1 damage taken / Unlucky: +1 damage taken). Each test costs 1 Luck regardless of outcome.
+**Requirements:** TBD
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (promote with /gsd:review-backlog when ready)
