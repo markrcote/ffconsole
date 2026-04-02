@@ -4,12 +4,13 @@
 
 import { rollInitialStats } from './dice.js';
 import { save, load } from './storage.js';
-import { BOOKS, getBook, searchBooks } from './books.js';
+import { BOOKS, getBook, searchBooks, getBookConfig } from './books.js';
 import { testLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 import { showCharCreate } from './ui/charCreate.js';
 import { renderDiceRoller } from './ui/diceRoller.js';
 import { renderBattle, loadCombatHistory } from './ui/battle.js';
+import { renderBookMechanics } from './ui/bookMechanics.js';
 import { roll } from './dice.js';
 
 // All games state (keyed by book number)
@@ -48,7 +49,7 @@ async function init() {
         }
     }
 
-    render();
+    await render();
     bindEvents();
 
     // If no current book, show character creation
@@ -57,8 +58,8 @@ async function init() {
             games,
             currentBook,
             save,
-            onComplete: async (bookNumber, stats, name) => {
-                await _applyNewCharacter(bookNumber, stats, name);
+            onComplete: async (bookNumber, stats, name, superpower) => {
+                await _applyNewCharacter(bookNumber, stats, name, superpower);
             },
         });
     }
@@ -190,7 +191,7 @@ async function selectBook(bookNumber) {
     }
 
     hideBookModal();
-    render();
+    await render();
 }
 
 /**
@@ -220,10 +221,46 @@ async function modifyStat(name, delta, allowBonus = false) {
 /**
  * Render all stats and book title to the DOM
  */
-function render() {
+async function render() {
     renderBookTitle();
     renderCharName();
     renderStats(state);
+    await renderBookMechanicsSection();
+}
+
+/**
+ * Render book-specific mechanics section based on the current book config.
+ * Shows or hides #book-mechanics-section depending on whether the book has mechanic content.
+ */
+async function renderBookMechanicsSection() {
+    const container = document.getElementById('book-mechanics-section');
+    if (!container) return;
+
+    if (!currentBook) {
+        container.hidden = true;
+        return;
+    }
+
+    const bookConfig = await getBookConfig(currentBook);
+
+    // Check if config has any mechanics content
+    const hasContent = (bookConfig.extraStats && bookConfig.extraStats.length > 0)
+        || (bookConfig.resources && bookConfig.resources.length > 0)
+        || (bookConfig.checklists && bookConfig.checklists.length > 0)
+        || (bookConfig.superpower && state.mechanics && state.mechanics.superpower);
+
+    if (!hasContent) {
+        container.hidden = true;
+        return;
+    }
+
+    const mechanicsState = state.mechanics || {};
+
+    renderBookMechanics(container, bookConfig, mechanicsState, (updatedMechanics) => {
+        state.mechanics = updatedMechanics;
+        games[currentBook] = state;
+        save({ games, currentBook });
+    });
 }
 
 /**
@@ -280,19 +317,20 @@ function syncStateFromServer(session) {
  * @param {number} bookNumber
  * @param {Object} stats - { skill, stamina, luck } each { initial, current }
  * @param {string|null} name - Character name or null
+ * @param {string|null} superpower - Selected superpower string, or null if not applicable
  */
-async function _applyNewCharacter(bookNumber, stats, name) {
+async function _applyNewCharacter(bookNumber, stats, name, superpower) {
     state = {
         skill:    { initial: stats.skill.initial,   current: stats.skill.current },
         stamina:  { initial: stats.stamina.initial, current: stats.stamina.current },
         luck:     { initial: stats.luck.initial,    current: stats.luck.current },
-        mechanics: {},
+        mechanics: superpower ? { superpower } : {},
         name: name || null,
     };
     games[bookNumber] = state;
     currentBook = bookNumber;
     await save({ games, currentBook });
-    render();
+    await render();
 }
 
 /**
@@ -310,8 +348,8 @@ function bindEvents() {
                 games,
                 currentBook,
                 save,
-                onComplete: async (bookNumber, stats, name) => {
-                    await _applyNewCharacter(bookNumber, stats, name);
+                onComplete: async (bookNumber, stats, name, superpower) => {
+                    await _applyNewCharacter(bookNumber, stats, name, superpower);
                 },
             });
         });
