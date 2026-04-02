@@ -1,18 +1,19 @@
 /**
  * Character creation flow UI.
- * Phase 2 implementation.
+ * Phase 2 implementation; extended in Phase 4 with superpower picker step.
  *
  * Entry point: showCharCreate({ games, currentBook, save, onComplete })
  *   - games: current games state object (keyed by book number)
  *   - currentBook: currently active book number or null
  *   - save: async function({ games, currentBook }) — persists state
- *   - onComplete: async function(bookNumber, stats, name) — called on confirm
+ *   - onComplete: async function(bookNumber, stats, name, superpower) — called on confirm
+ *                 superpower is the selected superpower string, or null if not applicable
  *
  * No circular imports: does NOT import app.js.
  */
 
 import { roll } from '../dice.js';
-import { searchBooks, getBook } from '../books.js';
+import { searchBooks, getBook, getBookConfig } from '../books.js';
 import { CONFIG_REGISTRY } from '../config/mechanics/registry.js';
 
 // ── Die animation ────────────────────────────────────────────────────────────
@@ -93,12 +94,13 @@ function getBookConfigNote(bookNumber) {
  * @param {Object} opts.games - All sessions keyed by book number
  * @param {number|null} opts.currentBook - Currently active book, or null
  * @param {Function} opts.save - async (stateBlob) => void
- * @param {Function} opts.onComplete - async (bookNumber, stats, name) => void
+ * @param {Function} opts.onComplete - async (bookNumber, stats, name, superpower) => void — superpower is null when not applicable
  */
 export function showCharCreate({ games, currentBook, save, onComplete }) {
     // ── State local to this modal instance ──────────────────────────────────
     let selectedBook = null;
     let rolledStats = null; // { skill, stamina, luck, dice: { skill:[d], stamina:[d,d], luck:[d] } }
+    let selectedSuperpower = null;
 
     // ── Build modal DOM ──────────────────────────────────────────────────────
     const overlay = document.createElement('div');
@@ -152,6 +154,12 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
             <input type="text" class="book-search" id="cc-name-input"
                    placeholder="Adventurer" maxlength="80" autocomplete="off">
 
+            <!-- Step 4: Superpower selection (shown only for books with superpower config) -->
+            <div id="cc-superpower-step" style="display:none;">
+                <p class="char-create-section-label" style="margin-top:16px;">Choose Your Superpower</p>
+                <div class="superpower-options" id="cc-superpower-options"></div>
+            </div>
+
             <!-- Overwrite warning (hidden until needed) -->
             <p class="char-create-warning" id="cc-warning" style="display:none;"></p>
 
@@ -197,6 +205,22 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
         overlay.remove();
     }
 
+    // ── Superpower option selection ───────────────────────────────────────────
+    const superpowerOptionsEl = overlay.querySelector('#cc-superpower-options');
+    if (superpowerOptionsEl) {
+        superpowerOptionsEl.addEventListener('click', (e) => {
+            const btn = e.target.closest('.superpower-option');
+            if (!btn) return;
+            selectedSuperpower = btn.dataset.power;
+            // Update visual selection
+            superpowerOptionsEl.querySelectorAll('.superpower-option').forEach(b => {
+                b.classList.toggle('mechanic-btn--primary', b === btn);
+            });
+            // Enable confirm if stats are rolled
+            if (rolledStats) confirmBtn.disabled = false;
+        });
+    }
+
     // ── Book list rendering ───────────────────────────────────────────────────
     renderModalBookList(bookList, '', games, selectedBook);
 
@@ -228,6 +252,29 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
                 confirmBtn.textContent = 'Begin Adventure';
             }
         }
+        // Check for superpower config (async — book may have superpower options)
+        (async () => {
+            const superpowerStep = overlay.querySelector('#cc-superpower-step');
+            const superpowerOptions = overlay.querySelector('#cc-superpower-options');
+            if (superpowerStep && superpowerOptions) {
+                const bookCfg = await getBookConfig(num);
+                if (bookCfg && bookCfg.superpower && bookCfg.superpower.options) {
+                    selectedSuperpower = null; // Reset on book change
+                    superpowerStep.style.display = '';
+                    superpowerOptions.innerHTML = bookCfg.superpower.options.map(opt =>
+                        `<button class="superpower-option mechanic-btn" data-power="${opt}">${opt}</button>`
+                    ).join('');
+                    // Disable confirm until superpower selected
+                    if (rolledStats) confirmBtn.disabled = true;
+                } else {
+                    selectedSuperpower = null;
+                    superpowerStep.style.display = 'none';
+                    superpowerOptions.innerHTML = '';
+                    // Re-enable confirm if stats rolled
+                    if (rolledStats) confirmBtn.disabled = false;
+                }
+            }
+        })();
     });
 
     // ── Roll step ──────────────────────────────────────────────────────────
@@ -262,7 +309,12 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
                 totalSkill.textContent   = `= ${skillTotal}`;
                 totalStamina.textContent = `= ${staminaTotal}`;
                 totalLuck.textContent    = `= ${luckTotal}`;
-                confirmBtn.disabled = false;
+                // Only enable confirm if no superpower required, or superpower already selected
+                const spStep = overlay.querySelector('#cc-superpower-step');
+                const needsSuperpower = spStep && spStep.style.display !== 'none';
+                if (!needsSuperpower || selectedSuperpower) {
+                    confirmBtn.disabled = false;
+                }
                 // Adjust confirm button label if overwrite is pending
                 if (selectedBook && games[selectedBook]) {
                     confirmBtn.textContent = 'Yes, start over';
@@ -294,6 +346,13 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
             return;
         }
 
+        // Validate: superpower must be selected if the book requires it
+        const superpowerStep = overlay.querySelector('#cc-superpower-step');
+        if (superpowerStep && superpowerStep.style.display !== 'none' && !selectedSuperpower) {
+            errorEl.textContent = 'Choose a superpower to continue';
+            return;
+        }
+
         // Resolve character name: blank input defaults to null (display layer handles default per D-14)
         const nameInput = overlay.querySelector('#cc-name-input');
         const name = (nameInput.value.trim()) || null; // null stored as null; display layer hides empty
@@ -302,7 +361,7 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
         confirmBtn.textContent = 'Starting...';
 
         try {
-            await onComplete(selectedBook, rolledStats, name);
+            await onComplete(selectedBook, rolledStats, name, selectedSuperpower);
         } finally {
             cleanup();
         }
