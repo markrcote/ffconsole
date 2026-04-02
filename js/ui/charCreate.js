@@ -253,28 +253,28 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
             }
         }
         // Check for superpower config (async — book may have superpower options)
-        (async () => {
+        getBookConfig(num).then(bookCfg => {
             const superpowerStep = overlay.querySelector('#cc-superpower-step');
             const superpowerOptions = overlay.querySelector('#cc-superpower-options');
-            if (superpowerStep && superpowerOptions) {
-                const bookCfg = await getBookConfig(num);
-                if (bookCfg && bookCfg.superpower && bookCfg.superpower.options) {
-                    selectedSuperpower = null; // Reset on book change
-                    superpowerStep.style.display = '';
-                    superpowerOptions.innerHTML = bookCfg.superpower.options.map(opt =>
-                        `<button class="superpower-option mechanic-btn" data-power="${opt}">${opt}</button>`
-                    ).join('');
-                    // Disable confirm until superpower selected
-                    if (rolledStats) confirmBtn.disabled = true;
-                } else {
-                    selectedSuperpower = null;
-                    superpowerStep.style.display = 'none';
-                    superpowerOptions.innerHTML = '';
-                    // Re-enable confirm if stats rolled
-                    if (rolledStats) confirmBtn.disabled = false;
-                }
+            if (!superpowerStep || !superpowerOptions) return;
+            if (bookCfg && bookCfg.superpower && bookCfg.superpower.options) {
+                selectedSuperpower = null; // Reset on book change
+                superpowerStep.style.display = '';
+                superpowerOptions.innerHTML = bookCfg.superpower.options.map(opt =>
+                    `<button class="superpower-option mechanic-btn" data-power="${opt}">${opt}</button>`
+                ).join('');
+                // Disable confirm until superpower selected
+                if (rolledStats) confirmBtn.disabled = true;
+            } else {
+                selectedSuperpower = null;
+                superpowerStep.style.display = 'none';
+                superpowerOptions.innerHTML = '';
+                // Re-enable confirm if stats rolled
+                if (rolledStats) confirmBtn.disabled = false;
             }
-        })();
+        }).catch(err => {
+            console.error('[charCreate] Failed to load book config for superpower check:', err);
+        });
     });
 
     // ── Roll step ──────────────────────────────────────────────────────────
