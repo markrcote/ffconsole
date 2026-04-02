@@ -1036,3 +1036,82 @@ body {
     font-weight: 400;
     color: var(--ink-light);
 }
+
+/* -- Phase 4: Book Mechanics ------------------------------------------------ */
+
+/* Semantic hook for the book-specific mechanics section */
+.book-mechanics-section {
+    /* No additional styles beyond inherited .mechanics-section */
+}
+
+/* Wrapper for a named checklist group */
+.checklist-group {
+    margin-top: 16px;
+}
+
+/* <ul> reset for checklist items */
+.checklist-items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* <li> row for each checklist item */
+.checklist-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--paper-shadow);
+}
+
+.checklist-item:last-child {
+    border-bottom: none;
+}
+
+.checklist-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--ink-color);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.checklist-item label {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    cursor: pointer;
+    line-height: 1.4;
+}
+
+.checklist-item.checked label {
+    text-decoration: line-through;
+    color: var(--ink-light);
+}
+
+/* Superpower option picker (character creation step) */
+.superpower-options {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Each option button — extends .mechanic-btn via combined class in HTML */
+.superpower-option {
+    width: 100%;
+    text-align: left;
+    padding-left: 16px;
+}
+
+/* Read-only superpower display on the adventure sheet (D-15) */
+.superpower-display {
+    margin-top: 8px;
+}
+
+.superpower-display__value {
+    font-family: 'Caveat', cursive;
+    font-size: 1.1rem;
+    color: var(--ink-color);
+    margin: 4px 0 0 0;
+}
