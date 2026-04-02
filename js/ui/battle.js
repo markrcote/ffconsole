@@ -71,7 +71,7 @@ function splitRoll(total) {
  * @param {number} playerStamina - authoritative player stamina after round
  * @param {number} playerSkill - current player skill
  */
-function renderRoundCard(round, result, enemy, playerStamina, playerSkill) {
+function renderRoundCard(round, result, enemy, playerStamina, playerSkill, luckResult = null) {
     const { d1: pd1, d2: pd2 } = splitRoll(result.playerRoll);
     const { d1: ed1, d2: ed2 } = splitRoll(result.enemyRoll);
 
@@ -83,6 +83,16 @@ function renderRoundCard(round, result, enemy, playerStamina, playerSkill) {
     } else {
         outcomeText = 'Tied — no damage';
     }
+
+    const luckRow = luckResult ? `
+        <div class="combat-round-card__luck combat-round-card__luck--${luckResult.success ? 'lucky' : 'unlucky'}">
+            ${luckResult.success ? 'Lucky!' : 'Unlucky!'} ${
+                luckResult.context === 'wounding'
+                    ? `${enemy.name} takes ${luckResult.damageAfter} damage`
+                    : `You take ${luckResult.damageAfter} Stamina damage`
+            }
+        </div>
+    ` : '';
 
     return `
         <div class="combat-round-card">
@@ -104,6 +114,7 @@ function renderRoundCard(round, result, enemy, playerStamina, playerSkill) {
             <div class="combat-round-card__outcome combat-round-card__outcome--${result.result}">
                 ${outcomeText}
             </div>
+            ${luckRow}
         </div>
     `;
 }
@@ -180,6 +191,91 @@ export function renderBattle(container, getState, callbacks) {
         if (fleeBtn) fleeBtn.disabled = disabled;
     }
 
+    function dismissLuckPrompt() {
+        const existing = document.getElementById('luck-prompt-btn');
+        if (existing) existing.remove();
+    }
+
+    function showLuckPrompt(context, currentRound, roundResult) {
+        dismissLuckPrompt();
+
+        const btn = document.createElement('button');
+        btn.id = 'luck-prompt-btn';
+        btn.className = 'mechanic-btn';
+        btn.textContent = 'Test Your Luck?';
+
+        btn.addEventListener('click', async () => {
+            btn.disabled = true;
+
+            const { state: luckState, currentBook } = getState();
+            const luckResult = await callbacks.onTestLuck(
+                currentBook,
+                luckState.luck.current,
+                currentRound,
+                context,
+                2  // damageBefore is always 2 in standard FF
+            );
+
+            // Remove the prompt button
+            btn.remove();
+
+            if (!luckResult) return;
+
+            // Adjust enemy stamina locally if player hit enemy (wounding)
+            if (context === 'wounding') {
+                // Undo the standard 2 damage, apply luck-adjusted damage
+                enemy.stamina = Math.max(0, enemy.stamina - luckResult.damageAfter + 2);
+            }
+
+            // Sync player stats from server (luck decremented + stamina adjusted if wounded)
+            if (luckResult.session) {
+                callbacks.onStatSync(luckResult.session);
+            }
+
+            // Get updated state after sync
+            const { state: updatedState } = getState();
+            const playerStamina = luckResult.session
+                ? luckResult.session.stamina.current
+                : updatedState.stamina.current;
+
+            // Update stamina bars
+            updateStaminaBars(
+                playerStamina, updatedState.stamina.initial,
+                enemy.stamina, enemy.staminaInitial
+            );
+
+            // Re-render round card with luck result appended (per D-06)
+            if (roundResultEl) {
+                roundResultEl.innerHTML = renderRoundCard(
+                    currentRound, roundResult, enemy, playerStamina,
+                    updatedState.skill.current,
+                    { success: luckResult.success, damageAfter: luckResult.damageAfter, context }
+                );
+            }
+
+            // Check for combat end after luck-adjusted damage (Risk 3 from research)
+            if (playerStamina <= 0 || enemy.stamina <= 0) {
+                const winner = enemy.stamina <= 0 ? 'player' : 'enemy';
+                await callbacks.onEnd(
+                    getState().currentBook, winner,
+                    playerStamina, enemy.stamina,
+                    currentRound, enemy.name
+                );
+                endCombatUI(winner, playerStamina);
+
+                if (historyEl) {
+                    loadCombatHistory(getState().currentBook, historyEl);
+                }
+                callbacks.onCombatEnd();
+            }
+        });
+
+        // Insert button after the round card (per D-01)
+        if (roundResultEl) {
+            roundResultEl.appendChild(btn);
+        }
+    }
+
     function showSetup() {
         if (setupEl) setupEl.hidden = false;
         if (activeEl) activeEl.hidden = true;
@@ -191,6 +287,7 @@ export function renderBattle(container, getState, callbacks) {
     }
 
     function endCombatUI(winner, playerStaminaFinal) {
+        dismissLuckPrompt();
         combatActive = false;
         setButtonsDisabled(true);
 
@@ -257,6 +354,7 @@ export function renderBattle(container, getState, callbacks) {
 
     if (rollRoundBtn) {
         rollRoundBtn.addEventListener('click', async () => {
+            dismissLuckPrompt();
             if (!combatActive) return;
 
             const { state, currentBook } = getState();
@@ -302,6 +400,12 @@ export function renderBattle(container, getState, callbacks) {
                 } else {
                     combatResultEl.textContent = `Round ${round}: Tied.`;
                 }
+            }
+
+            // Show luck prompt if this round was a hit (per D-01, D-02)
+            if (r.result !== 'tie') {
+                const context = r.result === 'player_hit' ? 'wounding' : 'wounded';
+                showLuckPrompt(context, round, r);
             }
 
             // Check for combat end
@@ -382,7 +486,7 @@ export function renderBattle(container, getState, callbacks) {
 /**
  * Render a single round log entry as an HTML string.
  */
-function renderRoundEntry(roundLog) {
+function renderRoundEntry(roundLog, luckLog = null) {
     const d = roundLog.details || {};
     const r = d.round ?? '?';
     const pa = d.player_attack ?? '?';
@@ -392,7 +496,10 @@ function renderRoundEntry(roundLog) {
         : d.result === 'enemy_hit'
             ? 'Enemy hit'
             : 'Tie';
-    return `<div class="combat-log__entry">R${r}: AS ${pa} vs ${ea} — ${resultText}</div>`;
+    const luckSuffix = luckLog
+        ? ` — ${luckLog.details.success ? 'Lucky' : 'Unlucky'} (${luckLog.details.damage_after} dmg)`
+        : '';
+    return `<div class="combat-log__entry">R${r}: AS ${pa} vs ${ea} — ${resultText}${luckSuffix}</div>`;
 }
 
 /**
@@ -411,7 +518,12 @@ function renderBattleEntry(battle) {
         outcome = w === 'player' ? 'Victory' : w === 'enemy' ? 'Defeat' : w === 'fled' ? 'Fled' : 'Unknown';
     }
 
-    const roundsHTML = battle.rounds.map(r => renderRoundEntry(r)).join('');
+    const luckByRound = {};
+    (battle.luckTests || []).forEach(lt => {
+        const d = lt.details || {};
+        luckByRound[d.round] = lt;
+    });
+    const roundsHTML = battle.rounds.map(r => renderRoundEntry(r, luckByRound[(r.details || {}).round] ?? null)).join('');
 
     return `
         <div class="combat-log__battle">
@@ -446,7 +558,8 @@ export async function loadCombatHistory(bookNumber, historyContainer) {
         const combatLogs = logs.filter(l =>
             l.action_type === 'combat_start' ||
             l.action_type === 'combat_round' ||
-            l.action_type === 'combat_end'
+            l.action_type === 'combat_end' ||
+            l.action_type === 'combat_luck_test'
         );
 
         // API returns newest first (id DESC) — reverse to chronological
@@ -457,10 +570,12 @@ export async function loadCombatHistory(bookNumber, historyContainer) {
         let current = null;
         for (const log of combatLogs) {
             if (log.action_type === 'combat_start') {
-                current = { start: log, rounds: [], end: null };
+                current = { start: log, rounds: [], luckTests: [], end: null };
                 battles.push(current);
             } else if (current && log.action_type === 'combat_round') {
                 current.rounds.push(log);
+            } else if (current && log.action_type === 'combat_luck_test') {
+                current.luckTests.push(log);
             } else if (current && log.action_type === 'combat_end') {
                 current.end = log;
                 current = null;
