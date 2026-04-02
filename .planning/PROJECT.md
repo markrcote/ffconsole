@@ -10,11 +10,11 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 ## Current State
 
-**Shipped v1.0 MVP** — 2026-04-02
+**Phase 5 complete** — 2026-04-02 — Luck-in-combat testing added
 
-- ~1,200 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,220 LOC CSS
-- 4 phases, 17 plans completed
-- Full feature set: character creation, luck tests, dice roller, battle system, book-specific mechanics
+- ~1,300 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,240 LOC CSS
+- 5 phases, 19 plans completed
+- Full feature set: character creation, luck tests (standalone + in-combat), dice roller, battle system, book-specific mechanics
 
 **Tech stack:** Vanilla JS ES modules, FastAPI/SQLite, no build step, mobile-first
 
@@ -37,7 +37,7 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 ### Active
 
-- [ ] Luck-in-combat testing: test Luck when wounding/wounded; Lucky/Unlucky modifies damage dealt/taken; costs 1 Luck regardless of outcome
+- ✓ Luck-in-combat testing: test Luck when wounding/wounded; Lucky/Unlucky modifies damage dealt/taken; costs 1 Luck regardless of outcome — Phase 5
 - [ ] Additional book configs (Book 8 Scorpion Swamp, etc.)
 
 ### Out of Scope
