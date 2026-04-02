@@ -18,6 +18,18 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
+### Phase 5: Luck-in-Combat Testing
+
+**Goal:** Optional luck test after combat hits — Lucky improves damage, Unlucky worsens it, Luck decrements either way.
+
+**Requirements:** [LUCK-01, LUCK-02, LUCK-03, LUCK-04, LUCK-05, LUCK-06, LUCK-07]
+
+**Plans:** 2 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — testCombatLuck mechanic function + backend handler
+- [ ] 05-02-PLAN.md — Battle UI luck prompt, round card display, history rendering, CSS, app.js wiring
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -26,7 +38,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 | 2. Core Mechanics | v1.0 | 6/6 | Complete | 2026-03-30 |
 | 3. Battle System | v1.0 | 5/5 | Complete | 2026-03-31 |
 | 4. Book Configs | v1.0 | 3/3 | Complete | 2026-04-02 |
-| 5. Luck-in-combat testing | v1.1 | 0/? | Planned | — |
+| 5. Luck-in-combat testing | v1.1 | 0/2 | Planned | — |
 
 ## Backlog
 
