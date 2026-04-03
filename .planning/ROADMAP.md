@@ -57,7 +57,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 06-01-PLAN.md — Refactor battle.js: migrate all document.getElementById() to container-scoped queries
+- [x] 06-01-PLAN.md — Refactor battle.js: migrate all document.getElementById() to container-scoped queries
 - [ ] 06-02-PLAN.md — Create battleModal.js skeleton, remove inline combat from index.html, add Start Battle trigger, rewire app.js
 
 ### Phase 7: Modal Lifecycle and UX
@@ -93,7 +93,7 @@ Plans:
 | 3. Battle System | v1.0 | 5/5 | Complete | 2026-03-31 |
 | 4. Book Configs | v1.0 | 3/3 | Complete | 2026-04-02 |
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
-| 6. Module Restructure and DOM Cleanup | v1.1 | 0/2 | Not started | — |
+| 6. Module Restructure and DOM Cleanup | v1.1 | 1/2 | In Progress|  |
 | 7. Modal Lifecycle and UX | v1.1 | 0/? | Not started | — |
 | 8. Post-Combat Flow and History | v1.1 | 0/? | Not started | — |
 

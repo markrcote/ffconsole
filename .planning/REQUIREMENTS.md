@@ -11,11 +11,11 @@
 ### Modal Trigger
 
 - [ ] **MODAL-01**: User can tap a "Start Battle" button on the adventure sheet to open the combat modal
-- [ ] **MODAL-02**: Combat is no longer rendered as an inline panel on the adventure sheet
+- [x] **MODAL-02**: Combat is no longer rendered as an inline panel on the adventure sheet
 
 ### Combat Inside Modal
 
-- [ ] **MODAL-03**: Enemy setup form (name, Skill, Stamina inputs and Start Combat button) appears inside the modal
+- [x] **MODAL-03**: Enemy setup form (name, Skill, Stamina inputs and Start Combat button) appears inside the modal
 - [ ] **MODAL-04**: Full round-by-round combat (roll button, luck prompts, stamina bars, flee) runs inside the modal
 - [ ] **MODAL-05**: Modal cannot be accidentally dismissed during active combat (backdrop tap and Escape are no-ops while a fight is in progress)
 
@@ -57,8 +57,8 @@
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
 | MODAL-01 | Phase 6 | Pending |
-| MODAL-02 | Phase 6 | Pending |
-| MODAL-03 | Phase 6 | Pending |
+| MODAL-02 | Phase 6 | Complete |
+| MODAL-03 | Phase 6 | Complete |
 | MODAL-04 | Phase 7 | Pending |
 | MODAL-05 | Phase 7 | Pending |
 | MODAL-06 | Phase 8 | Pending |

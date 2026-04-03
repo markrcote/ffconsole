@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
 status: planning
-stopped_at: Phase 6 UI-SPEC approved
-last_updated: "2026-04-03T14:34:59.053Z"
+stopped_at: Completed 06-01-PLAN.md
+last_updated: "2026-04-03T15:07:47.732Z"
 last_activity: 2026-04-03 — v1.1 roadmap created; Phases 6–8 defined for Combat Modal milestone
 progress:
   total_phases: 4
   completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_plans: 4
+  completed_plans: 3
   percent: 0
 ---
 
@@ -55,6 +55,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 - Trend: Stable
 
 *Updated after each plan completion*
+| Phase 06 P01 | 5 | 1 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -67,6 +68,8 @@ Recent decisions affecting current work:
 - create-on-open / destroy-on-close modal pattern chosen (avoids listener stacking on repeated opens)
 - `battle.js` refactor target: `renderBattleActive(container, enemyData, getState, callbacks)` — all DOM queries scoped to container argument
 - Reference implementation for modal lifecycle: `charCreate.js` dynamic overlay pattern
+- [Phase 06]: historyContainer passed as 4th arg to renderBattle() — history panel lives outside combat container in DOM
+- [Phase 06]: battle.js container-scoped pattern: all DOM queries use container.querySelector(), enabling reuse with modal container in Plan 02
 
 ### Pending Todos
 
@@ -85,6 +88,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T14:34:59.049Z
-Stopped at: Phase 6 UI-SPEC approved
-Resume file: .planning/phases/06-module-restructure-and-dom-cleanup/06-UI-SPEC.md
+Last session: 2026-04-03T15:07:47.728Z
+Stopped at: Completed 06-01-PLAN.md
+Resume file: None
