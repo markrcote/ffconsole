@@ -89,7 +89,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 08-01-PLAN.md — battle.js: fix CSS class bug, replace New Battle with Close button, remove in-fight history calls
+- [x] 08-01-PLAN.md — battle.js: fix CSS class bug, replace New Battle with Close button, remove in-fight history calls
 - [ ] 08-02-PLAN.md — battleModal.js + app.js: postCombatPending flag, onClose/onModalClose callbacks, human verify
 
 ## Progress
@@ -103,7 +103,7 @@ Plans:
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
-| 8. Post-Combat Flow and History | v1.1 | 0/2 | Planned | — |
+| 8. Post-Combat Flow and History | v1.1 | 1/2 | In Progress|  |
 
 ## Backlog
 

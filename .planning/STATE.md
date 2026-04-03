@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
-status: verifying
-stopped_at: Completed 07-02-PLAN.md
-last_updated: "2026-04-03T20:35:04.046Z"
+status: executing
+stopped_at: Completed 08-01-PLAN.md
+last_updated: "2026-04-03T20:54:16.845Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 4
   completed_phases: 3
-  total_plans: 6
-  completed_plans: 6
+  total_plans: 8
+  completed_plans: 7
   percent: 0
 ---
 
@@ -21,13 +21,13 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 07 — modal-lifecycle-and-ux
+**Current focus:** Phase 08 — post-combat-flow-and-history
 
 ## Current Position
 
-Phase: 8
-Plan: Not started
-Status: Phase complete — ready for verification
+Phase: 08 (post-combat-flow-and-history) — EXECUTING
+Plan: 2 of 2
+Status: Ready to execute
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 | Phase 06 P02 | 3min | 2 tasks | 3 files |
 | Phase 07 P01 | 5 | 2 tasks | 2 files |
 | Phase 07 P02 | 525873min | 3 tasks | 2 files |
+| Phase 08 P01 | 3 | 2 tasks | 1 files |
 
 ## Accumulated Context
 
@@ -79,6 +80,8 @@ Recent decisions affecting current work:
 - [Phase 07]: Optional chaining on onCombatStateChange callback calls in battle.js for backward compatibility
 - [Phase 07]: Module-level savedScroll for iOS-safe scroll restore in modal teardown
 - [Phase 07]: Two-level onCombatStateChange: battleModal.js intercepts local flag + propagates to app.js for global state sync
+- [Phase 08]: Map winner 'enemy' to CSS modifier 'defeat' in renderSummaryHTML to match CSS class --defeat
+- [Phase 08]: Remove in-fight loadCombatHistory calls; history refresh deferred to post-modal-teardown in Plan 02
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T20:33:55.961Z
-Stopped at: Completed 07-02-PLAN.md
+Last session: 2026-04-03T20:54:16.842Z
+Stopped at: Completed 08-01-PLAN.md
 Resume file: None

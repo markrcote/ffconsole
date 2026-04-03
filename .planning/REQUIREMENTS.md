@@ -21,8 +21,8 @@
 
 ### Post-Combat
 
-- [ ] **MODAL-06**: Post-combat summary (Victory / Defeated / Fled, rounds, final stamina) is shown inside the modal before it closes
-- [ ] **MODAL-07**: User can tap a "Close" / "Return to Sheet" button to dismiss the modal after combat ends
+- [x] **MODAL-06**: Post-combat summary (Victory / Defeated / Fled, rounds, final stamina) is shown inside the modal before it closes
+- [x] **MODAL-07**: User can tap a "Close" / "Return to Sheet" button to dismiss the modal after combat ends
 
 ### Battle History
 
@@ -61,8 +61,8 @@
 | MODAL-03 | Phase 6 | Complete |
 | MODAL-04 | Phase 7 | Complete |
 | MODAL-05 | Phase 7 | Complete |
-| MODAL-06 | Phase 8 | Pending |
-| MODAL-07 | Phase 8 | Pending |
+| MODAL-06 | Phase 8 | Complete |
+| MODAL-07 | Phase 8 | Complete |
 | MODAL-08 | Phase 8 | Pending |
 | MODAL-09 | Phase 8 | Pending |
 | MODAL-10 | Phase 7 | Complete |
