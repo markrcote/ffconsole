@@ -1,17 +1,17 @@
 # Project Research Summary
 
-**Project:** FF Console — Fighting Fantasy Adventure Sheet
-**Domain:** Vanilla JS gamebook companion with combat system and extensible book mechanics
-**Researched:** 2026-03-28
+**Project:** FF Console v1.1 — Combat Modal UX Restructure
+**Domain:** Mobile-first vanilla JS modal UX refactor (no new stack, no new libraries)
+**Researched:** 2026-04-03
 **Confidence:** HIGH
 
 ## Executive Summary
 
-FF Console is a single-page vanilla JS web app that currently tracks Skill/Stamina/Luck for Fighting Fantasy gamebooks. The research consensus is clear: add a proper combat panel with a turn-by-turn log, character creation flow, and book-specific mechanic configs — all without adding any libraries or build steps. The codebase is sound but `app.js` has grown monolithic and needs a deliberate module split before new features are layered on top. The recommended approach is to refactor the module boundary first, then build features in layers: config infrastructure, character creation, core mechanics polish, battle system, then book-specific configs.
+This milestone is a focused UX restructure, not a feature addition. The combat panel (enemy setup, active combat, post-battle summary) currently lives inline on the adventure sheet. The goal is to lift it into a modal overlay so combat becomes a focused, interruption-free interaction — the sheet stays behind the modal, and the player returns to it cleanly when combat ends. Every building block needed (modal CSS, dynamic overlay pattern, focus conventions) already exists in the codebase. The work is purely extending those patterns.
 
-The biggest architectural decisions are already settled by the research. Combat state lives in a dedicated `ui/battle.js` module (not polluting the root game state), round logs persist to the existing ActionLog backend endpoint, and book-specific mechanics are driven by lazy-loaded config files (one per book) rather than hard-coded HTML. The pattern for rendering dynamic panels without a framework is innerHTML replacement with delegated event binding — no diffing, no virtual DOM, no reactive library.
+The recommended approach is to introduce one new module (`ui/battleModal.js`) that handles modal lifecycle, refactor `ui/battle.js` to scope all DOM queries to a container argument rather than global document IDs, and wire the trigger from `app.js`. The existing `.modal-overlay` / `.modal` CSS classes handle the shell; one new CSS block (`.combat-modal__log`) is the only style addition needed. No new libraries, no build-step changes, no backend changes.
 
-The critical risks are all known and preventable. Three pitfalls must be addressed before writing any feature code: split-brain combat state (player vs. enemy Stamina during a fight), double stat mutation on luck tests (optimistic local update + server response = double decrement), and book-specific stat fields being silently stripped by Pydantic schemas (requires a `mechanics_json` backend column before any book config ships). Address these three in Phase 1 and the rest of the build is low-risk.
+The primary risks are not architectural — they are browser-specific and interaction-state-specific. iOS Safari's scroll lock behavior, mid-combat accidental dismissal destroying in-memory round state, and event listener accumulation on repeated modal opens are the three pitfalls most likely to cause real bugs. All three have clear, well-established fixes. The secondary risk is violating the existing D-17 pattern (UI modules must not import `app.js`), which is avoided by passing `getState` and `callbacks` as arguments rather than importing upstream.
 
 ---
 
@@ -19,126 +19,117 @@ The critical risks are all known and preventable. Three pitfalls must be address
 
 ### Recommended Stack
 
-Zero new dependencies. Every required feature — FSM, dice animation, collapsible logs, config loading — is covered by native browser APIs and the existing ES module pattern. The project stays a static HTML/CSS/JS app with a FastAPI backend. No npm, no build step, no framework.
+Zero new dependencies. The codebase already ships a complete, mobile-tested modal system in `css/style.css` (`.modal-overlay`, `.modal`, `.modal-title`, `.modal-cancel`) and `js/ui/charCreate.js` provides the reference implementation for dynamic modal creation. The combat modal follows exactly this pattern.
 
-The one structural addition is a homegrown signal-style store (~30 lines) for combat state management, using `structuredClone` to prevent accidental mutation and a callback Set for subscriptions. For rendering panels, innerHTML replacement is preferred over incremental DOM manipulation because panels are small enough that full re-render is simpler and correct.
+`<dialog>` with `showModal()` was considered and rejected — it is inconsistent with the existing pattern and adds cognitive overhead for no benefit. `backdrop-filter` was rejected due to GPU cost on mid-range Android. The existing `rgba(0,0,0,0.6)` backdrop is sufficient.
 
 **Core technologies:**
-- Vanilla JS (ES modules): all logic — no framework overhead, matches existing codebase
-- CSS `@keyframes` + `animationend`: dice animation — GPU-accelerated, no canvas library needed
-- Native `<details>`/`<summary>`: collapsible round log — zero JS, accessible
-- Dynamic `import()`: lazy-loading book configs — only downloads config for selected book
-- `insertAdjacentHTML('beforeend', ...)`: appending round log entries — O(1), no flicker
-- FastAPI + SQLite (existing): persistence — extend existing ActionLog model for round logs
+- Existing `.modal-overlay` / `.modal` CSS — modal shell, reused as-is — already mobile-tested
+- `charCreate.js` dynamic overlay pattern — reference implementation for open/close lifecycle
+- `overflow-y: auto` + `max-height: 40vh` (new `.combat-modal__log`) — inner scroll region for round log
+- `100dvh` with `vh` fallback — full-height mobile treatment for small screens
 
 ### Expected Features
 
 **Must have (table stakes):**
-- Character creation flow: dice roll animation showing individual die values, name entry, book selection
-- Battle panel: round-by-round log with full Attack Strength breakdown (both rolls, who won, damage)
-- Battle log persistence to backend — survives page reload and device switches
-- Live Stamina display for player and enemy during combat
-- Post-battle summary (won/fled/lost, rounds, damage dealt/received)
-- Test Your Luck: clear Lucky/Unlucky result, new Luck value shown immediately
-- Standalone dice roller: 1d6 and 2d6 with individual die values
+- Modal opens on "Start Battle" button tap — replaces inline panel with a focused overlay
+- Explicit Close button after post-battle summary — only safe dismiss path once combat ends
+- Backdrop blocks all sheet interaction during combat — `position: fixed` overlay covers sheet
+- Body scroll locked on open, restored on close — iOS-safe inner scroll approach required
+- Focus moves to first modal element on open — enemy name input receives autofocus
+- Focus restored to "Start Battle" trigger on close — standard browser/accessibility contract
+- Escape key closes modal only when not in active combat — no-op during fight
+- Backdrop tap disabled during active combat — prevents accidental mid-fight state loss
+- Combat history refresh on close — `loadCombatHistory` called on sheet's static element
 
 **Should have (differentiators):**
-- Full AS breakdown in round log (not just outcome)
-- Visual enemy Stamina bar showing fight progress
-- Book-specific mechanics auto-applied on book selection (Books 17, 30, 13)
-- Flee penalty: -2 Stamina (currently unimplemented)
-- Provisions tracker (book-config-driven)
-- Combat history: review previous battles from current session
+- Slide-up entrance animation — `transform: translateY(100%) → 0`, 200ms ease-out, `prefers-reduced-motion` guarded
+- Fade-out on close — `opacity: 0` transition before DOM removal
+- Round log auto-scrolls to latest entry — `scrollIntoView({ behavior: 'smooth' })` after each render
+- Full-height on small screens — `height: 100%` / `max-height: 100dvh` at `max-width: 480px`
 
-**Defer to v2+:**
-- User-configurable book mechanics (schema design is complex)
-- Animated 3D dice (complexity without added value)
-- Undo/redo system
-- Paragraph tracker
-- Sound effects
-- Non-FF gamebook systems
+**Defer (v2+):**
+- Animated 3D dice inside modal — adds complexity; die-face number display is sufficient
+- Swipe-down gesture to dismiss — conflicts with scroll within modal
+- Luck test as a nested modal — keep it as inline button within the combat modal
 
 ### Architecture Approach
 
-The recommended module structure separates `app.js` into an orchestrator that owns root state, with feature panels (`ui/charCreate.js`, `ui/battle.js`, `ui/diceRoller.js`) that receive state slices and callbacks — never importing `app.js`. Book mechanics live in `config/mechanics/*.js` (one file per book), loaded lazily via a registry in `books.js`. This makes adding a new book config zero-HTML-change and avoids loading unused configs at startup.
+The restructure splits existing `battle.js` responsibilities across two modules without introducing new architectural layers. `ui/battleModal.js` (new) owns modal lifecycle: create overlay, append to body, wire close guards, call `renderBattleActive`, clean up on close. `ui/battle.js` (refactored) owns combat rendering and logic scoped to a container argument — all `document.getElementById()` calls become `container.querySelector()`. History loading (`loadCombatHistory`) is unchanged and remains exported for use on the sheet's static element. `app.js` is the only file that imports `battleModal.js`; the modal module receives `getState` and `callbacks` as arguments and never imports upstream. The `#combat-history-section` element stays in static HTML and is never moved inside the modal DOM.
 
 **Major components:**
-1. `app.js` — orchestrator: root game state, init, routes between views, calls `applyBookConfig()`
-2. `ui/charCreate.js` — 3-step modal: book select, roll stats (animated), name confirm; calls back via `onCharCreated()`
-3. `ui/battle.js` — battle panel: enemy input, turn log, live trackers; calls back via `onPlayerStaminaChange(delta)`
-4. `ui/stats.js` — extracted from `app.js`; renders and binds the stat rows, no logic
-5. `ui/diceRoller.js` — standalone widget; reads `dice.js`, writes DOM only, holds no state
-6. `mechanics.js` — all FF rule computations and API POSTs; returns result objects, never touches DOM
-7. `books.js` — catalog + `getBookConfig(number)` via dynamic import registry
-8. `config/mechanics/*.js` — declarative per-book config objects (extraStats, resources, combatVariant)
+1. `ui/battleModal.js` (new) — modal lifecycle: overlay creation, scroll lock, focus management, dismiss guards, close/cleanup
+2. `ui/battle.js` (refactored) — `renderBattleActive(container, enemyData, getState, callbacks)`: all combat rendering scoped to container; `loadCombatHistory` export unchanged
+3. `app.js` (wiring change) — imports `openCombatModal`; adds "Start Battle" click listener; removes legacy `renderBattle` call from `init()`
+4. `css/style.css` (minimal addition) — `.combat-modal__log` scroll region; mobile full-height modifier at `max-width: 480px`
 
 ### Critical Pitfalls
 
-1. **Split-brain combat state** — Enemy Stamina is client-only; player Stamina lives on the server. Broken offline fallback reads pre-round Stamina. Fix: `ui/battle.js` owns all in-combat state and mutates player stats only via `onPlayerStaminaChange(delta)` callback to `app.js`. Never mutate player stats directly inside the battle module.
+1. **iOS Safari scroll lock (P1 + P11)** — `body { overflow: hidden }` alone fails on iOS when a keyboard input is tapped inside the modal; in-progress momentum scroll on the sheet also bleeds through the overlay. Fix: use `overflow-y: auto` on the modal's inner container with `max-height: calc(100dvh - 40px)`; call `window.scrollTo({ top: window.scrollY, behavior: 'instant' })` on modal open to halt momentum before applying lock. Address in HTML/CSS restructure phase.
 
-2. **Double stat mutation on Luck tests** — The offline fallback can fire on the same request the server also processes, decrementing Luck by 2. Fix: optimistic local update only. Apply the change locally, POST to server, roll back on error. Never apply the server response as an additional delta.
+2. **Mid-combat dismissal destroys state (P2)** — `combatActive` and `round` live as closure variables inside `renderBattle()`. If the modal closes mid-fight, that state is unrecoverable with no error shown to the player. Fix: guard every close path (backdrop click, Escape key, close button) on a `combatActive` flag; expose it via a getter. Address in modal lifecycle implementation.
 
-3. **Book mechanic fields silently stripped by Pydantic** — The current schema only knows `{ skill, stamina, luck }`. Extra fields are silently dropped on every save/load. Fix: add `mechanics_json` (TEXT/JSON) column to the `Session` model and a `mechanics: {}` sub-object to the state blob. Must be done before any book config feature ships.
+3. **Listener stacking on repeated opens (P7)** — if `renderBattleActive()` is called fresh each time the modal opens, event listeners accumulate. After 3 opens, 3 rounds fire per click. Fix: use the create-on-open / destroy-on-close modal pattern — the modal's DOM removal takes all listeners with it, making cleanup automatic. Address in modal lifecycle implementation.
 
-4. **Global event listener accumulation** — Panel re-renders that add new `addEventListener` calls without removing old ones stack up. After 10 rounds, 10 handlers fire per click. Fix: one delegated listener per container, rebound after every `innerHTML` replacement. Never bind panel-specific actions to `document`.
+4. **`getElementById` breaks after DOM restructure (P3)** — `battle.js` currently resolves all element references by global ID at call time. After the restructure these IDs only exist inside the dynamically created modal, so calls before the modal opens silently return null. Fix: scope all queries to `container.querySelector(...)`. Address in DOM wiring before any other battle.js changes.
 
-5. **Mobile double-tap on combat buttons** — Without `touch-action: manipulation` on interactive buttons, mobile synthesises a delayed click after `touchstart`, firing two rounds. Fix: add `touch-action: manipulation` to the base button CSS from day one.
+5. **Circular import if `battleModal.js` imports `app.js` (P8)** — violates the D-17 pattern that all existing UI modules follow. Fix: `battleModal.js` receives `getState` and `callbacks` as arguments only; never imports `app.js`. Resolve the module boundary before writing any code.
 
 ---
 
 ## Implications for Roadmap
 
-### Phase 1: Config Infrastructure and Backend Schema
-**Rationale:** Pitfall 3 is a data loss bug that corrupts any book-specific stats on every reload. This must be fixed before any book config code is written. Also establishes the data contract that all UI phases depend on.
-**Delivers:** `mechanics_json` column in `Session` model; Pydantic schema updated; `config/mechanics/default.js` and config loader in `books.js`; `touch-action: manipulation` added to base button CSS (Pitfall 4 prevention).
-**Addresses:** Schema extension for book mechanics, config loader pattern.
-**Avoids:** Pitfalls 3, 4, and 9.
+### Phase 1: Module Structure and DOM Cleanup
 
-### Phase 2: Module Split (app.js Refactor)
-**Rationale:** `app.js` currently owns everything. Adding battle.js and charCreate.js on top of an un-refactored app.js will create circular dependency risks and state leakage. This phase is zero user-visible change — pure internal restructuring.
-**Delivers:** `ui/stats.js` extracted; `app.js` reduced to orchestrator role; boundaries between modules established; homegrown store pattern in place.
-**Avoids:** Pitfall 1 (split-brain state), Pitfall 7 (listener accumulation).
+**Rationale:** The circular import risk (P8) and `getElementById` scope problem (P3) must be resolved before any modal code is written. Establishing the correct module boundary and cleaning `index.html` first means all subsequent phases build on a stable, correct foundation.
+**Delivers:** Clean D-17-compliant module boundary defined; `index.html` with `#combat-active` block removed and "Start Battle" trigger in place; `battle.js` entry point refactored to `renderBattleActive(container, ...)` with all element queries scoped to container
+**Addresses:** Container-scoped DOM queries; module import direction
+**Avoids:** P3 (getElementById null refs), P8 (circular imports)
 
-### Phase 3: Character Creation
-**Rationale:** Character creation is the prerequisite for meaningful play — users currently have no guided flow. Depends on Phase 1 config loader (to show book-specific choices) and Phase 2 module structure.
-**Delivers:** `ui/charCreate.js` 3-step modal: book selection, animated dice roll with individual die values, name entry. Stats generated per FF rules and handed to `app.js` via `onCharCreated()` callback.
-**Addresses:** Character creation table stakes; dice animation; `allowsStatReroll` config flag.
-**Avoids:** Pitfall 5 (animation/result race — DOM updates in `animationend` callback), Pitfall 10 (re-roll rules vary by book).
+### Phase 2: Modal Lifecycle — Open, Close, Scroll Lock
 
-### Phase 4: Core Mechanics Polish
-**Rationale:** Luck tests and the standalone dice roller are quick wins with clear user value. The Luck double-mutation bug (Pitfall 2) should be fixed here before the battle panel adds more state-mutation complexity.
-**Delivers:** Test Your Luck with clear Lucky/Unlucky display and immediate new Luck value; `ui/diceRoller.js` standalone roller (1d6 + 2d6, individual values); flee penalty (-2 Stamina) implementation.
-**Avoids:** Pitfall 2 (double Luck mutation).
+**Rationale:** Core modal infrastructure must be correct before any combat logic runs inside it. Scroll lock and focus management are foundational — retrofitting them after combat wiring creates regression risk.
+**Delivers:** `battleModal.js` with `openCombatModal()` and close logic; body scroll lock with iOS-safe inner scroll; focus moved to enemy name input on open; focus restored to trigger on close; Escape key guard; backdrop click guard during active combat
+**Addresses:** All table-stakes modal features except post-summary Close button
+**Avoids:** P1 (iOS scroll lock), P2 (mid-combat dismissal), P11 (momentum bleed), P12 (dvh fallback)
 
-### Phase 5: Battle Panel
-**Rationale:** Highest complexity feature; all prior phases are prerequisites. The module split (Phase 2) makes the boundary clean; the config schema (Phase 1) ensures player state persists correctly; character creation (Phase 3) means a named character with valid stats exists before combat starts.
-**Delivers:** `ui/battle.js` with full round-by-round log (Attack Strength breakdown), live Stamina bars, enemy entry form, post-battle summary, and log persistence to ActionLog backend endpoint. Combat history on page reload.
-**Addresses:** All battle system table stakes and differentiators.
-**Avoids:** Pitfalls 1 (combat state boundary), 6 (innerHTML+= on log), 7 (listener accumulation), 8 (log not loading on reload).
+### Phase 3: Combat Wiring Inside Modal
 
-### Phase 6: Book-Specific Configs
-**Rationale:** Data files first — pure data, no UI risk. Then wire dynamic extra-mechanics section. Books ordered by complexity: Book 17 (AFEAR — simplest, extra stats only), Book 30 (Chasms of Malice — more stats/resources), Book 13 (Freeway Fighter — most complex, different combat AS math).
-**Delivers:** `config/mechanics/book-17.js`, `book-30.js`, `book-13.js`; dynamic `#extra-mechanics` section rendered from config; vehicle combat variant for Freeway Fighter.
-**Addresses:** Book-specific mechanics differentiators.
-**Avoids:** Pitfall 9 (hard-coded book HTML — everything rendered from config data).
+**Rationale:** With modal container stable and lifecycle correct, plug `renderBattleActive` in and verify the full combat flow (setup to fight to summary) works end-to-end inside the modal.
+**Delivers:** Full combat flow inside modal; listener lifecycle clean (create-on-open, destroy-on-close); post-summary "Close" button wired to `onCombatEnd`; stale enemy inputs cleared on reopen; history refresh triggered on close
+**Addresses:** All existing combat features (stamina bars, luck prompt, flee, summary); post-summary Close button; history refresh
+**Avoids:** P7 (listener stacking), P9 (New Battle button ambiguity in modal context), P10 (stale inputs on reopen)
+
+### Phase 4: CSS Polish and Animations
+
+**Rationale:** Defer visual polish until the functional flow is verified. Animation and mobile height treatment are safely additive — no risk of breaking combat logic or state management.
+**Delivers:** Slide-up entrance animation; fade-out on close; `.combat-modal__log` scroll region with auto-scroll to latest round; full-height mobile treatment; z-index audit for stacking context corruption
+**Addresses:** Differentiator features (animation, log auto-scroll, full-height small screens)
+**Avoids:** P4 (z-index stack corruption from ancestor transforms), P12 (dvh fallback for older Safari)
+
+### Phase 5: Accessibility Pass
+
+**Rationale:** Accessibility attributes and focus trap depend on the final modal DOM structure being stable. Doing this last avoids rework if structure changes in phases 1–4.
+**Delivers:** Tab focus trap (Tab/Shift+Tab cycles within modal); `role="dialog"`, `aria-modal="true"`, `aria-labelledby` on modal container; `inert` attribute on `<main>` while modal is open; removed on close
+**Addresses:** Keyboard and screen reader user expectations
+**Avoids:** P5 (no focus trap — tab escapes to sheet behind overlay), P13 (missing aria-modal and inert)
 
 ### Phase Ordering Rationale
 
-- Schema fix (Phase 1) must precede any persistence of new data — otherwise data is silently lost on first reload.
-- Module split (Phase 2) must precede panel implementation — panels need clean import boundaries to avoid circular dependencies.
-- Character creation (Phase 3) before battle panel (Phase 5) — named character with rolled stats is prerequisite for combat setup.
-- Core mechanics polish (Phase 4) can precede or follow Phase 3 but must precede Phase 5 to fix the Luck mutation bug before more state mutation is added.
-- Book configs (Phase 6) last — pure data files with no dependencies; also the lowest table-stakes priority.
+- Module boundary and DOM cleanup must precede all other phases — circular import risk and scoping issues would silently corrupt everything built on top.
+- Lifecycle (scroll lock, focus, dismiss guards) must be correct before combat logic runs inside the modal — these produce the highest-consequence bugs if wrong and are harder to retrofit.
+- CSS polish and accessibility are safely deferrable; they are purely additive (style attributes, ARIA) and do not touch state or event logic.
+- The create-destroy modal pattern (vs. show/hide reuse) makes listener cleanup automatic in Phase 3, significantly reducing complexity.
 
 ### Research Flags
 
-Phases with standard, well-documented patterns (skip additional research):
-- **Phase 2 (Module Split):** Pure refactor of existing code; patterns are clear from architecture research.
-- **Phase 4 (Core Mechanics):** Luck test and dice roller are small, self-contained; no unknowns.
-- **Phase 6 (Book Configs):** Config files are pure data; schema is fully defined in architecture research.
+All phases use standard, well-documented patterns. No phase requires deeper research before implementation:
 
-Phases that may benefit from deeper pre-implementation review:
-- **Phase 5 (Battle Panel):** Most complex phase; integrates FSM, log persistence, backend ActionLog, and player stat callbacks. Worth reviewing the ActionLog router implementation before writing `ui/battle.js` to confirm the POST/GET shape expected.
+- **Phase 1 (Module Structure):** Pure refactor of existing code against the D-17 pattern already documented in PROJECT.md.
+- **Phase 2 (Lifecycle):** iOS scroll lock and dvh fallback are known browser behaviors with fixed solutions documented in PITFALLS.md.
+- **Phase 3 (Combat Wiring):** Plugging existing combat rendering into the container pattern; reference implementation is `charCreate.js`.
+- **Phase 4 (CSS Polish):** CSS transform animations and `prefers-reduced-motion` are standard, well-documented patterns.
+- **Phase 5 (Accessibility):** `inert`, `aria-modal`, and focus traps are documented WCAG patterns with full 2023+ browser support.
 
 ---
 
@@ -146,31 +137,32 @@ Phases that may benefit from deeper pre-implementation review:
 
 | Area | Confidence | Notes |
 |------|------------|-------|
-| Stack | HIGH | All recommendations are zero-dependency, native API patterns — no version risk, no library churn |
-| Features | HIGH | FF rules are fixed and well-documented; feature list derived from direct FF rulebook and codebase analysis |
-| Architecture | HIGH | Module map derived from direct codebase inspection; patterns are established vanilla JS conventions |
-| Pitfalls | HIGH | All pitfalls identified from direct codebase analysis of existing bugs and anti-patterns, not inference |
+| Stack | HIGH | Direct codebase inspection confirmed all modal infrastructure exists; zero new dependencies required |
+| Features | HIGH | Existing `battle.js` and `index.html` read directly; table stakes derived from WCAG 2.1 and established modal UX contracts |
+| Architecture | HIGH | Module boundaries and data flow verified against `charCreate.js` reference and D-17 pattern in PROJECT.md |
+| Pitfalls | HIGH | iOS scroll and listener stacking are well-documented browser behaviors; state-loss risk is a direct reading of `battle.js` closure variables |
 
 **Overall confidence:** HIGH
 
 ### Gaps to Address
 
-- **ActionLog endpoint shape:** Research confirms the backend has an ActionLog model and router, but the exact POST/GET payload format for `combat_round` entries was not inspected in detail. Confirm `/api/sessions/{book}/actions` request/response shape before implementing round log persistence in Phase 5.
-- **Flee mechanic (book-dependent free attack):** The -2 Stamina flee penalty is unimplemented. Whether the enemy gets a free attack on flee varies by book. The config schema should include a `fleeFreeAttack: boolean` field; current research flagged the absence but did not fully specify the config key. Resolve during Phase 1 config schema design.
-- **Book 13 vehicle combat AS calculation:** Freeway Fighter uses Firepower (not Skill) for ranged AS. The exact formula is documented in FEATURES.md but the `combatVariant: 'vehicle'` branch in `ui/battle.js` will need the config to specify which stat drives AS. Verify the config schema covers this fully in Phase 1 before Phase 6 implements it.
+- **Animation timing values:** Slide-up duration (200ms) and easing are judgment calls. Verify against device feel during Phase 4 and adjust if needed — no correctness risk, only polish.
+- **`combatActive` exposure mechanism:** Research establishes the requirement (guard all close paths on this flag) but leaves the exact API — getter function, callback, or module-level variable — to implementation judgment. Decide explicitly at the start of Phase 2 before writing the close handler.
+- **`inert` minimum browser baseline:** `inert` has full browser support since 2023. If the project targets browsers older than that, fall back to `aria-hidden="true"` on `<main>`. The project's minimum supported browser version is not explicitly documented in CLAUDE.md.
 
 ---
 
 ## Sources
 
 ### Primary (HIGH confidence)
-- Direct codebase analysis (`app.js`, `mechanics.js`, `storage.js`, `backend/schemas.py`, `backend/models.py`) — architecture, pitfalls, current state
-- FF rulebook rules reference — combat AS formula, Luck test, Provisions, stat generation
-- MDN Web Docs — `insertAdjacentHTML`, `<details>`, dynamic `import()`, `animationend`, `touch-action`
+- Direct codebase inspection: `js/ui/battle.js`, `js/ui/charCreate.js`, `js/app.js`, `index.html`, `css/style.css` — existing modal pattern, combat DOM structure, D-17 architectural pattern
+- `.planning/PROJECT.md` — D-17 pattern definition, architectural decisions
+- WCAG 2.1 SC 2.1.2 (No Keyboard Trap) — focus trap and Escape key requirements
+- MDN: iOS Safari scroll-lock patterns, `dvh` support table, `inert` attribute browser support
 
 ### Secondary (MEDIUM confidence)
-- FF fan community references — book-specific mechanic details for Books 13, 17, 30
+- `prefers-reduced-motion` media query — animation guard; well-established pattern applied here as standard practice
 
 ---
-*Research completed: 2026-03-28*
+*Research completed: 2026-04-03*
 *Ready for roadmap: yes*

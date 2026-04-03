@@ -1,167 +1,118 @@
-# Stack Research — FF Console
+# Technology Stack — Combat Modal Restructure
 
-**Domain:** Vanilla JS combat system, dice UI, extensible stat tracking
-**Date:** 2026-03-28
-**Confidence:** HIGH unless noted
+**Project:** FF Console v1.1
+**Milestone:** Combat modal UX restructure
+**Researched:** 2026-04-03
+**Overall confidence:** HIGH
 
 ---
 
 ## Recommendation: Zero New Libraries
 
-All required features are covered by native browser APIs. No npm dependencies should be added.
+All modal infrastructure already exists in the codebase. This milestone requires no new dependencies, no new CSS techniques, and no changes to the tech stack. The work is purely extending existing patterns.
 
 ---
 
-## State Management
+## Existing Modal Pattern (already in codebase — use it)
 
-**Pattern:** Homegrown signal-style store (~30 lines)
+The project already ships a complete, mobile-tested modal system:
 
-```js
-// store.js
-function createStore(initial) {
-  let state = structuredClone(initial);
-  const listeners = new Set();
-  return {
-    get: () => structuredClone(state),
-    set: (patch) => { state = { ...state, ...patch }; listeners.forEach(fn => fn(state)); },
-    subscribe: (fn) => { listeners.add(fn); return () => listeners.delete(fn); }
-  };
-}
-```
-
-**Why:** No framework needed. `structuredClone` prevents accidental mutation. Callback Set avoids event bus complexity. Fits in the existing ES module pattern.
-
-**Confidence:** HIGH
-
----
-
-## Combat System
-
-**Pattern:** Explicit finite state machine in a dedicated `combat-fsm.js` module
-
-States: `idle → setup → active → ended`
-
-```js
-const transitions = {
-  idle:   { START: 'setup' },
-  setup:  { CONFIRM: 'active', CANCEL: 'idle' },
-  active: { ROUND: 'active', FLEE: 'ended', VICTORY: 'ended', DEFEAT: 'ended' },
-  ended:  { RESET: 'idle' }
-};
-```
-
-**Why:** Combat has well-defined phases. FSM makes illegal transitions impossible. Easy to test and reason about.
-
-**Confidence:** HIGH
-
----
-
-## Round Log Rendering
-
-**Pattern:** `insertAdjacentHTML('beforeend', ...)` — NOT `innerHTML +=`
-
-```js
-logEl.insertAdjacentHTML('beforeend', `<li class="round-entry">${html}</li>`);
-```
-
-**Why:** `innerHTML +=` re-parses and re-renders the entire list on every round. `insertAdjacentHTML` is O(1) and preserves existing DOM nodes.
-
-**Confidence:** HIGH
-
----
-
-## Log Persistence
-
-**Pattern:** Persist battle logs to the backend (`/api/sessions/{book}/actions`) after each round and on combat end.
-
-- Each round is a POST to the existing ActionLog endpoint
-- On page load, fetch and replay logs to rebuild combat history
-- localStorage as write-through cache for offline fallback
-
-**Why:** User wants to review logs across sessions. The backend already has an ActionLog model and actions router — use it.
-
-**Confidence:** HIGH
-
----
-
-## Dice Animation
-
-**Pattern:** CSS `@keyframes` + `animationend` event. No canvas library.
+**CSS classes (css/style.css):**
 
 ```css
-@keyframes dice-roll {
-  0%, 100% { transform: rotate(0deg); }
-  25% { transform: rotate(-15deg) scale(1.1); }
-  75% { transform: rotate(15deg) scale(1.1); }
-}
-.dice--rolling { animation: dice-roll 0.4s ease; }
+.modal-overlay          /* fixed, full-screen, semi-opaque backdrop */
+.modal-overlay.active   /* display: flex to show */
+.modal                  /* max-width 500px card, paper-bg background */
+.modal-title            /* heading style */
+.modal-cancel           /* full-width dismiss button */
 ```
 
-**Why:** GPU-accelerated. Works on mobile. No dependencies.
-
-**Confidence:** HIGH
-
----
-
-## Collapsible Round Log
-
-**Pattern:** Native `<details>`/`<summary>` HTML elements
-
-**Why:** Zero JS needed for expand/collapse. Accessible. Appropriate for a post-battle review log.
-
-**Confidence:** HIGH
-
----
-
-## Book-Specific Mechanic Configs
-
-**Pattern:** Config-driven registry with `dynamic import()` per book number
+**JS pattern (js/ui/charCreate.js):**
 
 ```js
-// books/configs/registry.js
-const registry = { 18: () => import('./018-appointment-with-fear.js'), ... };
+const overlay = document.createElement('div');
+overlay.className = 'modal-overlay active';
+document.body.appendChild(overlay);
 
-export async function loadBookConfig(bookNum) {
-  const loader = registry[bookNum];
-  return loader ? loader() : null;
-}
+overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) cleanup();
+});
+
+function cleanup() { overlay.remove(); }
 ```
 
-Each config file exports a plain object describing extra stats, resources, and combat types.
+The combat modal should follow exactly this pattern. `charCreate.js` is the reference implementation.
 
-**Why:** Lazy-loaded — only downloaded when the user selects that book. No schema validation library needed (configs are authored). Easy to add new books.
-
-**Confidence:** HIGH
+**Confidence: HIGH** — Source: direct codebase inspection.
 
 ---
 
-## CSS
+## Why Not `<dialog>` Element
 
-**Patterns:**
-- BEM-lite namespacing for new UI sections (e.g., `.combat__header`, `.combat__log`)
-- New `:root` color tokens for combat states (winning/losing/neutral)
-- Keep existing mobile-first layout conventions
+- The existing codebase does not use `<dialog>` — mixing patterns adds cognitive load
+- `charCreate.js` already demonstrates that the `div + .modal-overlay` approach works correctly on mobile
+- The existing `touch-action: manipulation` rule already handles the 300ms tap delay for modal buttons
 
-**Confidence:** HIGH
+**Verdict:** Do not switch to `<dialog>`. Extend the existing pattern.
 
 ---
 
-## Anti-Patterns to Avoid
+## Why Not `backdrop-filter`
 
-| Anti-pattern | Why bad | Alternative |
-|---|---|---|
-| `innerHTML +=` for log | Re-renders entire list each round | `insertAdjacentHTML('beforeend', ...)` |
-| God-object state (everything in `gameState`) | Combat state leaks into save state | Separate in-memory combat store |
-| Polling for state changes | Wastes CPU, laggy on mobile | Callback-based store subscriptions |
-| Mixing combat FSM state into session state | Corrupts saves | Dedicated combat store synced to backend separately |
-| Adding a frontend framework | Build step, bundle, breaking change | Vanilla JS with module pattern |
+- GPU-expensive on mid-range Android (primary mobile target)
+- The existing `rgba(0,0,0,0.6)` backdrop is sufficient
+- Inconsistent behavior on older Safari
+
+**Verdict:** Keep existing `rgba` backdrop.
+
+---
+
+## Scroll Behavior Inside the Modal
+
+For the combat round log, add `overflow-y: auto` with `max-height: 40vh` so the log scrolls within a fixed region while action buttons stay visible.
+
+---
+
+## Mobile-Specific Considerations
+
+| Concern | Solution |
+|---------|----------|
+| 300ms tap delay | `touch-action: manipulation` already on `.modal-cancel`, `.mechanic-btn` |
+| Virtual keyboard push | `position: fixed` + `overflow-y: auto` on overlay handles this |
+| Small screens | `.modal { margin-top: 10px; }` already in `@media (max-width: 480px)` |
+
+---
+
+## Module Placement
+
+```
+js/ui/battle.js       (existing — combat logic and rendering)
+js/ui/battleModal.js  (new — modal container, open/close, lifecycle)
+```
+
+`battleModal.js` receives `state` and callbacks as arguments (not importing `app.js`) per the D-17 pattern.
+
+---
+
+## CSS Additions Needed
+
+1. `.combat-modal__log` — inner scrolling region for the round log: `overflow-y: auto; max-height: 40vh`
+2. Scoped `.combat-modal` modifier if combat needs custom padding (optional)
+
+No new CSS variables needed.
+
+---
+
+## Alternatives Considered
+
+| Approach | Verdict | Reason |
+|----------|---------|--------|
+| `<dialog>` with `showModal()` | Reject | Inconsistent with existing pattern |
+| Micro-library (e.g., a11y-dialog) | Reject | Violates vanilla JS / no-build constraint |
+| CSS `backdrop-filter` | Reject | GPU cost on mobile; existing backdrop sufficient |
 
 ---
 
 ## Libraries Added
 
-**Zero.** All features covered by native browser APIs and the existing codebase.
-
----
-
-*Research date: 2026-03-28 | Confidence: HIGH*
+**Zero.** All modal infrastructure already exists.

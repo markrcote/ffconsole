@@ -1,111 +1,121 @@
-# Features Research — FF Console
+# Feature Landscape
 
-**Domain:** Fighting Fantasy companion web app
-**Date:** 2026-03-28
+**Domain:** Combat modal UX restructure — mobile-first vanilla JS gamebook companion
+**Researched:** 2026-04-03
+**Scope:** Modal overlay for the combat system only. Everything else (stats, history log, book mechanics) stays on the adventure sheet.
+
+---
+
+## Existing System (Already Built — Do Not Regress)
+
+These are already implemented in `js/ui/battle.js` and must survive the restructure intact:
+
+| Feature | Location | Notes |
+|---------|----------|-------|
+| Enemy setup form (name, Skill, Stamina inputs) | `#combat-setup` | Inline on sheet today |
+| Round-by-round combat with roll button | `#combat-active` | Full round card with die values, AS, outcome |
+| Luck test prompt after each hit | `showLuckPrompt()` | Appears after `player_hit` or `enemy_hit` |
+| Live stamina bars (player + enemy) | `updateStaminaBars()` | Both bars updated after each round |
+| Flee button with Stamina penalty | `#flee-combat` | Triggers `onFlee` callback, syncs server state |
+| Post-battle summary (Victory/Defeated/Fled) | `renderSummaryHTML()` | Rounds, final stamina, enemy name |
+| "New Battle" reset button | Inside summary | Returns to setup state |
+| Battle history log | `#combat-history` (on sheet) | Persists via ActionLog backend — stays on sheet |
+
+The restructure moves everything inside `#combat-setup` and `#combat-active` into a modal overlay. The `#combat-history` section does NOT move.
 
 ---
 
 ## Table Stakes
 
-Features that make the app useless without them:
-
-### Character Creation
-- Visible dice roll with individual die values shown (not just totals)
-- Name entry before starting adventure
-- Book selection to activate book-specific mechanics
-- Stats generated per FF rules: Skill 1d6+6, Stamina 2d6+12, Luck 1d6+6
-
-### Battle System
-- Complete round-by-round log with full Attack Strength breakdown (player roll, enemy roll, who won, damage dealt)
-- Log persists to backend — available when switching devices or returning to a session
-- Live Stamina display for both player and enemy during combat
-- Post-battle summary (won/fled/lost, rounds taken, damage dealt/received)
-- Enemy entry: name, Skill, Stamina before combat starts
-
-### Test Your Luck
-- Clear Lucky/Unlucky result display
-- New Luck value shown immediately after test
-- Luck decreases by 1 regardless of outcome (already correct in codebase)
-
-### Dice Roller
-- 1d6 and 2d6 with individual die values shown (not just sum)
-- Available at any time, not locked to a combat state
+| Feature | Why Expected | Complexity | Notes |
+|---------|--------------|------------|-------|
+| Modal opens on "Start Battle" button tap | Replace inline panel with a dedicated trigger | Low | Modal holds the full combat flow |
+| Explicit close affordance after summary | User needs a clear escape hatch | Low | Only safe after combat ends — during combat, accidental dismiss risks losing round state |
+| Backdrop blocks sheet interaction | Combat is the current action | Low | `position: fixed` overlay covers sheet; ensure `pointer-events` blocks through |
+| Scroll within modal, sheet scroll locked | Round log grows; sheet scrolling behind is disorienting | Medium | `overflow-y: auto` on inner container; `document.body.style.overflow = 'hidden'` on open, restore on close |
+| Focus moves into modal on open | Keyboard/screen-reader users tab into sheet behind overlay without this | Medium | `autofocus` on first interactive element, or manual `.focus()` call after render |
+| Focus restored to trigger button on close | Standard browser/accessibility contract | Low | Store reference to opener, call `.focus()` on close |
+| Escape key closes modal when safe | Keyboard UX expectation — suppress during active combat | Low | No-op if `combatActive === true` |
+| No backdrop-tap-to-dismiss during active combat | Accidental dismiss mid-fight destroys in-memory round state | Low | Tap-to-dismiss only in setup state or post-summary |
+| Post-summary dismiss button | After Victory/Defeat/Fled, user needs to return to sheet | Low | "New Battle" resets to setup; separate "Close" button dismisses modal entirely |
 
 ---
 
 ## Differentiators
 
-Features that make this better than pen and paper:
-
-- **Full AS breakdown in log** — shows each player and enemy roll per round, not just outcome
-- **Visual enemy Stamina bar** — instant sense of progress during long fights
-- **Book-specific mechanics** — automatic extra stat/resource sections for supported books
-- **Flee penalty** — -2 Stamina on flee (currently unimplemented in the codebase)
-- **Provisions tracker** — common FF mechanic, book-config-driven
-- **Combat history** — review previous battles from the session, persisted server-side
+| Feature | Value | Complexity | Notes |
+|---------|-------|------------|-------|
+| Slide-up entrance animation | Feels like a focused action being invoked | Low | `transform: translateY(100%) → translateY(0)` with 200ms ease-out; wrap in `@media (prefers-reduced-motion: no-preference)` |
+| Fade-out on close | Smooth return to sheet | Low | `opacity: 0` transition, restore after `transitionend` |
+| Round log scrolls to latest entry | Newest card in view without manual scroll | Low | `scrollIntoView({ behavior: 'smooth', block: 'nearest' })` after render |
+| Full-height on small screens | On phones, combat needs all available vertical space | Low | `height: 100%` on small viewports; `max-height: 90vh` on larger |
 
 ---
 
-## Book-Specific Mechanics (Built-in Configs)
+## Anti-Features
 
-### Book 17: Appointment with F.E.A.R.
-- Extra stats: Hero Points (starts at 0, earned through adventure)
-- Superpower choice at character creation (affects available abilities)
-- Clue tracking
-
-### Book 30: Chasms of Malice
-- Kuddam defeats counter
-- Special abilities tracker
-- Provisions, Fuel
-- Tabasha the Bazouk restoration tracker
-- Spells list
-
-### Book 13: Freeway Fighter
-- Body Points (vehicle HP, separate from player Stamina)
-- Fuel resource
-- Ammo resource
-- Combat variant: vehicle combat (uses different AS calculation)
-- Combat variant: hand fighting, shooting
+| Anti-Feature | Why Avoid |
+|--------------|-----------|
+| Backdrop tap dismisses mid-combat | Destroys round state |
+| Animated 3D dice inside modal | Adds complexity; die-face number display is sufficient |
+| Swipe-down gesture to dismiss | Conflicts with scroll within modal |
+| Confirm dialog before flee | Flee already has stamina consequences — trust the player |
+| Nested modals (luck test as second modal) | Keep luck test as inline button within combat modal |
 
 ---
 
-## MVP Order
+## Feature Dependencies
 
-1. Character creation (highest user-visible value, prerequisite for meaningful play)
-2. Battle log panel (most-requested missing feature; current UI overwrites single text node)
-3. Test Your Luck UI polish (mechanic exists, needs clearer result display)
-4. Standalone dice roller (simple, rounds out core mechanics)
-5. Book config: Appointment with F.E.A.R. (book 17 — simpler extra stats)
-6. Book config: Chasms of Malice (book 30 — more stats/resources)
-7. Book config: Freeway Fighter (book 13 — most complex, different combat math)
+```
+"Start Battle" trigger button (on sheet)
+  → opens combat modal
+    → enemy setup form (existing)
+      → Start Combat button
+        → active combat view (existing: stamina bars, roll, flee, luck prompt)
+          → combat end (win / lose / flee)
+            → post-summary screen (existing)
+              → "New Battle" button (resets to setup — existing)
+              → "Close" button (NEW — dismisses modal entirely)
 
----
+Modal open:
+  → lock body scroll
+  → move focus to first interactive element (enemy name input)
+  → backdrop tap allowed (not yet in combat)
 
-## Anti-Features (Deliberate Exclusions)
+Active combat:
+  → disable backdrop-tap-to-dismiss
+  → suppress Escape key
 
-| Feature | Why excluded |
-|---------|-------------|
-| User-configurable book mechanics | Scope — defer to future milestone |
-| Animated 3D dice | Numbers are what matter; animation adds complexity not value |
-| Undo/redo system | Manual stat adjustment covers the need |
-| Paragraph tracker | Story navigation is in the book, not the app |
-| Sound effects | Scope |
-| Multiplayer / shared sessions | Single-player; each session belongs to one adventurer |
-| Non-FF gamebook systems | Out of scope |
-
----
-
-## FF Rules Reference
-
-| Rule | Detail |
-|------|--------|
-| Combat | 2d6 + Skill = Attack Strength; higher AS wins; 2 Stamina damage to loser; tie = no damage |
-| Flee | Lose 2 Stamina; enemy may get a free attack (book-dependent) |
-| Test Luck | Roll 2d6; ≤ current Luck = Lucky; Luck -1 regardless of outcome |
-| Provisions | Restore 4 Stamina (cannot exceed initial); 1 use per meal |
-| Freeway Fighter | Firepower (not Skill) used for ranged AS calculation |
-| AFEAR | Hero Points awarded for defeating enemies and finding clues |
+Modal close:
+  → restore body scroll
+  → restore focus to "Start Battle" trigger
+  → refresh combat history on sheet (loadCombatHistory)
+```
 
 ---
 
-*Research date: 2026-03-28*
+## MVP Build Order
+
+1. Trigger button + modal open/close scaffolding (includes body scroll lock + slide-up animation)
+2. Focus management + Escape + dismiss guard
+3. Post-summary "Close" button
+4. History log refresh on close
+
+---
+
+## Confidence Assessment
+
+| Area | Confidence | Reason |
+|------|------------|--------|
+| What's already built | HIGH | Direct codebase read of `battle.js`, `index.html`, `style.css` |
+| Modal UX table stakes | HIGH | Well-established browser/WCAG/mobile patterns |
+| No-dismiss-during-combat | HIGH | Direct consequence of in-memory state in `battle.js` |
+| Animation specifics | MEDIUM | CSS transform approach is standard; timing values are judgment calls |
+
+---
+
+## Sources
+
+- Codebase: `js/ui/battle.js`, `index.html`, `css/style.css`, `.planning/PROJECT.md`
+- WCAG 2.1 SC 2.1.2 (No Keyboard Trap)
+- CSS `prefers-reduced-motion` media query

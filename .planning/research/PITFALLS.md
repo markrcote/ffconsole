@@ -1,135 +1,167 @@
-# Pitfalls Research — FF Console
+# Pitfalls — Combat Modal Restructure
 
-**Domain:** Vanilla JS combat system, dice UI, extensible mechanic configs
-**Date:** 2026-03-28
-**Confidence:** HIGH (all findings from direct codebase analysis)
+**Project:** FF Console v1.1
+**Milestone:** Combat modal UX restructure
+**Researched:** 2026-04-03
+**Confidence:** HIGH — grounded in direct codebase inspection + browser/accessibility patterns
 
 ---
 
 ## Critical
 
-### Pitfall 1: Split-Brain Combat State
+### P1 — iOS Safari Scroll Lock
 
-**What it is:** Enemy Stamina lives in client-only `combatState`. Player Stamina lives in the server session. The end-combat check has a broken offline fallback that reads pre-round Stamina.
+`body { overflow: hidden }` alone breaks on iOS Safari when a keyboard input is tapped inside the modal. The internal-scroll overlay pattern (not body scroll) is the correct mitigation.
 
-**Warning signs:** Player Stamina doesn't update visually during combat, or resets to wrong value after combat ends.
+**Fix:** Use `overflow-y: auto` on the modal's inner container. Set `max-height: calc(100dvh - 40px)` with `vh` fallback. Do not rely solely on body overflow-hidden.
 
-**Prevention:** `ui/battle.js` owns all in-combat state. Player Stamina mutations during combat call back to `app.js` via `onPlayerStaminaChange(delta)`, which handles save. Never mutate player stats directly inside the battle module.
-
-**Phase:** Combat implementation phase.
+**Phase:** HTML/CSS restructure
 
 ---
 
-### Pitfall 2: Double Stat Mutation on Luck Tests
+### P2 — Mid-Combat Modal Dismissal Destroys State
 
-**What it is:** The luck offline fallback in `mechanics.js` can fire on the same request that the server also applies, decrementing Luck by 2 instead of 1.
+`combatActive` and `round` live as closure variables inside `renderBattle()`. If the modal is dismissed via backdrop click or Escape during a fight, that state is gone with no recovery path.
 
-**Warning signs:** Luck decreases by 2 when connection is intermittent.
+**Fix:** Guard all close paths on `combatActive`. Expose a `getIsCombatActive()` or pass an `onCombatActiveChange` callback. Disable backdrop-tap and Escape while combat is active.
 
-**Prevention:** Optimistic local update only. Apply the stat change locally immediately, POST to server, and on error roll back — never apply server response as an additional delta on top of a local update that already happened.
-
-**Phase:** Luck test implementation (core mechanics phase).
+**Phase:** Modal lifecycle implementation
 
 ---
 
-### Pitfall 3: Book Mechanic Fields Silently Stripped by Pydantic Schema
+### P3 — `getElementById` Queries Break After DOM Restructure
 
-**What it is:** The existing Pydantic schema only knows `{ skill, stamina, luck }`. Extra fields from book configs will be silently stripped on every server save/load cycle.
+`renderBattle()` resolves all element references by ID at call time. If any ID changes or the modal isn't in the DOM when `renderBattle()` first runs, all bindings silently fail.
 
-**Warning signs:** Book-specific stats (Hero Points, Fuel, etc.) reset to default on page reload.
+**Fix:** Scope all queries to `container.querySelector(...)` not `document.getElementById(...)`. Keep IDs identical to avoid breaking CSS selectors.
 
-**Prevention:** Reserve a `mechanics: {}` sub-object in the state schema before writing any book config. The backend `Session` model needs a `mechanics_json` column (TEXT/JSON) to store arbitrary book state. This must be done before any book config ships.
+**Phase:** DOM wiring
 
-**Phase:** Config infrastructure phase (Phase 1) — must be solved before book configs are written.
+---
+
+### P4 — Z-Index Stack Corruption
+
+Any `transform`, `filter`, or `will-change` on an ancestor element creates a new stacking context, silently breaking `position: fixed` for all descendants — including the modal overlay.
+
+**Fix:** Audit `css/style.css` for transforms on the adventure sheet wrapper. Document a z-index scale using CSS variables.
+
+**Phase:** HTML/CSS restructure
 
 ---
 
 ## Moderate
 
-### Pitfall 4: Mobile Double-Tap on Combat Buttons
+### P5 — No Focus Trap
 
-**What it is:** Stat buttons use `e.preventDefault()` on `touchstart` to prevent the 300ms tap delay, but combat buttons don't. On mobile they synthesise a delayed click and fire two rounds.
+Tab navigation escapes the modal to sheet elements behind it. The existing `#book-modal` has this same gap. Combat modal must implement a full Tab trap.
 
-**Warning signs:** Two rounds resolve on a single tap on mobile.
+**Fix:** On modal open, collect all focusable elements inside modal; intercept Tab/Shift+Tab to cycle within them. Restore focus to "Start Battle" button on close.
 
-**Prevention:** Add `touch-action: manipulation` to all interactive buttons in CSS. This is the correct fix — it eliminates the tap delay without requiring JS event handling on every new button.
-
-**Phase:** All phases that add new interactive buttons — must be in base CSS from day one.
+**Phase:** Accessibility pass
 
 ---
 
-### Pitfall 5: Animation/Result Race on Dice Rolls
+### P6 — `#combat-history` Accidentally Nested Inside Modal DOM
 
-**What it is:** Dice animation plays while the result is already shown. If the roll result updates the DOM before the animation ends, the user sees the answer before the drama resolves.
+History section is adjacent to `.combat-section` in the HTML — easy to accidentally include it inside the modal wrapper during restructure.
 
-**Warning signs:** Result number is visible before the animation finishes.
+**Fix:** Keep `#combat-history-section` as a sibling of the modal trigger, not a child. Review final `index.html` diff carefully.
 
-**Prevention:** Hold the roll result in a local variable. Update the DOM only in the `animationend` callback. Add a rolling guard (`isRolling` flag) to prevent double-firing.
-
-**Phase:** Character creation and dice roller phases.
+**Phase:** HTML/CSS restructure
 
 ---
 
-### Pitfall 6: innerHTML += on Round Log
+### P7 — Event Listeners Stack on Repeated Modal Opens
 
-**What it is:** `innerHTML +=` re-parses and re-renders the entire log list on every round, clearing and re-adding all DOM nodes. At 10+ rounds this causes visible flicker and loses any event listeners on existing entries.
+If `renderBattle()` is called again each time the modal opens (to reset state), event listeners accumulate. After 3 opens, 3 rounds fire per click.
 
-**Warning signs:** Log flickers on each round; performance degrades in long fights.
+**Fix:** `renderBattle()` / `renderBattleActive()` called once at `init()`; modal uses show/hide rather than create/destroy. OR: use `{ once: true }` on listeners and re-register after each round, but the create-once approach is simpler.
 
-**Prevention:** Use `insertAdjacentHTML('beforeend', roundHTML)` to append only the new entry.
-
-**Phase:** Battle panel implementation.
+**Phase:** Modal lifecycle implementation
 
 ---
 
-### Pitfall 7: Global Event Listeners Accumulating
+### P8 — Circular Import If Modal Controller Imports `app.js`
 
-**What it is:** If panel re-renders add new `document.addEventListener` or `container.addEventListener` calls without removing the old ones, each re-render adds another listener. After 10 rounds, 10 handlers fire per button click.
+Violates the D-17 pattern that all UI modules follow.
 
-**Warning signs:** Multiple rounds resolve per click; console shows duplicate events.
+**Fix:** Put `openCombatModal()` / `hideCombatModal()` in `app.js`, or have `battleModal.js` receive `getState` and `callbacks` as arguments only — never import `app.js`.
 
-**Prevention:** Bind one delegated listener per container immediately after `innerHTML` replacement. Never bind to `document` for panel-specific actions.
+**Phase:** Module structure (resolve before writing code)
 
-**Phase:** All UI panel implementation.
+---
+
+### P9 — "New Battle" Button Ambiguity in Modal Context
+
+Currently resets the panel to setup form. In the modal, the spec says summary screen shown before modal closes — meaning "done" should close the modal entirely, not reset inside it.
+
+**Fix:** Pass an `onModalClose` callback from `app.js` into `renderBattleActive()` so `endCombatUI()` can trigger it. "New Battle" resets the form inside the modal; a separate "Close" / "Return to Sheet" button dismisses the modal.
+
+**Phase:** Post-combat UX
 
 ---
 
 ## Minor
 
-### Pitfall 8: Combat Log Not Loading on Page Reload
+### P10 — Stale Input Values on Reopen
 
-**What it is:** If the round log is rendered only during the live session and not fetched from the backend on load, the "review last fight" feature won't work.
+Enemy name/skill/stamina inputs retain previous values from last battle.
 
-**Warning signs:** Combat history section is empty after page reload.
+**Fix:** Reset inputs in `openCombatModal()` in `app.js` (or `battleModal.js`) before showing the modal.
 
-**Prevention:** On app init, fetch action log from `/api/sessions/{book}/actions` and render any `combat_round` entries into the history display.
-
-**Phase:** Battle panel implementation.
+**Phase:** Modal lifecycle
 
 ---
 
-### Pitfall 9: Book Config Values Hard-Coded in UI
+### P11 — iOS Momentum Scroll Bleeds Through Overlay
 
-**What it is:** Rendering book-specific stats with hard-coded labels/IDs in HTML means adding a new book requires HTML changes, not just a new config file.
+In-progress momentum scroll on the sheet continues through the overlay on iOS.
 
-**Warning signs:** Adding book-14.js config doesn't make the new stats appear.
+**Fix:** Call `window.scrollTo({ top: window.scrollY, behavior: 'instant' })` on modal open to halt momentum before applying scroll lock.
 
-**Prevention:** The extra-mechanics section must be driven entirely from config data — rendered via `renderBookMechanicsSection(config)` with no book-specific HTML in `index.html`.
-
-**Phase:** Config infrastructure phase.
+**Phase:** HTML/CSS restructure
 
 ---
 
-### Pitfall 10: Character Creation Re-Roll Rules Vary by Book
+### P12 — `dvh` Not Supported Before iOS 15.4
 
-**What it is:** Standard FF rules allow rolling stats once (no re-roll). Some variant books (e.g., Freeway Fighter) differ. Implementing a universal "one re-roll" will be wrong for some books.
+`100dvh` works correctly in modern Safari but not older versions.
 
-**Warning signs:** Character creation allows re-roll on books where the rules don't permit it.
+**Fix:** Always provide `vh` fallback before `dvh` declaration:
+```css
+max-height: calc(100vh - 40px);
+max-height: calc(100dvh - 40px);
+```
 
-**Prevention:** Add `allowsStatReroll: boolean` to the config schema. Default: false (standard FF). Only set true for books that explicitly allow it.
-
-**Phase:** Character creation phase.
+**Phase:** HTML/CSS restructure
 
 ---
 
-*Research date: 2026-03-28 | Confidence: HIGH (codebase analysis)*
+### P13 — Missing `aria-modal` and `inert`
+
+Without `aria-modal="true"` and `inert` on the background, screen readers can reach sheet elements behind the modal.
+
+**Fix:** Set `role="dialog"`, `aria-modal="true"`, `aria-labelledby` on modal container. Set `inert` attribute on the adventure sheet `<main>` on modal open; remove on close. (`inert` has full browser support since 2023.)
+
+**Phase:** Accessibility pass
+
+---
+
+## Phase Assignment Summary
+
+| Phase | Pitfalls to Address |
+|-------|---------------------|
+| Module structure decision (before coding) | P8 (circular imports) |
+| HTML/CSS restructure | P1 (iOS scroll), P4 (z-index), P6 (history DOM boundary), P11 (momentum), P12 (dvh) |
+| Modal lifecycle | P2 (mid-combat dismissal), P7 (listener stacking), P10 (stale inputs) |
+| DOM wiring | P3 (getElementById null refs) |
+| Post-combat UX | P9 (New Battle button) |
+| Accessibility | P5 (focus trap), P13 (aria-modal + inert) |
+
+---
+
+## Sources
+
+- Direct inspection: `js/ui/battle.js`, `js/app.js`, `css/style.css`, `index.html`
+- WCAG 2.1 SC 2.1.2 (No Keyboard Trap)
+- MDN: iOS Safari scroll-lock patterns, `dvh` support table, `inert` attribute
