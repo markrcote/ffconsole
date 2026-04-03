@@ -2,10 +2,10 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
-status: planning
+status: executing
 stopped_at: Completed 06-01-PLAN.md
 last_updated: "2026-04-03T15:07:47.732Z"
-last_activity: 2026-04-03 — v1.1 roadmap created; Phases 6–8 defined for Combat Modal milestone
+last_activity: 2026-04-03 -- Phase 06 execution started
 progress:
   total_phases: 4
   completed_phases: 1
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 6 — Module Restructure and DOM Cleanup
+**Current focus:** Phase 06 — module-restructure-and-dom-cleanup
 
 ## Current Position
 
-Phase: 6 of 8 (Module Restructure and DOM Cleanup)
-Plan: 0 of ? in current phase
-Status: Ready to plan
-Last activity: 2026-04-03 — v1.1 roadmap created; Phases 6–8 defined for Combat Modal milestone
+Phase: 06 (module-restructure-and-dom-cleanup) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 06
+Last activity: 2026-04-03 -- Phase 06 execution started
 
 Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
 
