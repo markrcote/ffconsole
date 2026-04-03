@@ -24,7 +24,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 **Milestone Goal:** Move combat out of the inline sheet panel into a focused modal overlay. The adventure sheet stays behind the modal; the player returns to it cleanly when combat ends.
 
 - [x] **Phase 5: Luck-in-Combat Testing** — Optional luck test during combat rounds; Lucky/Unlucky modifies damage; Luck decrements either way
-- [ ] **Phase 6: Module Restructure and DOM Cleanup** — Scope battle.js to a container argument; introduce battleModal.js skeleton; wire "Start Battle" trigger
+- [x] **Phase 6: Module Restructure and DOM Cleanup** — Scope battle.js to a container argument; introduce battleModal.js skeleton; wire "Start Battle" trigger (completed 2026-04-03)
 - [ ] **Phase 7: Modal Lifecycle and UX** — Full open/close lifecycle with scroll lock, dismiss guards, animations, and focus management
 - [ ] **Phase 8: Post-Combat Flow and History** — Summary screen inside modal, explicit Close button, history refresh on sheet
 
@@ -58,7 +58,7 @@ Plans:
 
 Plans:
 - [x] 06-01-PLAN.md — Refactor battle.js: migrate all document.getElementById() to container-scoped queries
-- [ ] 06-02-PLAN.md — Create battleModal.js skeleton, remove inline combat from index.html, add Start Battle trigger, rewire app.js
+- [x] 06-02-PLAN.md — Create battleModal.js skeleton, remove inline combat from index.html, add Start Battle trigger, rewire app.js
 
 ### Phase 7: Modal Lifecycle and UX
 **Goal**: The combat modal opens and closes correctly with proper scroll lock, dismiss guards, animation, and focus management — the player cannot accidentally lose a fight in progress by dismissing the modal
@@ -93,7 +93,7 @@ Plans:
 | 3. Battle System | v1.0 | 5/5 | Complete | 2026-03-31 |
 | 4. Book Configs | v1.0 | 3/3 | Complete | 2026-04-02 |
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
-| 6. Module Restructure and DOM Cleanup | v1.1 | 1/2 | In Progress|  |
+| 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/? | Not started | — |
 | 8. Post-Combat Flow and History | v1.1 | 0/? | Not started | — |
 

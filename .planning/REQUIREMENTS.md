@@ -10,7 +10,7 @@
 
 ### Modal Trigger
 
-- [ ] **MODAL-01**: User can tap a "Start Battle" button on the adventure sheet to open the combat modal
+- [x] **MODAL-01**: User can tap a "Start Battle" button on the adventure sheet to open the combat modal
 - [x] **MODAL-02**: Combat is no longer rendered as an inline panel on the adventure sheet
 
 ### Combat Inside Modal
@@ -56,7 +56,7 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| MODAL-01 | Phase 6 | Pending |
+| MODAL-01 | Phase 6 | Complete |
 | MODAL-02 | Phase 6 | Complete |
 | MODAL-03 | Phase 6 | Complete |
 | MODAL-04 | Phase 7 | Pending |

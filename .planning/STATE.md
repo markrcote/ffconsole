@@ -3,9 +3,9 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
 status: executing
-stopped_at: Completed 06-01-PLAN.md
-last_updated: "2026-04-03T15:07:47.732Z"
-last_activity: 2026-04-03 -- Phase 06 execution started
+stopped_at: Completed 06-02-PLAN.md
+last_updated: "2026-04-03T15:14:17.164Z"
+last_activity: 2026-04-03
 progress:
   total_phases: 4
   completed_phases: 1
@@ -26,9 +26,9 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 ## Current Position
 
 Phase: 06 (module-restructure-and-dom-cleanup) — EXECUTING
-Plan: 1 of 2
-Status: Executing Phase 06
-Last activity: 2026-04-03 -- Phase 06 execution started
+Plan: 2 of 2
+Status: Ready to execute
+Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
 
@@ -56,6 +56,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 
 *Updated after each plan completion*
 | Phase 06 P01 | 5 | 1 tasks | 2 files |
+| Phase 06 P02 | 3min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,9 @@ Recent decisions affecting current work:
 - Reference implementation for modal lifecycle: `charCreate.js` dynamic overlay pattern
 - [Phase 06]: historyContainer passed as 4th arg to renderBattle() — history panel lives outside combat container in DOM
 - [Phase 06]: battle.js container-scoped pattern: all DOM queries use container.querySelector(), enabling reuse with modal container in Plan 02
+- [Phase 06]: battleModal.js fetches historyContainer at open time via document.getElementById — history section stays in index.html outside modal
+- [Phase 06]: closeBattleModal() stub exported in Plan 02 so Phase 7 can implement teardown without changing import statements
+- [Phase 06]: loadCombatHistory() call added back to init() in app.js — previously called via renderBattle() which is no longer called directly from app.js
 
 ### Pending Todos
 
@@ -88,6 +92,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:07:47.728Z
-Stopped at: Completed 06-01-PLAN.md
+Last session: 2026-04-03T15:14:17.160Z
+Stopped at: Completed 06-02-PLAN.md
 Resume file: None
