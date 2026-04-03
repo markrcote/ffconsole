@@ -9,7 +9,7 @@
 /**
  * Update both stamina bars with current/max values and critical class.
  */
-function updateStaminaBars(playerCurrent, playerMax, enemyCurrent, enemyMax) {
+function updateStaminaBars(container, playerCurrent, playerMax, enemyCurrent, enemyMax) {
     const playerPct = playerMax > 0
         ? Math.max(0, Math.round((playerCurrent / playerMax) * 100))
         : 0;
@@ -17,12 +17,12 @@ function updateStaminaBars(playerCurrent, playerMax, enemyCurrent, enemyMax) {
         ? Math.max(0, Math.round((enemyCurrent / enemyMax) * 100))
         : 0;
 
-    const playerFill = document.getElementById('player-stamina-fill');
-    const playerBar  = document.getElementById('player-stamina-bar');
-    const playerVal  = document.getElementById('player-stamina-value');
-    const enemyFill  = document.getElementById('enemy-stamina-fill');
-    const enemyBar   = document.getElementById('enemy-stamina-bar');
-    const enemyVal   = document.getElementById('enemy-stamina-value');
+    const playerFill = container.querySelector('#player-stamina-fill');
+    const playerBar  = container.querySelector('#player-stamina-bar');
+    const playerVal  = container.querySelector('#player-stamina-value');
+    const enemyFill  = container.querySelector('#enemy-stamina-fill');
+    const enemyBar   = container.querySelector('#enemy-stamina-bar');
+    const enemyVal   = container.querySelector('#enemy-stamina-value');
 
     if (playerFill) {
         playerFill.style.width = `${playerPct}%`;
@@ -162,7 +162,7 @@ function renderSummaryHTML(winner, rounds, playerStaminaFinal, playerStaminaInit
  * @param {Function} getState - returns { state, combatState, currentBook }
  * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd }
  */
-export function renderBattle(container, getState, callbacks) {
+export function renderBattle(container, getState, callbacks, historyContainer = null) {
     if (!container) return;
 
     // Local mutable combat state (mirrors app.js combatState but owned by this module)
@@ -172,17 +172,16 @@ export function renderBattle(container, getState, callbacks) {
 
     // ── Element references ────────────────────────────────────────────────────
 
-    const setupEl        = document.getElementById('combat-setup');
-    const activeEl       = document.getElementById('combat-active');
-    const statusEl       = document.getElementById('combat-status');
-    const roundResultEl  = document.getElementById('combat-round-result');
-    const combatResultEl = document.getElementById('combat-result');
-    const summaryEl      = document.getElementById('combat-summary');
-    const rollRoundBtn   = document.getElementById('roll-round');
-    const fleeBtn        = document.getElementById('flee-combat');
-    const startBtn       = document.getElementById('start-combat');
-    const enemyLabelEl   = document.getElementById('enemy-stamina-label');
-    const historyEl      = document.getElementById('combat-history');
+    const setupEl        = container.querySelector('#combat-setup');
+    const activeEl       = container.querySelector('#combat-active');
+    const statusEl       = container.querySelector('#combat-status');
+    const roundResultEl  = container.querySelector('#combat-round-result');
+    const combatResultEl = container.querySelector('#combat-result');
+    const summaryEl      = container.querySelector('#combat-summary');
+    const rollRoundBtn   = container.querySelector('#roll-round');
+    const fleeBtn        = container.querySelector('#flee-combat');
+    const startBtn       = container.querySelector('#start-combat');
+    const enemyLabelEl   = container.querySelector('#enemy-stamina-label');
 
     // ── Helpers ───────────────────────────────────────────────────────────────
 
@@ -192,7 +191,7 @@ export function renderBattle(container, getState, callbacks) {
     }
 
     function dismissLuckPrompt() {
-        const existing = document.getElementById('luck-prompt-btn');
+        const existing = container.querySelector('#luck-prompt-btn');
         if (existing) existing.remove();
     }
 
@@ -240,6 +239,7 @@ export function renderBattle(container, getState, callbacks) {
 
             // Update stamina bars
             updateStaminaBars(
+                container,
                 playerStamina, updatedState.stamina.initial,
                 enemy.stamina, enemy.staminaInitial
             );
@@ -263,8 +263,8 @@ export function renderBattle(container, getState, callbacks) {
                 );
                 endCombatUI(winner, playerStamina);
 
-                if (historyEl) {
-                    loadCombatHistory(getState().currentBook, historyEl);
+                if (historyContainer) {
+                    loadCombatHistory(getState().currentBook, historyContainer);
                 }
                 callbacks.onCombatEnd();
             }
@@ -302,7 +302,7 @@ export function renderBattle(container, getState, callbacks) {
         summaryEl.hidden = false;
 
         // Bind New Battle button
-        const newBattleBtn = document.getElementById('new-battle');
+        const newBattleBtn = summaryEl.querySelector('#new-battle');
         if (newBattleBtn) {
             newBattleBtn.addEventListener('click', () => {
                 showSetup();
@@ -322,9 +322,9 @@ export function renderBattle(container, getState, callbacks) {
             const { state, currentBook } = getState();
             if (!currentBook) return;
 
-            const nameVal    = document.getElementById('enemy-name')?.value.trim() || 'Enemy';
-            const skillVal   = parseInt(document.getElementById('enemy-skill')?.value, 10) || 8;
-            const staminaVal = parseInt(document.getElementById('enemy-stamina')?.value, 10) || 8;
+            const nameVal    = container.querySelector('#enemy-name')?.value.trim() || 'Enemy';
+            const skillVal   = parseInt(container.querySelector('#enemy-skill')?.value, 10) || 8;
+            const staminaVal = parseInt(container.querySelector('#enemy-stamina')?.value, 10) || 8;
 
             // Initialise local combat state
             combatActive = true;
@@ -337,6 +337,7 @@ export function renderBattle(container, getState, callbacks) {
 
             // Initialise stamina bars
             updateStaminaBars(
+                container,
                 state.stamina.current, state.stamina.initial,
                 enemy.stamina, enemy.staminaInitial
             );
@@ -380,6 +381,7 @@ export function renderBattle(container, getState, callbacks) {
             // Update stamina bars (re-read state for initial after sync)
             const { state: updatedState } = getState();
             updateStaminaBars(
+                container,
                 playerStamina, updatedState.stamina.initial,
                 enemy.stamina, enemy.staminaInitial
             );
@@ -419,8 +421,8 @@ export function renderBattle(container, getState, callbacks) {
                 endCombatUI(winner, playerStamina);
 
                 // Refresh history
-                if (historyEl) {
-                    loadCombatHistory(currentBook, historyEl);
+                if (historyContainer) {
+                    loadCombatHistory(currentBook, historyContainer);
                 }
 
                 callbacks.onCombatEnd();
@@ -460,14 +462,15 @@ export function renderBattle(container, getState, callbacks) {
 
             const { state: updatedState } = getState();
             updateStaminaBars(
+                container,
                 playerStamina, updatedState.stamina.initial,
                 enemy.stamina, enemy.staminaInitial
             );
 
             endCombatUI('fled', playerStamina);
 
-            if (historyEl) {
-                loadCombatHistory(currentBook, historyEl);
+            if (historyContainer) {
+                loadCombatHistory(currentBook, historyContainer);
             }
 
             callbacks.onCombatEnd();
@@ -476,8 +479,8 @@ export function renderBattle(container, getState, callbacks) {
 
     // Load battle history on init
     const { currentBook } = getState();
-    if (currentBook && historyEl) {
-        loadCombatHistory(currentBook, historyEl);
+    if (currentBook && historyContainer) {
+        loadCombatHistory(currentBook, historyContainer);
     }
 }
 
@@ -600,8 +603,8 @@ export async function loadCombatHistory(bookNumber, historyContainer) {
         `;
 
         // Toggle expand/collapse
-        const toggleEl = document.getElementById('combat-log-toggle');
-        const listEl   = document.getElementById('combat-log-list');
+        const toggleEl = historyContainer.querySelector('#combat-log-toggle');
+        const listEl   = historyContainer.querySelector('#combat-log-list');
         if (toggleEl && listEl) {
             toggleEl.addEventListener('click', () => {
                 if (listEl.hidden) {

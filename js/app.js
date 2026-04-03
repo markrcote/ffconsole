@@ -70,6 +70,7 @@ async function init() {
 
     // Initialise battle panel
     const combatSection = document.querySelector('.combat-section');
+    const historyContainer = document.getElementById('combat-history');
     if (combatSection) {
         renderBattle(combatSection, () => ({ state, combatState, currentBook }), {
             onStart: startCombat,
@@ -80,13 +81,7 @@ async function init() {
             onCombatEnd: () => { combatState.active = false; },
             onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
                 testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
-        });
-    }
-
-    // Load combat history for current session
-    const historyContainer = document.getElementById('combat-history');
-    if (currentBook && historyContainer) {
-        loadCombatHistory(currentBook, historyContainer);
+        }, historyContainer);
     }
 }
 
