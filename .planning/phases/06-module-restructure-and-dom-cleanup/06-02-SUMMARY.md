@@ -109,6 +109,19 @@ None - no external service configuration required.
 - Battle history section in `index.html` still updates after each combat via `historyContainer` arg threading
 - Phase 7 needs only to implement `closeBattleModal()` (call `overlay.remove()`) and wire a close button inside the modal
 
+## Self-Check: PASSED
+
+All created files verified present:
+- js/ui/battleModal.js: FOUND
+- index.html: FOUND (modified)
+- js/app.js: FOUND (modified)
+- .planning/phases/06-module-restructure-and-dom-cleanup/06-02-SUMMARY.md: FOUND
+
+All commits verified present:
+- 048ec43 (feat: create battleModal.js): FOUND
+- 5a2168f (feat: update index.html and app.js): FOUND
+- f9374d6 (docs: final metadata commit): FOUND
+
 ---
 *Phase: 06-module-restructure-and-dom-cleanup*
 *Completed: 2026-04-03*
