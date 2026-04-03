@@ -264,9 +264,6 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
                 );
                 endCombatUI(winner, playerStamina);
 
-                if (historyContainer) {
-                    loadCombatHistory(getState().currentBook, historyContainer);
-                }
                 callbacks.onCombatEnd();
             }
         });
@@ -303,16 +300,11 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
         );
         summaryEl.hidden = false;
 
-        // Bind New Battle button
-        const newBattleBtn = summaryEl.querySelector('#new-battle');
-        if (newBattleBtn) {
-            newBattleBtn.addEventListener('click', () => {
-                showSetup();
-                summaryEl.hidden = true;
-                summaryEl.innerHTML = '';
-                if (roundResultEl) roundResultEl.innerHTML = '';
-                if (combatResultEl) combatResultEl.textContent = '';
-                setButtonsDisabled(false);
+        // Bind Close button
+        const closeBattleBtn = summaryEl.querySelector('#close-battle');
+        if (closeBattleBtn) {
+            closeBattleBtn.addEventListener('click', () => {
+                callbacks.onClose?.();
             });
         }
     }
@@ -423,11 +415,6 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
                 );
                 endCombatUI(winner, playerStamina);
 
-                // Refresh history
-                if (historyContainer) {
-                    loadCombatHistory(currentBook, historyContainer);
-                }
-
                 callbacks.onCombatEnd();
                 return;
             }
@@ -471,10 +458,6 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
             );
 
             endCombatUI('fled', playerStamina);
-
-            if (historyContainer) {
-                loadCombatHistory(currentBook, historyContainer);
-            }
 
             callbacks.onCombatEnd();
         });
