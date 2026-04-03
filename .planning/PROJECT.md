@@ -20,11 +20,12 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 ## Current State
 
-**Phase 5 complete** — 2026-04-02 — Luck-in-combat testing added
+**Phase 6 complete** — 2026-04-03 — Combat modal skeleton built
 
-- ~1,300 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,240 LOC CSS
-- 5 phases, 19 plans completed
-- Full feature set: character creation, luck tests (standalone + in-combat), dice roller, battle system, book-specific mechanics
+- ~1,400 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,240 LOC CSS
+- 6 phases, 21 plans completed
+- Full feature set: character creation, luck tests (standalone + in-combat), dice roller, battle system (now modal-based), book-specific mechanics
+- `battle.js` fully container-scoped (zero `document.getElementById()` calls); `battleModal.js` created with `openBattleModal`/`closeBattleModal`; `index.html` inline combat section removed; "Start Battle" button wired
 
 **Tech stack:** Vanilla JS ES modules, FastAPI/SQLite, no build step, mobile-first
 
@@ -77,7 +78,8 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Battle as panel on adventure sheet (not separate screen) | User preference — keeps context while fighting | ✓ Good — works well on mobile |
+| Battle as modal overlay (not inline panel) | Cleaner adventure sheet; modal opens on "Start Battle" — Phase 6 | ✓ Good — container-scoped renderBattle() works with any container |
+| Battle as panel on adventure sheet (not separate screen) | User preference — keeps context while fighting | Superseded by Phase 6 modal approach |
 | Built-in book configs only (not user-configurable) | Simpler for v1; user-configurable is a future milestone | ✓ Good — configs are clean data files |
 | Both live tracker + persistent round log for combat | User wants to review what happened after the fight | ✓ Good — logs persist via ActionLog backend |
 | mechanics stored as TEXT JSON blob per session | Open-ended dict, no cross-session querying needed | ✓ Good — no schema migrations needed for new fields |
