@@ -20,12 +20,13 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 
 ## Current State
 
-**Phase 6 complete** — 2026-04-03 — Combat modal skeleton built
+**Phase 7 complete** — 2026-04-03 — Battle modal fully lifecycle-managed
 
-- ~1,400 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,240 LOC CSS
-- 6 phases, 21 plans completed
-- Full feature set: character creation, luck tests (standalone + in-combat), dice roller, battle system (now modal-based), book-specific mechanics
-- `battle.js` fully container-scoped (zero `document.getElementById()` calls); `battleModal.js` created with `openBattleModal`/`closeBattleModal`; `index.html` inline combat section removed; "Start Battle" button wired
+- ~1,450 LOC JavaScript (vanilla ES modules), ~400 LOC Python (FastAPI), ~1,260 LOC CSS
+- 7 phases, 23 plans completed
+- Full feature set: character creation, luck tests (standalone + in-combat), dice roller, battle system (modal with full lifecycle), book-specific mechanics
+- Battle modal: scroll lock (iOS Safari safe), slide-up/fade-out animations (300ms), focus management (#enemy-name on open, #start-battle-btn on close), dismiss guard with shake feedback during active combat, prefers-reduced-motion support
+- Validated in Phase 7: MODAL-04, MODAL-05, MODAL-10, MODAL-11, MODAL-12
 
 **Tech stack:** Vanilla JS ES modules, FastAPI/SQLite, no build step, mobile-first
 
@@ -113,4 +114,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context and Current State
 
 ---
-*Last updated: 2026-04-03 — v1.1 milestone started: combat modal UX restructure*
+*Last updated: 2026-04-03 — Phase 7 complete: battle modal lifecycle fully implemented*
