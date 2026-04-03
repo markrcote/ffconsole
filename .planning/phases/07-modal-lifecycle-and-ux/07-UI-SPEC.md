@@ -43,9 +43,9 @@ Declared values (must be multiples of 4):
 
 Exceptions:
 - Touch targets: minimum 44px height for all interactive elements (mobile-first requirement). Existing `.mechanic-btn` uses `min-height: 48px` — maintain this floor.
-- Modal padding: 25px (existing `.modal` rule) — retain as-is for visual consistency with charCreate modal.
-- Overlay padding: 20px (existing `.modal-overlay` rule) — retain.
 - Shake animation translation offsets: ±8px, ±6px, ±4px — sub-grid values used only within keyframe; not a spacing token.
+
+Note: Existing `.modal` and `.modal-overlay` padding values are inherited from pre-existing CSS; not modified in Phase 7.
 
 Source: `css/style.css` — existing measured values; mobile-first constraint from `CLAUDE.md`.
 
@@ -66,6 +66,14 @@ Notes:
 - No new type roles introduced in Phase 7. Animation/state changes do not introduce new sizes.
 
 Source: `css/style.css` — measured from existing rules (`.modal-title`, `.combat-label`, `.combat-input`, `.stat-current`).
+
+---
+
+## Visual Hierarchy
+
+Focal point: the modal heading ("Combat") commands the eye first on open — MedievalSharp 1.5rem, full-width centered. Immediately below, `#enemy-name` (the enemy name input) draws the next fixation as the only unfilled, focused interactive element. This two-step hierarchy (heading → input) guides the player to act without scanning.
+
+All other modal elements (stamina inputs, Start Combat button) are visually subordinate via smaller type size and lower contrast weight.
 
 ---
 
@@ -185,7 +193,7 @@ Source: D-06 from `07-CONTEXT.md`; Future Requirements from `REQUIREMENTS.md`.
 
 `combatActive` signal: `battleModal.js` maintains a local `let combatActive = false` boolean, flipped by the `onCombatStateChange(active)` callback added to the `callbacks` object passed to `renderBattle()` (per D-01).
 
-Escape handler: added as `keydown` listener on `document` when `openBattleModal()` runs; removed in `closeBattleModal()`. Mirrors the existing pattern at `app.js:440–445`.
+Escape handler: added as `keydown` listener on `document` when `openBattleModal()` runs; removed in `closeBattleModal()`. Mirrors the existing pattern at `js/app.js:440–445`.
 
 Backdrop handler: `click` on the `.modal-overlay` element (not the `.modal` inner box); checked via `event.target === overlay`.
 
@@ -195,17 +203,17 @@ Source: D-01, D-02 from `07-CONTEXT.md`.
 
 ## Copywriting Contract
 
-| Element | Copy |
-|---------|------|
-| Modal heading | "Combat" |
-| Enemy name input placeholder | "Name" |
-| Start combat CTA | "Start Combat" |
-| Roll round CTA | "Roll Round" |
-| Flee CTA | "Flee" |
-| Dismiss guard feedback | (no copy — shake animation only) |
-| Empty state (setup form, no history) | (not applicable — modal opens fresh each time) |
-| Error state | (not applicable in Phase 7 — validation is Phase 8 scope) |
-| Destructive actions in this phase | None — flee is a game mechanic, not a destructive UI action; no confirmation dialog needed |
+| Element | Copy | Notes |
+|---------|------|-------|
+| Modal heading | "Combat" | |
+| Enemy name input placeholder | "Name" | |
+| Start combat CTA | "Start Combat" | |
+| Roll round CTA | "Roll Round" | |
+| Flee CTA | "Flee" | Canonical FF rulebook term; noun ("the battle") is implicit in game context — single-word form is correct for the domain |
+| Dismiss guard feedback | (no copy — shake animation only) | Per D-02 |
+| Empty state (setup form, no history) | (not applicable — modal opens fresh each time) | |
+| Error state | (not applicable in Phase 7 — validation is Phase 8 scope) | |
+| Destructive actions in this phase | None — flee is a game mechanic, not a destructive UI action; no confirmation dialog needed | |
 
 Source: Existing HTML in `battleModal.js`; D-02 (no text on shake); Phase boundary from `07-CONTEXT.md`.
 
