@@ -85,8 +85,12 @@ Plans:
   1. After combat ends (Victory, Defeated, or Fled), a summary showing outcome, round count, and final Stamina values is shown inside the modal
   2. A "Close" / "Return to Sheet" button is the only way to dismiss the modal after combat — backdrop and Escape remain blocked
   3. The battle history log on the adventure sheet (outside the modal) is visible and up to date immediately after the modal closes
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 08-01-PLAN.md — battle.js: fix CSS class bug, replace New Battle with Close button, remove in-fight history calls
+- [ ] 08-02-PLAN.md — battleModal.js + app.js: postCombatPending flag, onClose/onModalClose callbacks, human verify
 
 ## Progress
 
@@ -99,7 +103,7 @@ Plans:
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
-| 8. Post-Combat Flow and History | v1.1 | 0/? | Not started | — |
+| 8. Post-Combat Flow and History | v1.1 | 0/2 | Planned | — |
 
 ## Backlog
 
