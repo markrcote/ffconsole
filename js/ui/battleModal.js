@@ -6,17 +6,59 @@
 
 import { renderBattle } from './battle.js';
 
+// Module-level state
+let savedScroll = 0;
+let combatActive = false;
+let escHandler = null;
+let overlayRef = null;
+
+/**
+ * Trigger shake animation on modal element.
+ * Uses void offsetWidth reflow to re-trigger if already shaking.
+ * @param {HTMLElement} overlay
+ */
+function triggerShake(overlay) {
+    const modal = overlay.querySelector('.modal');
+    if (!modal) return;
+    modal.classList.remove('modal--shake');
+    void modal.offsetWidth; // Force reflow to re-trigger animation
+    modal.classList.add('modal--shake');
+    modal.addEventListener('animationend', () => {
+        modal.classList.remove('modal--shake');
+    }, { once: true });
+}
+
+/**
+ * Teardown: remove overlay, restore scroll, return focus.
+ * Order matters (iOS Safari): remove overlay FIRST, then un-fix body, then restore scroll.
+ * @param {HTMLElement} overlay
+ */
+function teardown(overlay) {
+    overlay.remove();
+    document.body.style.cssText = '';
+    window.scrollTo(0, savedScroll);
+    overlayRef = null;
+    combatActive = false;
+
+    // Return focus to Start Battle button (Focus Management Contract)
+    document.getElementById('start-battle-btn')?.focus();
+}
+
 /**
  * Open the battle modal overlay.
  * Creates the overlay element, appends to document.body, and initialises
  * the battle UI inside it via renderBattle().
  *
  * @param {Function} getState - Returns { state, combatState, currentBook }
- * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd, onTestLuck }
+ * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd, onTestLuck, onCombatStateChange }
  */
 export function openBattleModal(getState, callbacks) {
+    // Scroll lock (D-03): save position and fix body
+    savedScroll = window.scrollY;
+    document.body.style.cssText = `position:fixed; top:-${savedScroll}px; width:100%;`;
+
     const overlay = document.createElement('div');
-    overlay.className = 'modal-overlay active';
+    overlay.className = 'modal-overlay active modal-overlay--opening';
     overlay.innerHTML = `
         <div class="modal battle-modal">
             <h2 class="modal-title">Combat</h2>
@@ -72,22 +114,85 @@ export function openBattleModal(getState, callbacks) {
         </div>
     `;
 
+    // Store overlay reference before appending
+    overlayRef = overlay;
+
     document.body.appendChild(overlay);
 
+    // Remove opening animation class after animation completes
+    const modal = overlay.querySelector('.modal');
+    if (modal) {
+        modal.addEventListener('animationend', () => {
+            overlay.classList.remove('modal-overlay--opening');
+        }, { once: true });
+    }
+
+    // Focus management (D-06): focus enemy name input after paint
+    requestAnimationFrame(() => {
+        overlay.querySelector('#enemy-name')?.focus();
+    });
+
+    // Wrap callbacks to intercept onCombatStateChange (D-01)
+    const wrappedCallbacks = {
+        ...callbacks,
+        onCombatStateChange: (active) => {
+            combatActive = active;
+            callbacks.onCombatStateChange?.(active);
+        }
+    };
+
+    // Escape dismiss guard (D-02)
+    escHandler = (e) => {
+        if (e.key !== 'Escape') return;
+        e.preventDefault();
+        if (combatActive) {
+            triggerShake(overlay);
+        } else {
+            closeBattleModal();
+        }
+    };
+    document.addEventListener('keydown', escHandler);
+
+    // Backdrop click dismiss guard (D-02)
+    overlay.addEventListener('click', (e) => {
+        if (e.target !== overlay) return;
+        if (combatActive) {
+            triggerShake(overlay);
+        } else {
+            closeBattleModal();
+        }
+    });
+
     // Pass the inner .battle-modal div (not the overlay) as container to renderBattle.
-    // This matches the existing pattern where renderBattle() was passed .combat-section.
     const modalEl = overlay.querySelector('.battle-modal');
 
     // History container remains in index.html outside the modal.
     const historyContainer = document.getElementById('combat-history');
 
-    renderBattle(modalEl, getState, callbacks, historyContainer);
+    renderBattle(modalEl, getState, wrappedCallbacks, historyContainer);
 }
 
 /**
  * Close the battle modal overlay.
- * Phase 7 implements full teardown (overlay.remove(), scroll unlock, etc.)
+ * Removes Escape handler, plays fade-out animation (unless reduced-motion),
+ * then calls teardown to remove DOM, restore scroll, and return focus.
  */
 export function closeBattleModal() {
-    // Phase 7 implements teardown
+    const overlay = overlayRef;
+    if (!overlay) return;
+
+    // Remove Escape handler
+    if (escHandler) {
+        document.removeEventListener('keydown', escHandler);
+        escHandler = null;
+    }
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion) {
+        teardown(overlay);
+        return;
+    }
+
+    overlay.classList.add('modal-overlay--closing');
+    overlay.addEventListener('animationend', () => teardown(overlay), { once: true });
 }

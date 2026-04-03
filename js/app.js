@@ -10,7 +10,7 @@ import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 import { showCharCreate } from './ui/charCreate.js';
 import { renderDiceRoller } from './ui/diceRoller.js';
 import { loadCombatHistory } from './ui/battle.js';
-import { openBattleModal } from './ui/battleModal.js';
+import { openBattleModal, closeBattleModal } from './ui/battleModal.js';
 import { renderBookMechanics } from './ui/bookMechanics.js';
 import { roll } from './dice.js';
 
@@ -84,6 +84,7 @@ async function init() {
                     onCombatEnd: () => { combatState.active = false; },
                     onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
                         testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
+                    onCombatStateChange: (active) => { combatState.active = active; },
                 }
             );
         });
