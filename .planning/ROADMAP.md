@@ -26,7 +26,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 - [x] **Phase 5: Luck-in-Combat Testing** — Optional luck test during combat rounds; Lucky/Unlucky modifies damage; Luck decrements either way
 - [x] **Phase 6: Module Restructure and DOM Cleanup** — Scope battle.js to a container argument; introduce battleModal.js skeleton; wire "Start Battle" trigger (completed 2026-04-03)
 - [ ] **Phase 7: Modal Lifecycle and UX** — Full open/close lifecycle with scroll lock, dismiss guards, animations, and focus management
-- [ ] **Phase 8: Post-Combat Flow and History** — Summary screen inside modal, explicit Close button, history refresh on sheet
+- [x] **Phase 8: Post-Combat Flow and History** — Summary screen inside modal, explicit Close button, history refresh on sheet (completed 2026-04-03)
 
 ## Phase Details
 
@@ -90,7 +90,7 @@ Plans:
 
 Plans:
 - [x] 08-01-PLAN.md — battle.js: fix CSS class bug, replace New Battle with Close button, remove in-fight history calls
-- [ ] 08-02-PLAN.md — battleModal.js + app.js: postCombatPending flag, onClose/onModalClose callbacks, human verify
+- [x] 08-02-PLAN.md — battleModal.js + app.js: postCombatPending flag, onClose/onModalClose callbacks, human verify
 
 ## Progress
 
@@ -103,7 +103,7 @@ Plans:
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
-| 8. Post-Combat Flow and History | v1.1 | 1/2 | In Progress|  |
+| 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
 
 ## Backlog
 

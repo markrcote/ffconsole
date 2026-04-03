@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
-status: executing
-stopped_at: Completed 08-01-PLAN.md
-last_updated: "2026-04-03T20:54:16.845Z"
+status: verifying
+stopped_at: "Checkpoint: 08-02-PLAN.md awaiting human-verify"
+last_updated: "2026-04-03T20:57:30.228Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 4
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 8
-  completed_plans: 7
+  completed_plans: 8
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 Phase: 08 (post-combat-flow-and-history) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 | Phase 07 P01 | 5 | 2 tasks | 2 files |
 | Phase 07 P02 | 525873min | 3 tasks | 2 files |
 | Phase 08 P01 | 3 | 2 tasks | 1 files |
+| Phase 08 P02 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -82,6 +83,7 @@ Recent decisions affecting current work:
 - [Phase 07]: Two-level onCombatStateChange: battleModal.js intercepts local flag + propagates to app.js for global state sync
 - [Phase 08]: Map winner 'enemy' to CSS modifier 'defeat' in renderSummaryHTML to match CSS class --defeat
 - [Phase 08]: Remove in-fight loadCombatHistory calls; history refresh deferred to post-modal-teardown in Plan 02
+- [Phase 08]: postCombatPending set on combatActive-to-false transition, cleared in teardown; onClose injected via wrappedCallbacks (D-17); onModalCloseCallback fires after focus restore for history refresh
 
 ### Pending Todos
 
@@ -100,6 +102,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T20:54:16.842Z
-Stopped at: Completed 08-01-PLAN.md
+Last session: 2026-04-03T20:57:30.224Z
+Stopped at: Checkpoint: 08-02-PLAN.md awaiting human-verify
 Resume file: None

@@ -26,8 +26,8 @@
 
 ### Battle History
 
-- [ ] **MODAL-08**: Battle history log remains on the adventure sheet (not inside the modal)
-- [ ] **MODAL-09**: History log refreshes automatically when the combat modal closes
+- [x] **MODAL-08**: Battle history log remains on the adventure sheet (not inside the modal)
+- [x] **MODAL-09**: History log refreshes automatically when the combat modal closes
 
 ### UX Polish
 
@@ -63,8 +63,8 @@
 | MODAL-05 | Phase 7 | Complete |
 | MODAL-06 | Phase 8 | Complete |
 | MODAL-07 | Phase 8 | Complete |
-| MODAL-08 | Phase 8 | Pending |
-| MODAL-09 | Phase 8 | Pending |
+| MODAL-08 | Phase 8 | Complete |
+| MODAL-09 | Phase 8 | Complete |
 | MODAL-10 | Phase 7 | Complete |
 | MODAL-11 | Phase 7 | Complete |
 | MODAL-12 | Phase 7 | Complete |
