@@ -70,8 +70,12 @@ Plans:
   3. Tapping the backdrop or pressing Escape during active combat does nothing (no accidental dismissal)
   4. The modal slides up on open and fades out on close; neither animation plays when prefers-reduced-motion is set
   5. Focus moves to the enemy name input when the modal opens
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 07-01-PLAN.md — CSS animation keyframes (slide-up, fade-out, shake) and onCombatStateChange callback in battle.js
+- [ ] 07-02-PLAN.md — battleModal.js full lifecycle (scroll lock, animation, focus, dismiss guard, teardown) and app.js wiring
 
 ### Phase 8: Post-Combat Flow and History
 **Goal**: Combat ends with a readable summary inside the modal; the player explicitly closes it; the sheet's battle history updates automatically to reflect the completed fight
@@ -94,7 +98,7 @@ Plans:
 | 4. Book Configs | v1.0 | 3/3 | Complete | 2026-04-02 |
 | 5. Luck-in-combat testing | v1.1 | 2/2 | Complete | 2026-04-03 |
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
-| 7. Modal Lifecycle and UX | v1.1 | 0/? | Not started | — |
+| 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
 | 8. Post-Combat Flow and History | v1.1 | 0/? | Not started | — |
 
 ## Backlog
