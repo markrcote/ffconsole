@@ -95,3 +95,81 @@ def test_delete_session(client):
 def test_delete_session_not_found(client):
     r = client.delete("/api/sessions/99")
     assert r.status_code == 404
+
+
+# --- mechanics field ---
+
+def test_create_session_with_mechanics(client):
+    body = {**SESSION_BODY, "mechanics": {"extraStat": 5}}
+    r = client.post("/api/sessions", json=body)
+    assert r.status_code == 201
+    assert r.json()["mechanics"] == {"extraStat": 5}
+
+
+def test_upsert_session_persists_mechanics(client):
+    body = {**SESSION_BODY, "mechanics": {"resource": 3}}
+    r = client.put("/api/sessions/1", json=body)
+    assert r.status_code == 200
+    assert r.json()["mechanics"] == {"resource": 3}
+
+
+def test_patch_session_updates_mechanics(client):
+    client.post("/api/sessions", json=SESSION_BODY)
+    r = client.patch("/api/sessions/1", json={"mechanics": {"honor": 10}})
+    assert r.status_code == 200
+    assert r.json()["mechanics"] == {"honor": 10}
+    assert r.json()["stamina"]["current"] == 20  # unchanged
+
+
+# --- PATCH partial-field tests ---
+
+def test_patch_session_updates_only_skill(client):
+    client.post("/api/sessions", json=SESSION_BODY)
+    r = client.patch("/api/sessions/1", json={"skill": {"initial": 10, "current": 8}})
+    assert r.status_code == 200
+    assert r.json()["skill"]["current"] == 8
+    assert r.json()["stamina"]["current"] == 20  # unchanged
+    assert r.json()["luck"]["current"] == 9      # unchanged
+
+
+def test_patch_session_updates_only_stamina(client):
+    client.post("/api/sessions", json=SESSION_BODY)
+    r = client.patch("/api/sessions/1", json={"stamina": {"initial": 20, "current": 15}})
+    assert r.status_code == 200
+    assert r.json()["stamina"]["current"] == 15
+    assert r.json()["skill"]["current"] == 10    # unchanged
+    assert r.json()["luck"]["current"] == 9      # unchanged
+
+
+def test_patch_session_updates_only_name(client):
+    client.post("/api/sessions", json=SESSION_BODY)
+    r = client.patch("/api/sessions/1", json={"name": "Zanbar"})
+    assert r.status_code == 200
+    assert r.json()["name"] == "Zanbar"
+    assert r.json()["stamina"]["current"] == 20  # unchanged
+
+
+# --- list ordering ---
+
+def test_list_sessions_ordered_by_book_number(client):
+    client.post("/api/sessions", json={**SESSION_BODY, "book_number": 5})
+    client.post("/api/sessions", json={**SESSION_BODY, "book_number": 1})
+    client.post("/api/sessions", json={**SESSION_BODY, "book_number": 3})
+    r = client.get("/api/sessions")
+    assert r.status_code == 200
+    book_numbers = [s["book_number"] for s in r.json()]
+    assert book_numbers == sorted(book_numbers)
+
+
+# --- input validation ---
+
+def test_create_session_rejects_book_number_zero(client):
+    body = {**SESSION_BODY, "book_number": 0}
+    r = client.post("/api/sessions", json=body)
+    assert r.status_code == 422
+
+
+def test_create_session_rejects_negative_stat(client):
+    body = {**SESSION_BODY, "skill": {"initial": -1, "current": 10}}
+    r = client.post("/api/sessions", json=body)
+    assert r.status_code == 422
