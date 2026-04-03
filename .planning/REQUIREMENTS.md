@@ -54,17 +54,17 @@
 
 ## Traceability
 
-| REQ-ID | Phase |
-|--------|-------|
-| MODAL-01 | TBD |
-| MODAL-02 | TBD |
-| MODAL-03 | TBD |
-| MODAL-04 | TBD |
-| MODAL-05 | TBD |
-| MODAL-06 | TBD |
-| MODAL-07 | TBD |
-| MODAL-08 | TBD |
-| MODAL-09 | TBD |
-| MODAL-10 | TBD |
-| MODAL-11 | TBD |
-| MODAL-12 | TBD |
+| REQ-ID | Phase | Status |
+|--------|-------|--------|
+| MODAL-01 | Phase 6 | Pending |
+| MODAL-02 | Phase 6 | Pending |
+| MODAL-03 | Phase 6 | Pending |
+| MODAL-04 | Phase 7 | Pending |
+| MODAL-05 | Phase 7 | Pending |
+| MODAL-06 | Phase 8 | Pending |
+| MODAL-07 | Phase 8 | Pending |
+| MODAL-08 | Phase 8 | Pending |
+| MODAL-09 | Phase 8 | Pending |
+| MODAL-10 | Phase 7 | Pending |
+| MODAL-11 | Phase 7 | Pending |
+| MODAL-12 | Phase 7 | Pending |

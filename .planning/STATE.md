@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: milestone
-status: executing
-stopped_at: Phase 5 context gathered
-last_updated: "2026-04-02T20:46:54.132Z"
-last_activity: 2026-04-02
+milestone: v1.1
+milestone_name: Combat Modal
+status: ready_to_plan
+stopped_at: Phase 6 ready to plan
+last_updated: "2026-04-03T00:00:00.000Z"
+last_activity: 2026-04-03
 progress:
-  total_phases: 1
-  completed_phases: 1
-  total_plans: 2
-  completed_plans: 2
+  total_phases: 3
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -18,56 +18,41 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-03-28)
+See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 05 — luck-in-combat-testing
+**Current focus:** Phase 6 — Module Restructure and DOM Cleanup
 
 ## Current Position
 
-Phase: Not started (defining requirements)
-Plan: —
-Status: Defining requirements
-Last activity: 2026-04-03 — Milestone v1.1 started
+Phase: 6 of 8 (Module Restructure and DOM Cleanup)
+Plan: 0 of ? in current phase
+Status: Ready to plan
+Last activity: 2026-04-03 — v1.1 roadmap created; Phases 6–8 defined for Combat Modal milestone
 
-Progress: [░░░░░░░░░░] 0%
+Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
 
 ## Performance Metrics
 
 **Velocity:**
-
-- Total plans completed: 0
-- Average duration: —
-- Total execution time: —
+- Total plans completed: 19 (across v1.0 + Phase 5)
+- Average duration: ~3 min/plan (v1.0 history)
+- Total execution time: ~1 hour
 
 **By Phase:**
 
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
-| - | - | - | - |
+| 1. Foundation | 3 | ~29 min | ~10 min |
+| 2. Core Mechanics | 6 | ~10 min | ~2 min |
+| 3. Battle System | 5 | ~8 min | ~2 min |
+| 4. Book Configs | 3 | ~14 min | ~5 min |
+| 5. Luck-in-combat | 2 | — | — |
 
 **Recent Trend:**
-
-- Last 5 plans: —
-- Trend: —
+- Trend: Stable
 
 *Updated after each plan completion*
-| Phase 01-foundation P01 | 6 | 2 tasks | 6 files |
-| Phase 01-foundation P02 | 8 | 2 tasks | 4 files |
-| Phase 01-foundation P03 | 15 | 2 tasks | 6 files |
-| Phase 02-core-mechanics P02 | 1 | 1 tasks | 1 files |
-| Phase 02-core-mechanics P01 | 2 | 2 tasks | 2 files |
-| Phase 02-core-mechanics P04 | 1min | 1 tasks | 1 files |
-| Phase 02-core-mechanics P03 | 2 | 2 tasks | 1 files |
-| Phase 02-core-mechanics P05 | 2 | 2 tasks | 2 files |
-| Phase 02-core-mechanics P06 | 2min | 1 tasks | 1 files |
-| Phase 03-battle-system P01 | 3min | 1 tasks | 1 files |
-| Phase 03-battle-system P03 | 1min | 1 tasks | 1 files |
-| Phase 03-battle-system P02 | 1min | 1 tasks | 1 files |
-| Phase 03-battle-system P04 | 2min | 2 tasks | 1 files |
-| Phase 03-battle-system P05 | 1min | 2 tasks | 1 files |
-| Phase 04-book-configs P01 | 8min | 2 tasks | 5 files |
-| Phase 04-book-configs P02 | 3min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -76,35 +61,10 @@ Progress: [░░░░░░░░░░] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- Roadmap: Battle as panel on adventure sheet (not separate screen) — pending confirmation
-- Roadmap: Built-in book configs only for v1 (Freeway Fighter deferred to v2)
-- Roadmap: Both live Stamina tracker + persistent round log for combat
-- [Phase 01-foundation]: mechanics stored as TEXT JSON blob per session — open-ended dict, no cross-session querying needed
-- [Phase 01-foundation]: name column added during first DB recreate to avoid second recreate in Phase 2
-- [Phase 01-foundation]: drop_all in init_db() for Phase 1 development; to be removed after Phase 1 completes
-- [Phase 01-foundation]: Config registry uses lazy thunks for book-specific mechanics; getBookConfig() with default fallback pattern established
-- [Phase 01-foundation]: ui/*.js modules receive state and callbacks as arguments — no imports of app.js to prevent circular dependencies (D-17)
-- [Phase 01-foundation]: storage.js only PUTs currentBook session on save; currentBook derived from updated_at ordering of GET /api/sessions
-- [Phase 02-core-mechanics]: .die-face defined in CSS plan (02-02) rather than per-feature plan — ensures visual consistency across char create and dice roller
-- [Phase 02-core-mechanics]: name added as last field in each schema class to minimize diff
-- [Phase 02-core-mechanics]: diceRoller import uses ../dice.js (not ./dice.js) — widget lives at js/ui/, dice.js at js/
-- [Phase 02-core-mechanics]: 2d6 display: two .die-face spans + one .dice-total span (D-11 contract)
-- [Phase 02-core-mechanics]: Import paths in charCreate.js use ../ prefix (../dice.js, ../books.js) — file lives at js/ui/ not js/
-- [Phase 02-core-mechanics]: showCharCreate receives state as destructured params {games, currentBook, save, onComplete} — no app.js import
-- [Phase 02-core-mechanics]: Cosmetic dice for luck display rolled locally; testLuck() uses own internal roll — both random, game correctness unaffected
-- [Phase 02-core-mechanics]: showCharCreate replaces showBookModal(true/false) for all new-adventure entry points in app.js
-- [Phase 02-core-mechanics]: storage.js load() returns null immediately on backend OK + empty sessions — localStorage fallback only on network/server error
-- [Phase 03-battle-system]: Reuse combat_end action type (not new combat_flee) — matches existing app.js endCombat POST payload
-- [Phase 03-battle-system]: combat-enemy-stamina text element removed in favour of visual stamina bars in battle UI
-- [Phase 03-battle-system]: Added --parchment-stain and --accent-green to :root CSS variables for battle component theming
-- [Phase 03-battle-system]: battle.js receives all state via getState() and mechanic calls via callbacks — never imports app.js (D-17 pattern)
-- [Phase 03-battle-system]: splitRoll is cosmetic display only — 2d6 total from server is authoritative for game logic
-- [Phase 03-battle-system]: renderBattle/loadCombatHistory wired in init() after diceRoller; onFlee and onEnd both use endCombat — winner differentiated by battle.js
-- [Phase 04-book-configs]: Clue/spell/ability names use numbered placeholders — exact canonical names not confirmable without book access
-- [Phase 04-book-configs]: superpower key absent from default.js — only book configs defining superpowers include it (presence check required in renderer)
-- [Phase 04-book-configs]: renderBookMechanics does full DOM rebuild on each call; updateDisplay() helper handles snappy incremental updates
-- [Phase 04-book-configs]: Async IIFE wraps getBookConfig() in book click handler for non-blocking config lookup
-- [Phase 04-book-configs]: onComplete 4th param is null when no superpower applies — app.js wiring must handle both null and string
+- D-17 pattern: UI modules receive `getState` and `callbacks` as arguments; never import `app.js`
+- create-on-open / destroy-on-close modal pattern chosen (avoids listener stacking on repeated opens)
+- `battle.js` refactor target: `renderBattleActive(container, enemyData, getState, callbacks)` — all DOM queries scoped to container argument
+- Reference implementation for modal lifecycle: `charCreate.js` dynamic overlay pattern
 
 ### Pending Todos
 
@@ -112,12 +72,11 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 5 (Battle): Confirm `/api/sessions/{book}/actions` POST/GET payload shape before implementing round log persistence — flagged in research SUMMARY.md
-- Phase 1: `fleeFreeAttack` config key not fully specified in research; resolve during config schema design
-- Phase 1: After execution, remove `drop_all` from `database.py` (noted by plan checker — not part of any plan task, needs manual cleanup)
+- `combatActive` exposure mechanism not yet decided — getter function, callback, or module-level variable; decide at start of Phase 7 before writing close handler
+- Minimum supported browser for `inert` attribute not documented; if older than 2023 baseline, fall back to `aria-hidden="true"` on `<main>`
 
 ## Session Continuity
 
-Last session: 2026-04-02T15:48:40.218Z
-Stopped at: Phase 5 context gathered
-Resume file: .planning/phases/05-luck-in-combat-testing/05-CONTEXT.md
+Last session: 2026-04-03
+Stopped at: Roadmap created — Phase 6 ready to plan
+Resume file: None
