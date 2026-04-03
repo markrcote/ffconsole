@@ -129,10 +129,11 @@ function renderRoundCard(round, result, enemy, playerStamina, playerSkill, luckR
  */
 function renderSummaryHTML(winner, rounds, playerStaminaFinal, playerStaminaInitial, enemy) {
     const titleText = winner === 'player' ? 'Victory!' : winner === 'enemy' ? 'Defeated' : 'Fled';
+    const titleModifier = winner === 'enemy' ? 'defeat' : winner;
 
     return `
         <div class="combat-summary">
-            <div class="combat-summary__title combat-summary__title--${winner}">
+            <div class="combat-summary__title combat-summary__title--${titleModifier}">
                 ${titleText}
             </div>
             <div class="combat-summary__stats">
@@ -149,7 +150,7 @@ function renderSummaryHTML(winner, rounds, playerStaminaFinal, playerStaminaInit
                     ${enemy.stamina}/${enemy.staminaInitial}
                 </div>
             </div>
-            <button class="mechanic-btn" id="new-battle">New Battle</button>
+            <button class="mechanic-btn mechanic-btn--primary" id="close-battle">Return to Sheet</button>
         </div>
     `;
 }
