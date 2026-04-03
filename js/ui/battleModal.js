@@ -11,6 +11,8 @@ let savedScroll = 0;
 let combatActive = false;
 let escHandler = null;
 let overlayRef = null;
+let postCombatPending = false;
+let onModalCloseCallback = null;
 
 /**
  * Trigger shake animation on modal element.
@@ -39,9 +41,13 @@ function teardown(overlay) {
     window.scrollTo(0, savedScroll);
     overlayRef = null;
     combatActive = false;
+    postCombatPending = false;
 
     // Return focus to Start Battle button (Focus Management Contract)
     document.getElementById('start-battle-btn')?.focus();
+
+    onModalCloseCallback?.();
+    onModalCloseCallback = null;
 }
 
 /**
@@ -55,6 +61,7 @@ function teardown(overlay) {
 export function openBattleModal(getState, callbacks) {
     // Scroll lock (D-03): save position and fix body
     savedScroll = window.scrollY;
+    onModalCloseCallback = callbacks.onModalClose ?? null;
     document.body.style.cssText = `position:fixed; top:-${savedScroll}px; width:100%;`;
 
     const overlay = document.createElement('div');
@@ -136,8 +143,15 @@ export function openBattleModal(getState, callbacks) {
     const wrappedCallbacks = {
         ...callbacks,
         onCombatStateChange: (active) => {
+            if (combatActive && !active) {
+                postCombatPending = true;
+            }
             combatActive = active;
             callbacks.onCombatStateChange?.(active);
+        },
+        onClose: () => {
+            postCombatPending = false;
+            closeBattleModal();
         }
     };
 
@@ -145,7 +159,7 @@ export function openBattleModal(getState, callbacks) {
     escHandler = (e) => {
         if (e.key !== 'Escape') return;
         e.preventDefault();
-        if (combatActive) {
+        if (combatActive || postCombatPending) {
             triggerShake(overlay);
         } else {
             closeBattleModal();
@@ -156,7 +170,7 @@ export function openBattleModal(getState, callbacks) {
     // Backdrop click dismiss guard (D-02)
     overlay.addEventListener('click', (e) => {
         if (e.target !== overlay) return;
-        if (combatActive) {
+        if (combatActive || postCombatPending) {
             triggerShake(overlay);
         } else {
             closeBattleModal();
