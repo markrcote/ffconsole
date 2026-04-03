@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
-status: ready_to_plan
-stopped_at: Phase 6 ready to plan
-last_updated: "2026-04-03T00:00:00.000Z"
-last_activity: 2026-04-03
+status: planning
+stopped_at: Phase 6 UI-SPEC approved
+last_updated: "2026-04-03T14:34:59.053Z"
+last_activity: 2026-04-03 — v1.1 roadmap created; Phases 6–8 defined for Combat Modal milestone
 progress:
-  total_phases: 3
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
+  total_phases: 4
+  completed_phases: 1
+  total_plans: 2
+  completed_plans: 2
   percent: 0
 ---
 
@@ -35,6 +35,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 ## Performance Metrics
 
 **Velocity:**
+
 - Total plans completed: 19 (across v1.0 + Phase 5)
 - Average duration: ~3 min/plan (v1.0 history)
 - Total execution time: ~1 hour
@@ -50,6 +51,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 | 5. Luck-in-combat | 2 | — | — |
 
 **Recent Trend:**
+
 - Trend: Stable
 
 *Updated after each plan completion*
@@ -77,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03
-Stopped at: Roadmap created — Phase 6 ready to plan
-Resume file: None
+Last session: 2026-04-03T14:34:59.049Z
+Stopped at: Phase 6 UI-SPEC approved
+Resume file: .planning/phases/06-module-restructure-and-dom-cleanup/06-UI-SPEC.md
