@@ -1,7 +1,8 @@
 ---
 phase: 6
 slug: module-restructure-and-dom-cleanup
-status: draft
+status: approved
+reviewed_at: 2026-04-03
 shadcn_initialized: false
 preset: none
 created: 2026-04-03
@@ -45,12 +46,12 @@ Declared values (must be multiples of 4):
 | md | 16px | Default element spacing, section internal padding |
 | lg | 20px | Section top/bottom padding (`.mechanics-section padding-top: 20px`) |
 | xl | 24px | Section heading margin-bottom, modal internal spacing |
-| 2xl | 30px | Adventure sheet section margin-bottom |
 | 3xl | 48px | Not currently used — reserve for future layout |
 
 Exceptions:
 - Touch targets: `min-height: 48px` on `.mechanic-btn` (D-18 pattern from existing CSS). The "Start Battle" button inherits this via `mechanic-btn` class.
 - Modal overlay padding: 20px on all sides (existing `.modal-overlay` rule).
+- **30px pre-existing CSS value:** `.sheet-header { margin-bottom: 30px }` (line 63) and `.stats-section { margin-bottom: 30px }` (line 96) in `css/style.css`. These are pre-existing layout values that cannot be changed without a CSS audit of the adventure sheet layout. Not represented as a grid token; treated as a legacy exception. Phase 6 introduces no new 30px spacing.
 
 Source: `css/style.css` — extracted from `.mechanics-section`, `.mechanic-btn`, `.modal-overlay`, `.combat-actions`, `.test-buttons`.
 
