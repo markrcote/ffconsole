@@ -85,6 +85,12 @@ async function init() {
                     onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
                         testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
                     onCombatStateChange: (active) => { combatState.active = active; },
+                    onModalClose: () => {
+                        const historyContainer = document.getElementById('combat-history');
+                        if (currentBook && historyContainer) {
+                            loadCombatHistory(currentBook, historyContainer);
+                        }
+                    },
                 }
             );
         });
