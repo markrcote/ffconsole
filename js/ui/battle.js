@@ -160,7 +160,7 @@ function renderSummaryHTML(winner, rounds, playerStaminaFinal, playerStaminaInit
  * Bind the battle UI to existing DOM elements in the combat section.
  * @param {HTMLElement} container - .combat-section element
  * @param {Function} getState - returns { state, combatState, currentBook }
- * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd }
+ * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd, onTestLuck, onCombatStateChange }
  */
 export function renderBattle(container, getState, callbacks, historyContainer = null) {
     if (!container) return;
@@ -289,6 +289,7 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
     function endCombatUI(winner, playerStaminaFinal) {
         dismissLuckPrompt();
         combatActive = false;
+        callbacks.onCombatStateChange?.(false);
         setButtonsDisabled(true);
 
         const { state } = getState();
@@ -328,6 +329,7 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
 
             // Initialise local combat state
             combatActive = true;
+            callbacks.onCombatStateChange?.(true);
             round = 1;
             enemy = { name: nameVal, skill: skillVal, stamina: staminaVal, staminaInitial: staminaVal };
 

@@ -292,6 +292,45 @@ body {
     display: flex;
 }
 
+/* === Phase 7: Modal Animation === */
+@keyframes modal-slide-up {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+@keyframes modal-fade-out {
+    from { opacity: 1; }
+    to   { opacity: 0; }
+}
+
+@keyframes modal-shake {
+    0%   { transform: translateX(0); }
+    15%  { transform: translateX(-8px); }
+    30%  { transform: translateX(8px); }
+    45%  { transform: translateX(-6px); }
+    60%  { transform: translateX(6px); }
+    75%  { transform: translateX(-4px); }
+    100% { transform: translateX(0); }
+}
+
+.modal-overlay--opening .modal {
+    animation: modal-slide-up 300ms ease-out;
+}
+
+.modal-overlay--closing {
+    animation: modal-fade-out 300ms ease-in forwards;
+}
+
+.modal--shake {
+    animation: modal-shake 300ms ease-in-out;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .modal-overlay--opening .modal { animation: none; }
+    .modal-overlay--closing { animation: none; opacity: 0; }
+    .modal--shake { animation: none; }
+}
+
 .modal {
     background: var(--paper-bg);
     max-width: 500px;
