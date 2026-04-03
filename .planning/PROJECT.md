@@ -8,6 +8,16 @@ A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ia
 
 Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
 
+## Current Milestone: v1.1 Combat Modal
+
+**Goal:** Move combat out of the inline sheet panel into a modal overlay for a cleaner adventure sheet experience.
+
+**Target features:**
+- "Start Battle" button on the adventure sheet opens combat modal
+- Full combat system runs inside the modal overlay
+- Post-combat summary screen shown inside modal before it closes
+- Battle history log remains on the sheet (bottom), outside the modal
+
 ## Current State
 
 **Phase 5 complete** — 2026-04-02 — Luck-in-combat testing added
@@ -101,4 +111,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context and Current State
 
 ---
-*Last updated: 2026-04-02 after v1.0 milestone — full MVP shipped*
+*Last updated: 2026-04-03 — v1.1 milestone started: combat modal UX restructure*
