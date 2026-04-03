@@ -9,7 +9,8 @@ import { testLuck, testCombatLuck, startCombat, rollCombatRound, endCombat } fro
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
 import { showCharCreate } from './ui/charCreate.js';
 import { renderDiceRoller } from './ui/diceRoller.js';
-import { renderBattle, loadCombatHistory } from './ui/battle.js';
+import { loadCombatHistory } from './ui/battle.js';
+import { openBattleModal } from './ui/battleModal.js';
 import { renderBookMechanics } from './ui/bookMechanics.js';
 import { roll } from './dice.js';
 
@@ -68,20 +69,30 @@ async function init() {
     const diceSection = document.getElementById('dice-section');
     if (diceSection) renderDiceRoller(diceSection);
 
-    // Initialise battle panel
-    const combatSection = document.querySelector('.combat-section');
+    // Wire Start Battle button to open combat modal
+    const startBattleBtn = document.getElementById('start-battle-btn');
+    if (startBattleBtn) {
+        startBattleBtn.addEventListener('click', () => {
+            openBattleModal(
+                () => ({ state, combatState, currentBook }),
+                {
+                    onStart: startCombat,
+                    onRollRound: rollCombatRound,
+                    onFlee: endCombat,
+                    onEnd: endCombat,
+                    onStatSync: syncStateFromServer,
+                    onCombatEnd: () => { combatState.active = false; },
+                    onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
+                        testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
+                }
+            );
+        });
+    }
+
+    // Load combat history for current session
     const historyContainer = document.getElementById('combat-history');
-    if (combatSection) {
-        renderBattle(combatSection, () => ({ state, combatState, currentBook }), {
-            onStart: startCombat,
-            onRollRound: rollCombatRound,
-            onFlee: endCombat,
-            onEnd: endCombat,
-            onStatSync: syncStateFromServer,
-            onCombatEnd: () => { combatState.active = false; },
-            onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
-                testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
-        }, historyContainer);
+    if (currentBook && historyContainer) {
+        loadCombatHistory(currentBook, historyContainer);
     }
 }
 
