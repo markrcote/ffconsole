@@ -4,7 +4,7 @@ milestone: v1.1
 milestone_name: Combat Modal
 status: verifying
 stopped_at: "Checkpoint: 08-02-PLAN.md awaiting human-verify"
-last_updated: "2026-04-03T20:57:30.228Z"
+last_updated: "2026-04-03T21:04:37.895Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 4
@@ -25,8 +25,8 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 ## Current Position
 
-Phase: 08 (post-combat-flow-and-history) — EXECUTING
-Plan: 2 of 2
+Phase: 08
+Plan: Not started
 Status: Phase complete — ready for verification
 Last activity: 2026-04-03
 
