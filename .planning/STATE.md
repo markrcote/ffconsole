@@ -2,15 +2,15 @@
 gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
-status: executing
-stopped_at: Completed 07-01-PLAN.md
-last_updated: "2026-04-03T16:03:16.241Z"
+status: verifying
+stopped_at: Completed 07-02-PLAN.md
+last_updated: "2026-04-03T20:33:55.964Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 4
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 6
-  completed_plans: 5
+  completed_plans: 6
   percent: 0
 ---
 
@@ -27,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 Phase: 07 (modal-lifecycle-and-ux) — EXECUTING
 Plan: 2 of 2
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-04-03
 
 Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
@@ -58,6 +58,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 | Phase 06 P01 | 5 | 1 tasks | 2 files |
 | Phase 06 P02 | 3min | 2 tasks | 3 files |
 | Phase 07 P01 | 5 | 2 tasks | 2 files |
+| Phase 07 P02 | 525873min | 3 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,8 @@ Recent decisions affecting current work:
 - [Phase 06]: closeBattleModal() stub exported in Plan 02 so Phase 7 can implement teardown without changing import statements
 - [Phase 06]: loadCombatHistory() call added back to init() in app.js — previously called via renderBattle() which is no longer called directly from app.js
 - [Phase 07]: Optional chaining on onCombatStateChange callback calls in battle.js for backward compatibility
+- [Phase 07]: Module-level savedScroll for iOS-safe scroll restore in modal teardown
+- [Phase 07]: Two-level onCombatStateChange: battleModal.js intercepts local flag + propagates to app.js for global state sync
 
 ### Pending Todos
 
@@ -94,6 +97,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T16:03:16.238Z
-Stopped at: Completed 07-01-PLAN.md
+Last session: 2026-04-03T20:33:55.961Z
+Stopped at: Completed 07-02-PLAN.md
 Resume file: None

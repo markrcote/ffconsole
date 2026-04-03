@@ -75,7 +75,7 @@ Plans:
 
 Plans:
 - [x] 07-01-PLAN.md — CSS animation keyframes (slide-up, fade-out, shake) and onCombatStateChange callback in battle.js
-- [ ] 07-02-PLAN.md — battleModal.js full lifecycle (scroll lock, animation, focus, dismiss guard, teardown) and app.js wiring
+- [x] 07-02-PLAN.md — battleModal.js full lifecycle (scroll lock, animation, focus, dismiss guard, teardown) and app.js wiring
 
 ### Phase 8: Post-Combat Flow and History
 **Goal**: Combat ends with a readable summary inside the modal; the player explicitly closes it; the sheet's battle history updates automatically to reflect the completed fight
