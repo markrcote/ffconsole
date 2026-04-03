@@ -3,14 +3,14 @@ gsd_state_version: 1.0
 milestone: v1.1
 milestone_name: Combat Modal
 status: executing
-stopped_at: Completed 06-02-PLAN.md
-last_updated: "2026-04-03T15:19:30.985Z"
+stopped_at: Completed 07-01-PLAN.md
+last_updated: "2026-04-03T16:03:16.241Z"
 last_activity: 2026-04-03
 progress:
   total_phases: 4
   completed_phases: 2
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 6
+  completed_plans: 5
   percent: 0
 ---
 
@@ -21,12 +21,12 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 06 — module-restructure-and-dom-cleanup
+**Current focus:** Phase 07 — modal-lifecycle-and-ux
 
 ## Current Position
 
-Phase: 7
-Plan: Not started
+Phase: 07 (modal-lifecycle-and-ux) — EXECUTING
+Plan: 2 of 2
 Status: Ready to execute
 Last activity: 2026-04-03
 
@@ -57,6 +57,7 @@ Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count
 *Updated after each plan completion*
 | Phase 06 P01 | 5 | 1 tasks | 2 files |
 | Phase 06 P02 | 3min | 2 tasks | 3 files |
+| Phase 07 P01 | 5 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -74,6 +75,7 @@ Recent decisions affecting current work:
 - [Phase 06]: battleModal.js fetches historyContainer at open time via document.getElementById — history section stays in index.html outside modal
 - [Phase 06]: closeBattleModal() stub exported in Plan 02 so Phase 7 can implement teardown without changing import statements
 - [Phase 06]: loadCombatHistory() call added back to init() in app.js — previously called via renderBattle() which is no longer called directly from app.js
+- [Phase 07]: Optional chaining on onCombatStateChange callback calls in battle.js for backward compatibility
 
 ### Pending Todos
 
@@ -92,6 +94,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T15:14:17.160Z
-Stopped at: Completed 06-02-PLAN.md
+Last session: 2026-04-03T16:03:16.238Z
+Stopped at: Completed 07-01-PLAN.md
 Resume file: None

@@ -16,7 +16,7 @@
 ### Combat Inside Modal
 
 - [x] **MODAL-03**: Enemy setup form (name, Skill, Stamina inputs and Start Combat button) appears inside the modal
-- [ ] **MODAL-04**: Full round-by-round combat (roll button, luck prompts, stamina bars, flee) runs inside the modal
+- [x] **MODAL-04**: Full round-by-round combat (roll button, luck prompts, stamina bars, flee) runs inside the modal
 - [ ] **MODAL-05**: Modal cannot be accidentally dismissed during active combat (backdrop tap and Escape are no-ops while a fight is in progress)
 
 ### Post-Combat
@@ -31,7 +31,7 @@
 
 ### UX Polish
 
-- [ ] **MODAL-10**: Modal slides up from bottom on open and fades out on close (animation respects `prefers-reduced-motion`)
+- [x] **MODAL-10**: Modal slides up from bottom on open and fades out on close (animation respects `prefers-reduced-motion`)
 - [ ] **MODAL-11**: Body scroll is locked while the modal is open; restored on close (iOS Safari safe)
 - [ ] **MODAL-12**: Focus moves into the modal on open (to first interactive element)
 
@@ -59,12 +59,12 @@
 | MODAL-01 | Phase 6 | Complete |
 | MODAL-02 | Phase 6 | Complete |
 | MODAL-03 | Phase 6 | Complete |
-| MODAL-04 | Phase 7 | Pending |
+| MODAL-04 | Phase 7 | Complete |
 | MODAL-05 | Phase 7 | Pending |
 | MODAL-06 | Phase 8 | Pending |
 | MODAL-07 | Phase 8 | Pending |
 | MODAL-08 | Phase 8 | Pending |
 | MODAL-09 | Phase 8 | Pending |
-| MODAL-10 | Phase 7 | Pending |
+| MODAL-10 | Phase 7 | Complete |
 | MODAL-11 | Phase 7 | Pending |
 | MODAL-12 | Phase 7 | Pending |
