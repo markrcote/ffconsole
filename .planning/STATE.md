@@ -90,7 +90,9 @@ Recent decisions affecting current work:
 
 ### Pending Todos
 
-None yet.
+| # | Title | Area | File |
+|---|-------|------|------|
+| 1 | Add manual defeated button for instant-death paragraphs | ui | [2026-04-06-add-manual-defeated-button-for-instant-death-paragraphs.md](./todos/pending/2026-04-06-add-manual-defeated-button-for-instant-death-paragraphs.md) |
 
 ### Blockers/Concerns
 
