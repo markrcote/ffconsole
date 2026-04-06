@@ -4,6 +4,7 @@
 
 - ✅ **v1.0 MVP** — Phases 1–4 (shipped 2026-04-02)
 - ✅ **v1.1 Combat Modal** — Phases 5–8 (in progress)
+- 🚧 **v1.2 Defeat State** — Phases 9–11 (in progress)
 
 ## Phases
 
@@ -19,14 +20,22 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
 </details>
 
-### 🚧 v1.1 Combat Modal (In Progress)
+### ✅ v1.1 Combat Modal (Phases 5–8)
 
 **Milestone Goal:** Move combat out of the inline sheet panel into a focused modal overlay. The adventure sheet stays behind the modal; the player returns to it cleanly when combat ends.
 
 - [x] **Phase 5: Luck-in-Combat Testing** — Optional luck test during combat rounds; Lucky/Unlucky modifies damage; Luck decrements either way
 - [x] **Phase 6: Module Restructure and DOM Cleanup** — Scope battle.js to a container argument; introduce battleModal.js skeleton; wire "Start Battle" trigger (completed 2026-04-03)
-- [ ] **Phase 7: Modal Lifecycle and UX** — Full open/close lifecycle with scroll lock, dismiss guards, animations, and focus management
+- [x] **Phase 7: Modal Lifecycle and UX** — Full open/close lifecycle with scroll lock, dismiss guards, animations, and focus management
 - [x] **Phase 8: Post-Combat Flow and History** — Summary screen inside modal, explicit Close button, history refresh on sheet (completed 2026-04-03)
+
+### 🚧 v1.2 Defeat State (In Progress)
+
+**Milestone Goal:** Make defeat unambiguous and give the player clear paths forward.
+
+- [ ] **Phase 9: Defeat Detection and Dead State** — Detect Stamina-0 everywhere, persist dead status, show dead state on sheet with Undo
+- [ ] **Phase 10: Combat Modal Defeat Screen** — Defeat screen inside modal; sheet enters dead state after modal closes
+- [ ] **Phase 11: Recovery Actions** — Restart (re-roll same book) and Change Book (delete session, return to picker)
 
 ## Phase Details
 
@@ -92,6 +101,40 @@ Plans:
 - [x] 08-01-PLAN.md — battle.js: fix CSS class bug, replace New Battle with Close button, remove in-fight history calls
 - [x] 08-02-PLAN.md — battleModal.js + app.js: postCombatPending flag, onClose/onModalClose callbacks, human verify
 
+### Phase 9: Defeat Detection and Dead State
+**Goal**: The app automatically detects defeat wherever Stamina hits 0 and the adventure sheet enters a visually unambiguous dead state, persisted to the backend
+**Depends on**: Phase 8
+**Requirements**: DEFEAT-01, DEFEAT-02, DEFEAT-05, DEFEAT-06, DEFEAT-07
+**Success Criteria** (what must be TRUE):
+  1. When player Stamina reaches 0 via the sheet stat buttons, the adventure sheet immediately transitions to a dead state — stat editing is disabled and the character is clearly marked as dead
+  2. The dead state persists to the backend (mechanics_json or session status field) so reloading or switching devices still shows the dead state
+  3. When Stamina hits 0 via the sheet stat buttons, an Undo action is available to reverse the change (misclick protection before the state is committed)
+  4. The dead state is visually unambiguous — the sheet communicates "dead", not merely "zero Stamina"
+  5. When Stamina hits 0 during combat, the app signals defeat (wires into Phase 10)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 10: Combat Modal Defeat Screen
+**Goal**: When combat ends in the player's defeat, a dedicated defeat screen appears inside the modal; closing it leaves the adventure sheet in the dead state
+**Depends on**: Phase 9
+**Requirements**: DEFEAT-03, DEFEAT-04
+**Success Criteria** (what must be TRUE):
+  1. When the player's Stamina hits 0 in combat, combat ends and a defeat screen appears inside the modal, visually distinct from the victory summary
+  2. After the player dismisses the defeat screen, the modal closes and the adventure sheet shows the dead state (not the normal sheet)
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 11: Recovery Actions
+**Goal**: From the dead state, the player has two clear paths forward — start over with a new character or switch to a different book
+**Depends on**: Phase 9
+**Requirements**: DEFEAT-08, DEFEAT-09
+**Success Criteria** (what must be TRUE):
+  1. From the dead state, tapping "Restart" clears the dead status and launches the character creation flow for the same book, producing a fresh character with re-rolled stats
+  2. From the dead state, tapping "Change Book" deletes the current session from the backend and returns the player to the book picker
+  3. Both actions are clearly labeled and reachable without leaving the dead state screen
+**Plans**: TBD
+**UI hint**: yes
+
 ## Progress
 
 | Phase | Milestone | Plans Complete | Status | Completed |
@@ -104,6 +147,9 @@ Plans:
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
 | 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
+| 9. Defeat Detection and Dead State | v1.2 | 0/? | Not started | — |
+| 10. Combat Modal Defeat Screen | v1.2 | 0/? | Not started | — |
+| 11. Recovery Actions | v1.2 | 0/? | Not started | — |
 
 ## Backlog
 

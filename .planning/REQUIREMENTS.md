@@ -51,12 +51,12 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| DEFEAT-01 | TBD | Pending |
-| DEFEAT-02 | TBD | Pending |
-| DEFEAT-03 | TBD | Pending |
-| DEFEAT-04 | TBD | Pending |
-| DEFEAT-05 | TBD | Pending |
-| DEFEAT-06 | TBD | Pending |
-| DEFEAT-07 | TBD | Pending |
-| DEFEAT-08 | TBD | Pending |
-| DEFEAT-09 | TBD | Pending |
+| DEFEAT-01 | Phase 9 | Pending |
+| DEFEAT-02 | Phase 9 | Pending |
+| DEFEAT-03 | Phase 10 | Pending |
+| DEFEAT-04 | Phase 10 | Pending |
+| DEFEAT-05 | Phase 9 | Pending |
+| DEFEAT-06 | Phase 9 | Pending |
+| DEFEAT-07 | Phase 9 | Pending |
+| DEFEAT-08 | Phase 11 | Pending |
+| DEFEAT-09 | Phase 11 | Pending |

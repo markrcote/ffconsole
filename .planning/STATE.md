@@ -7,7 +7,7 @@ stopped_at: ""
 last_updated: "2026-04-06T00:00:00.000Z"
 last_activity: 2026-04-06
 progress:
-  total_phases: 0
+  total_phases: 3
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -25,12 +25,12 @@ See: .planning/PROJECT.md (updated 2026-04-03)
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: Phase 9 — Defeat Detection and Dead State (not started)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-04-06 — Milestone v1.2 started
+Status: Roadmap created, ready to plan Phase 9
+Last activity: 2026-04-06 — Roadmap created for v1.2
 
-Progress: [░░░░░░░░░░] 0% (v1.2 phases TBD)
+Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 
 ## Performance Metrics
 
@@ -84,6 +84,9 @@ Recent decisions affecting current work:
 - [Phase 08]: Map winner 'enemy' to CSS modifier 'defeat' in renderSummaryHTML to match CSS class --defeat
 - [Phase 08]: Remove in-fight loadCombatHistory calls; history refresh deferred to post-modal-teardown in Plan 02
 - [Phase 08]: postCombatPending set on combatActive-to-false transition, cleared in teardown; onClose injected via wrappedCallbacks (D-17); onModalCloseCallback fires after focus restore for history refresh
+- [v1.2 Roadmap]: Dead state persists via mechanics_json or a session status field — decision to be made in Phase 9 planning
+- [v1.2 Roadmap]: Sheet-triggered defeat includes single-step Undo (misclick protection); multi-step undo is a future requirement
+- [v1.2 Roadmap]: Restart re-uses charCreate.js flow; Change Book calls DELETE /api/sessions/{book} then returns to book picker
 
 ### Pending Todos
 
@@ -91,8 +94,7 @@ None yet.
 
 ### Blockers/Concerns
 
-- `combatActive` exposure mechanism not yet decided — getter function, callback, or module-level variable; decide at start of Phase 7 before writing close handler
-- Minimum supported browser for `inert` attribute not documented; if older than 2023 baseline, fall back to `aria-hidden="true"` on `<main>`
+- Dead state persistence mechanism not yet decided: mechanics_json field vs. dedicated session status column — decide in Phase 9 planning
 
 ### Quick Tasks Completed
 
@@ -102,6 +104,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-03T20:57:30.224Z
-Stopped at: Checkpoint: 08-02-PLAN.md awaiting human-verify
+Last session: 2026-04-06
+Stopped at: Roadmap created for v1.2 — ready to run /gsd-plan-phase 9
 Resume file: None
