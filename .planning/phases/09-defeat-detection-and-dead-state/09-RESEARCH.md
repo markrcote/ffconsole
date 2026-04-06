@@ -486,22 +486,25 @@ Step 2.6: SKIPPED — this phase is purely code/config changes with no new exter
 
 ---
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Undo toast visual: countdown indicator vs. plain button?**
    - What we know: Context.md says "Show toast/button before committing dead state"
    - What's unclear: Whether to show a visual countdown (progress bar, timer text) or just a plain Undo button
    - Recommendation: Plain Undo button is simpler and sufficient for misclick protection. Planner decides.
+   - **RESOLVED:** Plain button with `setTimeout` visual cue (auto-removes after 5s). No countdown indicator — the button simply disappears when the timer expires. Implemented in 09-01-PLAN Task 1.
 
 2. **"I'm Dead" button placement on sheet**
    - What we know: Context.md says "Located on the sheet (near stat area or as a secondary action — planner to decide placement)"
    - What's unclear: Best placement for mobile UX — near Stamina row vs. in the Actions section
    - Recommendation: In the Actions section alongside "Test Luck" and "Start Battle" — consistent with existing action patterns. Near stamina row is harder to tap accidentally on small screens.
+   - **RESOLVED:** Actions section (alongside "Test Luck" and "Start Battle"), after the `.test-buttons` div. Implemented in 09-01-PLAN Task 1 as `<button class="mechanic-btn mechanic-btn--danger" id="manual-defeat-btn">`.
 
 3. **Dead state appearance on `<main>` vs. as sibling to `<main>`**
    - What we know: Context.md says "a top-level `<section id='dead-state'>`"; current `<main>` contains all sections
    - What's unclear: "Top-level" could mean inside `<main>` (first child) or as a sibling to `<main>`
    - Recommendation: Place inside `<main class="adventure-sheet">` as the first child (shown when other content is hidden), so it inherits the parchment styling automatically.
+   - **RESOLVED:** First child of `<main class="adventure-sheet">`, before the `<header>`. Shown via `hidden=false` while all sibling sections get `hidden=true`. Inherits parchment styling. Implemented in 09-01-PLAN Task 1.
 
 ---
 
