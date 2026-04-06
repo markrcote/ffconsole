@@ -111,8 +111,12 @@ Plans:
   3. When Stamina hits 0 via the sheet stat buttons, an Undo action is available to reverse the change (misclick protection before the state is committed)
   4. The dead state is visually unambiguous — the sheet communicates "dead", not merely "zero Stamina"
   5. When Stamina hits 0 during combat, the app signals defeat (wires into Phase 10)
-**Plans**: TBD
+**Plans**: 2 plans
 **UI hint**: yes
+
+Plans:
+- [ ] 09-01-PLAN.md — Sheet defeat detection, dead state UI, undo window, manual defeat button, persistence, reload restoration
+- [ ] 09-02-PLAN.md — Combat defeat signal (onPlayerDefeated callback) in battle.js, battleModal.js, app.js
 
 ### Phase 10: Combat Modal Defeat Screen
 **Goal**: When combat ends in the player's defeat, a dedicated defeat screen appears inside the modal; closing it leaves the adventure sheet in the dead state
@@ -147,7 +151,7 @@ Plans:
 | 6. Module Restructure and DOM Cleanup | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
 | 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
-| 9. Defeat Detection and Dead State | v1.2 | 0/? | Not started | — |
+| 9. Defeat Detection and Dead State | v1.2 | 0/2 | Planned | — |
 | 10. Combat Modal Defeat Screen | v1.2 | 0/? | Not started | — |
 | 11. Recovery Actions | v1.2 | 0/? | Not started | — |
 
