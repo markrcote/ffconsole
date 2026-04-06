@@ -1,16 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: Combat Modal
-status: verifying
-stopped_at: "Checkpoint: 08-02-PLAN.md awaiting human-verify"
-last_updated: "2026-04-03T21:04:37.895Z"
-last_activity: 2026-04-03
+milestone: v1.2
+milestone_name: Defeat State
+status: planning
+stopped_at: ""
+last_updated: "2026-04-06T00:00:00.000Z"
+last_activity: 2026-04-06
 progress:
-  total_phases: 4
-  completed_phases: 4
-  total_plans: 8
-  completed_plans: 8
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
   percent: 0
 ---
 
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Phase 08 — post-combat-flow-and-history
+**Current focus:** Milestone v1.2 — Defeat State
 
 ## Current Position
 
-Phase: 08
-Plan: Not started
-Status: Phase complete — ready for verification
-Last activity: 2026-04-03
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements
+Last activity: 2026-04-06 — Milestone v1.2 started
 
-Progress: [░░░░░░░░░░] 0% (0 v1.1 plans complete; plan count TBD)
+Progress: [░░░░░░░░░░] 0% (v1.2 phases TBD)
 
 ## Performance Metrics
 

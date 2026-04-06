@@ -8,15 +8,15 @@ A web-based companion app for Fighting Fantasy gamebooks by Steve Jackson and Ia
 
 Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
 
-## Current Milestone: v1.1 Combat Modal
+## Current Milestone: v1.2 Defeat State
 
-**Goal:** Move combat out of the inline sheet panel into a modal overlay for a cleaner adventure sheet experience.
+**Goal:** Make defeat unambiguous and give the player clear paths forward.
 
 **Target features:**
-- "Start Battle" button on the adventure sheet opens combat modal
-- Full combat system runs inside the modal overlay
-- Post-combat summary screen shown inside modal before it closes
-- Battle history log remains on the sheet (bottom), outside the modal
+- Automatic defeat detection when Stamina hits 0 (combat modal + adventure sheet)
+- Defeat screen inside combat modal → sheet enters dead state after modal closes
+- Sheet-level defeat shows dead state with an Undo option (misclick protection)
+- Dead state on adventure sheet with two clear actions: "Restart" (re-roll stats, same book) and "Change Book" (delete session, return to book picker)
 
 ## Current State
 
@@ -51,6 +51,7 @@ Complete, accurate mechanical support for playing Fighting Fantasy — the app s
 ### Active
 
 - ✓ Luck-in-combat testing: test Luck when wounding/wounded; Lucky/Unlucky modifies damage dealt/taken; costs 1 Luck regardless of outcome — Phase 5
+- [ ] Defeat state: automatic detection when Stamina = 0, defeat screen in modal + dead state on sheet, Restart (re-roll) and Change Book (delete session) options
 - [ ] Additional book configs (Book 8 Scorpion Swamp, etc.)
 
 ### Out of Scope
@@ -115,4 +116,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context and Current State
 
 ---
-*Last updated: 2026-04-03 — Phase 7 complete: battle modal lifecycle fully implemented*
+*Last updated: 2026-04-06 — Milestone v1.2 started: Defeat State*
