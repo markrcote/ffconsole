@@ -1,53 +1,48 @@
-# Requirements — FF Console v1.1: Combat Modal
+# Requirements — FF Console v1.2: Defeat State
 
-**Milestone:** v1.1 Combat Modal
-**Created:** 2026-04-03
+**Milestone:** v1.2 Defeat State
+**Created:** 2026-04-06
 **Status:** Draft
 
 ---
 
 ## v1 Requirements
 
-### Modal Trigger
+### Defeat Detection
 
-- [x] **MODAL-01**: User can tap a "Start Battle" button on the adventure sheet to open the combat modal
-- [x] **MODAL-02**: Combat is no longer rendered as an inline panel on the adventure sheet
+- [ ] **DEFEAT-01**: App automatically detects defeat when player Stamina reaches 0 during combat
+- [ ] **DEFEAT-02**: App automatically detects defeat when player Stamina is reduced to 0 via sheet stat buttons
 
-### Combat Inside Modal
+### Combat Modal Defeat
 
-- [x] **MODAL-03**: Enemy setup form (name, Skill, Stamina inputs and Start Combat button) appears inside the modal
-- [x] **MODAL-04**: Full round-by-round combat (roll button, luck prompts, stamina bars, flee) runs inside the modal
-- [x] **MODAL-05**: Modal cannot be accidentally dismissed during active combat (backdrop tap and Escape are no-ops while a fight is in progress)
+- [ ] **DEFEAT-03**: When combat ends in defeat, a defeat screen appears inside the modal, visually distinct from the victory summary
+- [ ] **DEFEAT-04**: After the defeat screen is dismissed, the modal closes and the adventure sheet shows a dead state
 
-### Post-Combat
+### Sheet Defeat State
 
-- [x] **MODAL-06**: Post-combat summary (Victory / Defeated / Fled, rounds, final stamina) is shown inside the modal before it closes
-- [x] **MODAL-07**: User can tap a "Close" / "Return to Sheet" button to dismiss the modal after combat ends
+- [ ] **DEFEAT-05**: When Stamina hits 0 via sheet buttons, the adventure sheet immediately shows a dead state
+- [ ] **DEFEAT-06**: Sheet-triggered dead state includes an Undo action to reverse the Stamina change (misclick protection)
+- [ ] **DEFEAT-07**: Dead state is visually unambiguous — the sheet clearly communicates the character is dead, not just at low Stamina
 
-### Battle History
+### Recovery Actions
 
-- [x] **MODAL-08**: Battle history log remains on the adventure sheet (not inside the modal)
-- [x] **MODAL-09**: History log refreshes automatically when the combat modal closes
-
-### UX Polish
-
-- [x] **MODAL-10**: Modal slides up from bottom on open and fades out on close (animation respects `prefers-reduced-motion`)
-- [x] **MODAL-11**: Body scroll is locked while the modal is open; restored on close (iOS Safari safe)
-- [x] **MODAL-12**: Focus moves into the modal on open (to first interactive element)
+- [ ] **DEFEAT-08**: From the dead state, player can choose "Restart" to re-roll a new character for the same book (triggers char creation flow)
+- [ ] **DEFEAT-09**: From the dead state, player can choose "Change Book" to delete the current session and return to the book picker
 
 ---
 
 ## Future Requirements
 
+- Undo history (multi-step undo) — single-step undo covers misclick protection for v1.2
+- "New Battle" inside modal resets to setup without closing — deferred from v1.1
 - Full Tab trap + `aria-modal` + `inert` on background sheet (accessibility — deferred)
-- "New Battle" inside modal resets to setup without closing (explicit UX decision — defer until v1.1 ships to validate post-summary flow)
 
 ---
 
 ## Out of Scope
 
-- New combat mechanics — this milestone is a UX restructure only; no mechanic changes
-- Additional book configs — separate track
+- Manual "I am dead" button — defeat detection is automatic
+- Session archiving / graveyard — delete on "Change Book" is sufficient for v1.2
 - Multiplayer / shared sessions
 
 ---
@@ -56,15 +51,12 @@
 
 | REQ-ID | Phase | Status |
 |--------|-------|--------|
-| MODAL-01 | Phase 6 | Complete |
-| MODAL-02 | Phase 6 | Complete |
-| MODAL-03 | Phase 6 | Complete |
-| MODAL-04 | Phase 7 | Complete |
-| MODAL-05 | Phase 7 | Complete |
-| MODAL-06 | Phase 8 | Complete |
-| MODAL-07 | Phase 8 | Complete |
-| MODAL-08 | Phase 8 | Complete |
-| MODAL-09 | Phase 8 | Complete |
-| MODAL-10 | Phase 7 | Complete |
-| MODAL-11 | Phase 7 | Complete |
-| MODAL-12 | Phase 7 | Complete |
+| DEFEAT-01 | TBD | Pending |
+| DEFEAT-02 | TBD | Pending |
+| DEFEAT-03 | TBD | Pending |
+| DEFEAT-04 | TBD | Pending |
+| DEFEAT-05 | TBD | Pending |
+| DEFEAT-06 | TBD | Pending |
+| DEFEAT-07 | TBD | Pending |
+| DEFEAT-08 | TBD | Pending |
+| DEFEAT-09 | TBD | Pending |
