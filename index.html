@@ -8,6 +8,28 @@
 </head>
 <body>
     <main class="adventure-sheet">
+        <section id="dead-state" class="dead-state" hidden>
+            <div class="dead-state__banner">YOU ARE DEAD</div>
+            <div class="dead-state__stats">
+                <div class="dead-state__stat">
+                    <span class="dead-state__stat-label">Skill</span>
+                    <span class="dead-state__stat-value" id="dead-skill">0 / 0</span>
+                </div>
+                <div class="dead-state__stat">
+                    <span class="dead-state__stat-label">Stamina</span>
+                    <span class="dead-state__stat-value" id="dead-stamina">0 / 0</span>
+                </div>
+                <div class="dead-state__stat">
+                    <span class="dead-state__stat-label">Luck</span>
+                    <span class="dead-state__stat-value" id="dead-luck">0 / 0</span>
+                </div>
+            </div>
+            <div class="dead-state__actions">
+                <button class="mechanic-btn" id="dead-restart" disabled>Restart</button>
+                <button class="mechanic-btn" id="dead-change-book" disabled>Change Book</button>
+            </div>
+            <p class="dead-state__hint">Recovery actions coming soon</p>
+        </section>
         <header class="sheet-header">
             <h1>Adventure Sheet</h1>
             <p class="book-title" id="book-title">Fighting Fantasy</p>
@@ -64,6 +86,7 @@
                 <button class="mechanic-btn" id="test-luck">Test Luck</button>
                 <button class="mechanic-btn mechanic-btn--primary" id="start-battle-btn">Start Battle</button>
             </div>
+            <button class="mechanic-btn mechanic-btn--danger" id="manual-defeat-btn">I'm Dead</button>
             <div class="luck-result" id="luck-result" aria-live="polite"></div>
         </section>
 

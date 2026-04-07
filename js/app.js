@@ -37,6 +37,9 @@ let combatState = {
     enemy: { name: '', skill: 0, stamina: 0, staminaInitial: 0 },
 };
 
+// Undo timer for stamina-0 dead state window
+let undoTimer = null;
+
 /**
  * Initialize the application
  */
@@ -219,11 +222,44 @@ async function modifyStat(name, delta, allowBonus = false) {
     const stat = state[name];
     if (!stat) return;
 
+    // Block all stat changes while dead
+    if (state.mechanics?.dead) return;
+
     const newValue = stat.current + delta;
 
     if (newValue < 0) return;
 
     if (delta > 0 && stat.current >= stat.initial && !allowBonus) {
+        return;
+    }
+
+    // Stamina-0 intercept: show undo window before committing dead state
+    if (name === 'stamina' && newValue === 0) {
+        const prevValue = stat.current;
+
+        // Apply change visually (stat shows 0)
+        stat.current = 0;
+        games[currentBook] = state;
+        renderStat('stamina', state, { disabled: true });
+
+        // Disable ALL stat buttons during undo window
+        renderStat('skill', state, { disabled: true });
+        renderStat('luck', state, { disabled: true });
+
+        // Show undo toast — do NOT save yet (Pitfall 1)
+        showUndoToast(5000,
+            // onUndo: revert
+            () => {
+                stat.current = prevValue;
+                games[currentBook] = state;
+                save({ games, currentBook });
+                renderStats(state);
+            },
+            // onCommit: enter dead state
+            () => {
+                enterDeadState();
+            }
+        );
         return;
     }
 
@@ -241,6 +277,11 @@ async function render() {
     renderCharName();
     renderStats(state);
     await renderBookMechanicsSection();
+
+    // Dead state restoration on reload (DEFEAT-07)
+    if (state.mechanics?.dead) {
+        showDeadStateUI();
+    }
 }
 
 /**
@@ -324,6 +365,93 @@ function renderCharName() {
 }
 
 /**
+ * Enter the dead state: persist dead flag, show dead-state section, hide sheet content.
+ * Called after undo window expires (stamina-0 path) or immediately (manual defeat path).
+ */
+function enterDeadState() {
+    state.mechanics = state.mechanics || {};
+    state.mechanics.dead = true;
+    games[currentBook] = state;
+    save({ games, currentBook });
+    showDeadStateUI();
+}
+
+/**
+ * Show the dead-state section and hide normal sheet content.
+ * Does NOT modify state or save — purely visual.
+ */
+function showDeadStateUI() {
+    const deadSection = document.getElementById('dead-state');
+    if (!deadSection) return;
+
+    // Populate read-only stats
+    const deadSkill = document.getElementById('dead-skill');
+    const deadStamina = document.getElementById('dead-stamina');
+    const deadLuck = document.getElementById('dead-luck');
+    if (deadSkill) deadSkill.textContent = `${state.skill.current} / ${state.skill.initial}`;
+    if (deadStamina) deadStamina.textContent = `${state.stamina.current} / ${state.stamina.initial}`;
+    if (deadLuck) deadLuck.textContent = `${state.luck.current} / ${state.luck.initial}`;
+
+    // Show dead state, hide all other main children
+    const main = document.querySelector('.adventure-sheet');
+    if (main) {
+        Array.from(main.children).forEach(child => {
+            if (child.id === 'dead-state') {
+                child.hidden = false;
+            } else {
+                child.hidden = true;
+            }
+        });
+    }
+}
+
+/**
+ * Show the undo toast element.
+ * @param {number} durationMs - auto-dismiss delay
+ * @param {Function} onUndo - called if user taps Undo
+ * @param {Function} onCommit - called when timer expires
+ */
+function showUndoToast(durationMs, onUndo, onCommit) {
+    // Remove any existing undo toast
+    const existing = document.getElementById('undo-toast');
+    if (existing) existing.remove();
+
+    const toast = document.createElement('div');
+    toast.id = 'undo-toast';
+    toast.className = 'undo-toast';
+    toast.innerHTML = `
+        <span class="undo-toast__text">Stamina hit 0</span>
+        <button class="mechanic-btn undo-toast__btn" id="undo-btn">Undo</button>
+    `;
+
+    // Insert after the stats section (visible above the fold)
+    const statsSection = document.querySelector('.stats-section');
+    if (statsSection) {
+        statsSection.parentNode.insertBefore(toast, statsSection.nextSibling);
+    }
+
+    // Wire undo button
+    const undoBtn = toast.querySelector('#undo-btn');
+    if (undoBtn) {
+        undoBtn.addEventListener('click', () => {
+            if (undoTimer) {
+                clearTimeout(undoTimer);
+                undoTimer = null;
+            }
+            toast.remove();
+            onUndo();
+        });
+    }
+
+    // Auto-dismiss timer
+    undoTimer = setTimeout(() => {
+        undoTimer = null;
+        toast.remove();
+        onCommit();
+    }, durationMs);
+}
+
+/**
  * Sync local state from a server SessionResponse and re-render.
  * Only current values are patched — initial values stay as-is.
  * @param {Object} session - SessionResponse from the backend
@@ -395,6 +523,23 @@ function bindEvents() {
                     await _applyNewCharacter(bookNumber, stats, name, superpower);
                 },
             });
+        });
+    }
+
+    // Manual Defeat button (DEFEAT-02 — instant-death paragraphs)
+    const manualDefeatBtn = document.getElementById('manual-defeat-btn');
+    if (manualDefeatBtn) {
+        manualDefeatBtn.addEventListener('click', () => {
+            if (state.mechanics?.dead) return; // already dead
+            if (!currentBook) return;
+
+            const confirmed = window.confirm(
+                'Mark your character as dead? This cannot be undone.'
+            );
+            if (!confirmed) return;
+
+            // No undo window for manual defeat
+            enterDeadState();
         });
     }
 
