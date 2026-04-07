@@ -115,8 +115,8 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 09-01-PLAN.md — Sheet defeat detection, dead state UI, undo window, manual defeat button, persistence, reload restoration
-- [ ] 09-02-PLAN.md — Combat defeat signal (onPlayerDefeated callback) in battle.js, battleModal.js, app.js
+- [x] 09-01-PLAN.md — Sheet defeat detection, dead state UI, undo window, manual defeat button, persistence, reload restoration
+- [x] 09-02-PLAN.md — Combat defeat signal (onPlayerDefeated callback) in battle.js, battleModal.js, app.js
 
 ### Phase 10: Combat Modal Defeat Screen
 **Goal**: When combat ends in the player's defeat, a dedicated defeat screen appears inside the modal; closing it leaves the adventure sheet in the dead state
@@ -125,8 +125,11 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. When the player's Stamina hits 0 in combat, combat ends and a defeat screen appears inside the modal, visually distinct from the victory summary
   2. After the player dismisses the defeat screen, the modal closes and the adventure sheet shows the dead state (not the normal sheet)
-**Plans**: TBD
+**Plans**: 1 plan
 **UI hint**: yes
+
+Plans:
+- [ ] 10-01-PLAN.md — Defeat screen CSS, battleModal.js defeat screen implementation, app.js dead state gate
 
 ### Phase 11: Recovery Actions
 **Goal**: From the dead state, the player has two clear paths forward — start over with a new character or switch to a different book
@@ -152,7 +155,7 @@ Plans:
 | 7. Modal Lifecycle and UX | v1.1 | 0/2 | Planned | — |
 | 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 9. Defeat Detection and Dead State | v1.2 | 0/2 | Planned | — |
-| 10. Combat Modal Defeat Screen | v1.2 | 0/? | Not started | — |
+| 10. Combat Modal Defeat Screen | v1.2 | 0/1 | Planned | — |
 | 11. Recovery Actions | v1.2 | 0/? | Not started | — |
 
 ## Backlog
