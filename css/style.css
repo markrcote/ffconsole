@@ -1408,6 +1408,10 @@ body {
     font-size: 0.85rem;
 }
 
+.mechanic-btn--danger:hover {
+    background: rgba(139, 37, 0, 0.12);
+}
+
 .mechanic-btn--danger:active {
     background: rgba(139, 37, 0, 0.15);
 }

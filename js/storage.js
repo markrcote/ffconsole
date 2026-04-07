@@ -102,4 +102,36 @@ async function clear() {
     }
 }
 
-export { save, load, clear };
+/**
+ * Delete a specific book session from localStorage and the backend.
+ * @param {number} bookNumber - The book number to delete
+ */
+async function deleteSession(bookNumber) {
+    // Remove from localStorage
+    try {
+        const data = localStorage.getItem(STORAGE_KEY);
+        if (data) {
+            const parsed = JSON.parse(data);
+            if (parsed.games) {
+                delete parsed.games[bookNumber];
+                parsed.currentBook = null;
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(parsed));
+            }
+        }
+    } catch (e) {
+        console.error('deleteSession localStorage cleanup failed:', e);
+    }
+
+    // DELETE from backend
+    try {
+        const response = await fetch(`/api/sessions/${bookNumber}`, { method: 'DELETE' });
+        if (!response.ok) {
+            throw new Error(`Server returned ${response.status}`);
+        }
+    } catch (e) {
+        console.error('deleteSession failed:', e);
+        // Continue — flow proceeds regardless (best-effort cleanup)
+    }
+}
+
+export { save, load, clear, deleteSession };

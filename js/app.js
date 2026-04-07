@@ -3,7 +3,7 @@
  */
 
 import { rollInitialStats } from './dice.js';
-import { save, load } from './storage.js';
+import { save, load, deleteSession } from './storage.js';
 import { BOOKS, getBook, searchBooks, getBookConfig } from './books.js';
 import { testLuck, testCombatLuck, startCombat, rollCombatRound, endCombat } from './mechanics.js';
 import { renderStats, renderStat, bindStatEvents } from './ui/stats.js';
@@ -554,6 +554,44 @@ function bindEvents() {
 
             // No undo window for manual defeat
             enterDeadState();
+        });
+    }
+
+    // Restart button (DEFEAT-08)
+    const restartBtn = document.getElementById('dead-restart');
+    if (restartBtn) {
+        restartBtn.removeAttribute('disabled');
+        restartBtn.addEventListener('click', () => {
+            showCharCreate({
+                games,
+                currentBook,
+                save,
+                onComplete: async (bookNumber, stats, name, superpower) => {
+                    await _applyNewCharacter(bookNumber, stats, name, superpower);
+                },
+            });
+        });
+    }
+
+    // Change Book button (DEFEAT-09)
+    const changeBookBtn = document.getElementById('dead-change-book');
+    if (changeBookBtn) {
+        changeBookBtn.removeAttribute('disabled');
+        changeBookBtn.addEventListener('click', async () => {
+            const confirmed = window.confirm('Delete this session? This cannot be undone.');
+            if (!confirmed) return;
+            const bookToDelete = currentBook;
+            await deleteSession(bookToDelete);
+            delete games[bookToDelete];
+            currentBook = null;
+            showCharCreate({
+                games,
+                currentBook,
+                save,
+                onComplete: async (bookNumber, stats, name, superpower) => {
+                    await _applyNewCharacter(bookNumber, stats, name, superpower);
+                },
+            });
         });
     }
 
