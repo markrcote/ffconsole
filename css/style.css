@@ -750,22 +750,25 @@ body {
     display: none;
 }
 
-.battle-modal--defeat .combat-summary {
-    background: transparent;
-    border-color: rgba(244, 228, 193, 0.2);
+/* Force all text elements inside the defeat card to light — many have
+   explicit color: var(--ink-*) declarations that would otherwise win */
+.battle-modal--defeat .combat-status,
+.battle-modal--defeat .stamina-bar-label,
+.battle-modal--defeat .stamina-bar-value,
+.battle-modal--defeat .combat-enemy-stamina,
+.battle-modal--defeat .combat-summary__title--defeat,
+.battle-modal--defeat .combat-summary__stats,
+.battle-modal--defeat .combat-summary__stat-label {
     color: #f4e4c1;
-}
-
-.battle-modal--defeat .combat-summary__title--defeat {
-    color: #f4e4c1;
-}
-
-.battle-modal--defeat .combat-summary__stats {
-    color: #f4e4c1 !important;
 }
 
 .battle-modal--defeat .combat-summary__stat-label {
-    color: rgba(244, 228, 193, 0.7) !important;
+    color: rgba(244, 228, 193, 0.7);
+}
+
+.battle-modal--defeat .combat-summary {
+    background: transparent;
+    border-color: rgba(244, 228, 193, 0.2);
 }
 
 .battle-modal--defeat .mechanic-btn--primary {
