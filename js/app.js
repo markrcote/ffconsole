@@ -90,12 +90,18 @@ async function init() {
                         testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
                     onCombatStateChange: (active) => { combatState.active = active; },
                     onPlayerDefeated: () => {
+                        // Save dead state immediately so it persists even if
+                        // the user reloads from the defeat screen
                         combatEndedInDefeat = true;
+                        state.mechanics = state.mechanics || {};
+                        state.mechanics.dead = true;
+                        games[currentBook] = state;
+                        save({ games, currentBook });
                     },
                     onModalClose: () => {
                         if (combatEndedInDefeat) {
                             combatEndedInDefeat = false;
-                            enterDeadState();
+                            showDeadStateUI();
                         }
                         const historyContainer = document.getElementById('combat-history');
                         if (currentBook && historyContainer) {
