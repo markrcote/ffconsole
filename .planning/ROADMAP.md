@@ -126,6 +126,9 @@ Plans:
   1. When the player's Stamina hits 0 in combat, combat ends and a defeat screen appears inside the modal, visually distinct from the victory summary
   2. After the player dismisses the defeat screen, the modal closes and the adventure sheet shows the dead state (not the normal sheet)
 **Plans**: 1 plan
+
+Plans:
+- [ ] 11-01-PLAN.md — Wire Restart and Change Book buttons, add deleteSession to storage.js
 **UI hint**: yes
 
 Plans:
@@ -139,7 +142,10 @@ Plans:
   1. From the dead state, tapping "Restart" clears the dead status and launches the character creation flow for the same book, producing a fresh character with re-rolled stats
   2. From the dead state, tapping "Change Book" deletes the current session from the backend and returns the player to the book picker
   3. Both actions are clearly labeled and reachable without leaving the dead state screen
-**Plans**: TBD
+**Plans**: 1 plan
+
+Plans:
+- [ ] 11-01-PLAN.md — Wire Restart and Change Book buttons, add deleteSession to storage.js
 **UI hint**: yes
 
 ## Progress
@@ -156,7 +162,7 @@ Plans:
 | 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 9. Defeat Detection and Dead State | v1.2 | 0/2 | Planned | — |
 | 10. Combat Modal Defeat Screen | v1.2 | 0/1 | Planned | — |
-| 11. Recovery Actions | v1.2 | 0/? | Not started | — |
+| 11. Recovery Actions | v1.2 | 0/1 | Planned | — |
 
 ## Backlog
 
