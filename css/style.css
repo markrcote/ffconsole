@@ -1287,3 +1287,107 @@ body {
     display: flex;
     justify-content: center;
 }
+
+/* ── Dead State (Phase 9) ──────────────────────────────────────────────────── */
+
+.dead-state {
+    text-align: center;
+    padding: 2rem 1rem;
+}
+
+.dead-state__banner {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--accent-red);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    border: 3px solid var(--accent-red);
+    border-radius: 8px;
+    background: rgba(139, 37, 0, 0.08);
+}
+
+.dead-state__stats {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+    max-width: 280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.dead-state__stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 1rem;
+    background: var(--paper-dark);
+    border-radius: 4px;
+}
+
+.dead-state__stat-label {
+    font-weight: bold;
+    color: var(--ink-color);
+}
+
+.dead-state__stat-value {
+    font-family: 'Caveat', cursive;
+    font-size: 1.3rem;
+    color: var(--ink-light);
+}
+
+.dead-state__actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    max-width: 200px;
+    margin: 0 auto 1rem;
+}
+
+.dead-state__hint {
+    font-size: 0.85rem;
+    color: var(--ink-light);
+    font-style: italic;
+}
+
+/* Danger button modifier (manual defeat) */
+.mechanic-btn--danger {
+    background: var(--paper-dark);
+    color: var(--accent-red);
+    border: 1px solid var(--accent-red);
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.mechanic-btn--danger:active {
+    background: rgba(139, 37, 0, 0.15);
+}
+
+/* ── Undo Toast (Phase 9) ──────────────────────────────────────────────────── */
+
+.undo-toast {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    margin: 0.5rem 0;
+    background: var(--accent-red);
+    color: var(--paper-bg);
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.undo-toast__text {
+    font-weight: bold;
+}
+
+.undo-toast__btn {
+    background: var(--paper-bg);
+    color: var(--accent-red);
+    border: none;
+    font-weight: bold;
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+}

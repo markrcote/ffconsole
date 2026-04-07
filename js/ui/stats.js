@@ -11,8 +11,10 @@ const holdTimers = {};
  * Render a single stat to the DOM.
  * @param {string} name - The stat name (skill, stamina, luck)
  * @param {Object} state - { skill, stamina, luck } each with { initial, current }
+ * @param {Object} [options={}] - Rendering options
+ * @param {boolean} [options.disabled] - Force all buttons disabled (e.g., during undo window or dead state)
  */
-export function renderStat(name, state) {
+export function renderStat(name, state, options = {}) {
     const stat = state[name];
     if (!stat) return;
 
@@ -34,6 +36,12 @@ export function renderStat(name, state) {
 
     if (valuesEl) {
         valuesEl.classList.toggle('bonus', stat.current > stat.initial);
+    }
+
+    // Force-disable all buttons (e.g., during undo window or dead state)
+    if (options.disabled) {
+        if (decreaseBtn) decreaseBtn.disabled = true;
+        if (increaseBtn) increaseBtn.disabled = true;
     }
 }
 
@@ -62,6 +70,10 @@ function startHold(name, btn, state, onModify) {
 
     btn.classList.add('holding');
     holdTimers[name] = setTimeout(() => {
+        if (btn.disabled) {
+            cancelHold(name);
+            return;
+        }
         onModify(name, 1, true);
         btn.classList.remove('holding');
         btn.classList.add('held');
