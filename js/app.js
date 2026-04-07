@@ -88,6 +88,11 @@ async function init() {
                     onTestLuck: (bookNumber, luckCurrent, round, context, damageBefore) =>
                         testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
                     onCombatStateChange: (active) => { combatState.active = active; },
+                    onPlayerDefeated: () => {
+                        // Phase 9: no-op stub. Phase 10 wires modal defeat screen here.
+                        // Do NOT call enterDeadState() — sheet dead state after combat
+                        // is Phase 10's responsibility (after modal closes).
+                    },
                     onModalClose: () => {
                         const historyContainer = document.getElementById('combat-history');
                         if (currentBook && historyContainer) {

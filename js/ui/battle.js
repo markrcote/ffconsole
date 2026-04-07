@@ -161,7 +161,7 @@ function renderSummaryHTML(winner, rounds, playerStaminaFinal, playerStaminaInit
  * Bind the battle UI to existing DOM elements in the combat section.
  * @param {HTMLElement} container - .combat-section element
  * @param {Function} getState - returns { state, combatState, currentBook }
- * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd, onTestLuck, onCombatStateChange }
+ * @param {Object} callbacks - { onStart, onRollRound, onFlee, onEnd, onStatSync, onCombatEnd, onTestLuck, onCombatStateChange, onPlayerDefeated }
  */
 export function renderBattle(container, getState, callbacks, historyContainer = null) {
     if (!container) return;
@@ -306,6 +306,11 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
             closeBattleBtn.addEventListener('click', () => {
                 callbacks.onClose?.();
             });
+        }
+
+        // Signal defeat to the app layer (Phase 10 wires modal defeat screen here)
+        if (winner === 'enemy') {
+            callbacks.onPlayerDefeated?.();
         }
     }
 

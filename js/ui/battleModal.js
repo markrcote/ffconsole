@@ -142,6 +142,10 @@ export function openBattleModal(getState, callbacks) {
     // Wrap callbacks to intercept onCombatStateChange (D-01)
     const wrappedCallbacks = {
         ...callbacks,
+        onPlayerDefeated: () => {
+            // Phase 10 will implement modal defeat screen here
+            callbacks.onPlayerDefeated?.();
+        },
         onCombatStateChange: (active) => {
             if (combatActive && !active) {
                 postCombatPending = true;
