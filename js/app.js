@@ -76,6 +76,7 @@ async function init() {
     const startBattleBtn = document.getElementById('start-battle-btn');
     if (startBattleBtn) {
         startBattleBtn.addEventListener('click', () => {
+            let combatEndedInDefeat = false;
             openBattleModal(
                 () => ({ state, combatState, currentBook }),
                 {
@@ -89,11 +90,13 @@ async function init() {
                         testCombatLuck(bookNumber, luckCurrent, round, context, damageBefore),
                     onCombatStateChange: (active) => { combatState.active = active; },
                     onPlayerDefeated: () => {
-                        // Phase 9: no-op stub. Phase 10 wires modal defeat screen here.
-                        // Do NOT call enterDeadState() — sheet dead state after combat
-                        // is Phase 10's responsibility (after modal closes).
+                        combatEndedInDefeat = true;
                     },
                     onModalClose: () => {
+                        if (combatEndedInDefeat) {
+                            combatEndedInDefeat = false;
+                            enterDeadState();
+                        }
                         const historyContainer = document.getElementById('combat-history');
                         if (currentBook && historyContainer) {
                             loadCombatHistory(currentBook, historyContainer);

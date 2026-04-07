@@ -739,6 +739,31 @@ body {
     color: var(--accent-red);
 }
 
+/* -- Battle Modal Defeat State (Phase 10) --------------------------------- */
+.battle-modal--defeat {
+    background: #3d0e00;
+    color: #f4e4c1;
+    border: 2px solid var(--accent-red);
+}
+
+.battle-modal--defeat .modal-title {
+    display: none;
+}
+
+.battle-modal--defeat .combat-summary__title--defeat {
+    color: #f4e4c1;
+}
+
+.battle-modal--defeat .combat-summary__stat-label {
+    color: rgba(244, 228, 193, 0.7);
+}
+
+.battle-modal--defeat .mechanic-btn--primary {
+    background: var(--accent-red);
+    color: #f4e4c1;
+    border: 1px solid rgba(244, 228, 193, 0.3);
+}
+
 .combat-summary__title--fled {
     color: var(--ink-light);
 }

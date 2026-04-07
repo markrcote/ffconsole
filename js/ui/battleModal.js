@@ -12,6 +12,7 @@ let combatActive = false;
 let escHandler = null;
 let overlayRef = null;
 let postCombatPending = false;
+let defeatedThisCombat = false;
 let onModalCloseCallback = null;
 
 /**
@@ -42,6 +43,7 @@ function teardown(overlay) {
     overlayRef = null;
     combatActive = false;
     postCombatPending = false;
+    defeatedThisCombat = false;
 
     // Return focus to Start Battle button (Focus Management Contract)
     document.getElementById('start-battle-btn')?.focus();
@@ -142,8 +144,46 @@ export function openBattleModal(getState, callbacks) {
     // Wrap callbacks to intercept onCombatStateChange (D-01)
     const wrappedCallbacks = {
         ...callbacks,
-        onPlayerDefeated: () => {
-            // Phase 10 will implement modal defeat screen here
+        onPlayerDefeated: (rounds, playerStaminaFinal, enemy) => {
+            defeatedThisCombat = true;
+
+            // Apply dark card modifier
+            const modalEl = overlayRef?.querySelector('.battle-modal');
+            modalEl?.classList.add('battle-modal--defeat');
+
+            // Replace summary content with defeat screen
+            const summaryEl = overlayRef?.querySelector('#combat-summary');
+            if (summaryEl) {
+                const { state } = getState();
+                summaryEl.innerHTML = `
+                    <div class="combat-summary">
+                        <div class="combat-summary__title combat-summary__title--defeat">
+                            YOU WERE DEFEATED
+                        </div>
+                        <div class="combat-summary__stats">
+                            <div>
+                                <span class="combat-summary__stat-label">Rounds</span>
+                                ${rounds}
+                            </div>
+                            <div>
+                                <span class="combat-summary__stat-label">Your Stamina</span>
+                                ${playerStaminaFinal}/${state.stamina.initial}
+                            </div>
+                            <div>
+                                <span class="combat-summary__stat-label">${enemy.name}</span>
+                                ${enemy.stamina}/${enemy.staminaInitial}
+                            </div>
+                        </div>
+                        <button class="mechanic-btn mechanic-btn--primary" id="close-battle">Return to Sheet</button>
+                    </div>
+                `;
+                // Re-bind close button (old listener destroyed with replaced DOM)
+                summaryEl.querySelector('#close-battle')?.addEventListener('click', () => {
+                    wrappedCallbacks.onClose?.();
+                });
+            }
+
+            // Propagate to app.js (sets combatEndedInDefeat flag)
             callbacks.onPlayerDefeated?.();
         },
         onCombatStateChange: (active) => {

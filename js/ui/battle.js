@@ -308,9 +308,9 @@ export function renderBattle(container, getState, callbacks, historyContainer = 
             });
         }
 
-        // Signal defeat to the app layer (Phase 10 wires modal defeat screen here)
+        // Signal defeat to the app layer with combat data for defeat screen
         if (winner === 'enemy') {
-            callbacks.onPlayerDefeated?.();
+            callbacks.onPlayerDefeated?.(round, playerStaminaFinal, enemy);
         }
     }
 
