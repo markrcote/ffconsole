@@ -754,6 +754,10 @@ body {
     color: #f4e4c1;
 }
 
+.battle-modal--defeat .combat-summary__stats {
+    color: #f4e4c1;
+}
+
 .battle-modal--defeat .combat-summary__stat-label {
     color: rgba(244, 228, 193, 0.7);
 }
