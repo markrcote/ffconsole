@@ -426,7 +426,7 @@ function showUndoToast(durationMs, onUndo, onCommit) {
     toast.className = 'undo-toast';
     toast.innerHTML = `
         <span class="undo-toast__text">Stamina hit 0</span>
-        <button class="mechanic-btn undo-toast__btn" id="undo-btn">Undo</button>
+        <button class="undo-toast__btn" id="undo-btn">Undo</button>
     `;
 
     // Insert after the stats section (visible above the fold)
