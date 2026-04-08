@@ -35,7 +35,7 @@ Full archive: `.planning/milestones/v1.0-ROADMAP.md`
 
 - [ ] **Phase 9: Defeat Detection and Dead State** — Detect Stamina-0 everywhere, persist dead status, show dead state on sheet with Undo
 - [ ] **Phase 10: Combat Modal Defeat Screen** — Defeat screen inside modal; sheet enters dead state after modal closes
-- [ ] **Phase 11: Recovery Actions** — Restart (re-roll same book) and Change Book (delete session, return to picker)
+- [x] **Phase 11: Recovery Actions** — Restart (re-roll same book) and Change Book (delete session, return to picker) (completed 2026-04-08)
 
 ## Phase Details
 
@@ -128,7 +128,7 @@ Plans:
 **Plans**: 1 plan
 
 Plans:
-- [ ] 11-01-PLAN.md — Wire Restart and Change Book buttons, add deleteSession to storage.js
+- [x] 11-01-PLAN.md — Wire Restart and Change Book buttons, add deleteSession to storage.js
 **UI hint**: yes
 
 Plans:
@@ -162,7 +162,7 @@ Plans:
 | 8. Post-Combat Flow and History | v1.1 | 2/2 | Complete   | 2026-04-03 |
 | 9. Defeat Detection and Dead State | v1.2 | 0/2 | Planned | — |
 | 10. Combat Modal Defeat Screen | v1.2 | 0/1 | Planned | — |
-| 11. Recovery Actions | v1.2 | 0/1 | Planned | — |
+| 11. Recovery Actions | v1.2 | 1/1 | Complete   | 2026-04-08 |
 
 ## Backlog
 

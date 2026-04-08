@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.2
 milestone_name: Defeat State
 status: executing
-stopped_at: Phase 10 context gathered
-last_updated: "2026-04-07T04:02:34.417Z"
-last_activity: 2026-04-07 -- Phase 10 planning complete
+stopped_at: Phase 11 UI-SPEC approved
+last_updated: "2026-04-07T23:58:28.019Z"
+last_activity: 2026-04-07 -- Phase 11 execution started
 progress:
   total_phases: 7
-  completed_phases: 1
-  total_plans: 3
-  completed_plans: 2
-  percent: 67
+  completed_phases: 2
+  total_plans: 4
+  completed_plans: 3
+  percent: 75
 ---
 
 # Project State
@@ -21,16 +21,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-03)
 
 **Core value:** Complete, accurate mechanical support for playing Fighting Fantasy — the app should never be the bottleneck when you need to resolve a combat, test your luck, or roll some dice.
-**Current focus:** Milestone v1.2 — Defeat State
+**Current focus:** Phase 11 — recovery-actions
 
 ## Current Position
 
-Phase: Phase 9 — Defeat Detection and Dead State (context captured)
-Plan: —
-Status: Ready to execute
-Last activity: 2026-04-07 -- Phase 10 planning complete
+Phase: 11 (recovery-actions) — EXECUTING
+Plan: 1 of 1
+Status: Executing Phase 11
+Last activity: 2026-04-07 -- Phase 11 execution started
 
-Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
+Progress: [██████████] 100% (3/3 plans complete in v1.2 Phases 9-10)
 
 ## Performance Metrics
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0% (0/3 phases complete)
 | Phase 07 P02 | 525873min | 3 tasks | 2 files |
 | Phase 08 P01 | 3 | 2 tasks | 1 files |
 | Phase 08 P02 | 5 | 2 tasks | 2 files |
+| Phase 10 P01 | — | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -87,6 +88,7 @@ Recent decisions affecting current work:
 - [v1.2 Roadmap]: Dead state persists via mechanics_json or a session status field — decision to be made in Phase 9 planning
 - [v1.2 Roadmap]: Sheet-triggered defeat includes single-step Undo (misclick protection); multi-step undo is a future requirement
 - [v1.2 Roadmap]: Restart re-uses charCreate.js flow; Change Book calls DELETE /api/sessions/{book} then returns to book picker
+- [Phase 10]: mechanics.dead = true saved immediately in onPlayerDefeated (not onModalClose) so reload from defeat screen preserves dead state
 
 ### Pending Todos
 
@@ -106,6 +108,6 @@ Recent decisions affecting current work:
 
 ## Session Continuity
 
-Last session: 2026-04-07T03:44:35.257Z
-Stopped at: Phase 10 context gathered
-Resume file: .planning/phases/10-combat-modal-defeat-screen/10-CONTEXT.md
+Last session: 2026-04-07T19:42:01.811Z
+Stopped at: Phase 11 UI-SPEC approved
+Resume file: .planning/phases/11-recovery-actions/11-UI-SPEC.md
