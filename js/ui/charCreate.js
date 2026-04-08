@@ -98,7 +98,7 @@ function getBookConfigNote(bookNumber) {
  */
 export function showCharCreate({ games, currentBook, save, onComplete }) {
     // ── State local to this modal instance ──────────────────────────────────
-    let selectedBook = null;
+    let selectedBook = currentBook ?? null; // pre-select current book if provided
     let rolledStats = null; // { skill, stamina, luck, dice: { skill:[d], stamina:[d,d], luck:[d] } }
     let selectedSuperpower = null;
 
