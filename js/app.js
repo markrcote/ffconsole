@@ -292,9 +292,16 @@ async function render() {
     renderStats(state);
     await renderBookMechanicsSection();
 
-    // Dead state restoration on reload (DEFEAT-07)
+    // Dead state: show dead UI or restore normal sheet
     if (state.mechanics?.dead) {
         showDeadStateUI();
+    } else {
+        const main = document.querySelector('.adventure-sheet');
+        if (main) {
+            Array.from(main.children).forEach(child => {
+                child.hidden = child.id === 'dead-state';
+            });
+        }
     }
 }
 
