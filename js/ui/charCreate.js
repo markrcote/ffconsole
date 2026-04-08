@@ -224,6 +224,12 @@ export function showCharCreate({ games, currentBook, save, onComplete }) {
     // ── Book list rendering ───────────────────────────────────────────────────
     renderModalBookList(bookList, '', games, selectedBook);
 
+    // If a book is pre-selected, scroll it into view after render
+    if (selectedBook) {
+        const preSelected = bookList.querySelector('.book-item.selected');
+        if (preSelected) preSelected.scrollIntoView({ block: 'nearest' });
+    }
+
     bookSearch.addEventListener('input', (e) => {
         renderModalBookList(bookList, e.target.value, games, selectedBook);
     });
