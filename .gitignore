@@ -2,3 +2,4 @@ backend/ff.db
 __pycache__/
 *.pyc
 ff.db
+node_modules/
